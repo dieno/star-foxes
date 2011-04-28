@@ -1,3 +1,54 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="mainShipClass.cpp">
+      <Filter>Ship Files</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>Game Loop Files</Filter>
+    </ClCompile>
+    <ClCompile Include="directXClass.cpp">
+      <Filter>Game Loop Files</Filter>
+    </ClCompile>
+    <ClCompile Include="playerClass.cpp">
+      <Filter>Player Files</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="mainShipClass.h">
+      <Filter>Ship Files</Filter>
+    </ClInclude>
+    <ClInclude Include="directXClass.h">
+      <Filter>Game Loop Files</Filter>
+    </ClInclude>
+    <ClInclude Include="directXHeader.h">
+      <Filter>Game Loop Files</Filter>
+    </ClInclude>
+    <ClInclude Include="playerClass.h">
+      <Filter>Player Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="Ship Files">
+      <UniqueIdentifier>{36a8d567-9ef4-4d08-9b5e-6e4e78c857de}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game Loop Files">
+      <UniqueIdentifier>{2607c073-4403-4252-9f31-666ee6e9e44f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="AI Files">
+      <UniqueIdentifier>{37bf4eb7-0a90-40bf-b445-75b62fce4ee0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Networking Files">
+      <UniqueIdentifier>{71ad39c8-95eb-46f6-9906-b09df026a1c5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Player Files">
+      <UniqueIdentifier>{372ba4e6-0c85-466f-b087-6ce48ff135af}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Physics Files">
+      <UniqueIdentifier>{223e806b-057b-4155-b4ec-3647c4b10671}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Graphics Files">
+      <UniqueIdentifier>{2398ecf7-00db-4174-a26b-7ef56b977fdc}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
 </Project>
