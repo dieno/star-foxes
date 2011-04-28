@@ -1,0 +1,35 @@
+﻿Build started 4/28/2011 2:06:22 PM.
+     1>Project "C:\Documents and Settings\Owner\My Documents\Visual Studio 2010\Projects\Star Foxes Skeleton\Star Foxes Skeleton\Star Foxes Skeleton.vcxproj" on node 2 (build target(s)).
+     1>PrepareForBuild:
+         Creating directory "C:\Documents and Settings\Owner\My Documents\Visual Studio 2010\Projects\Star Foxes Skeleton\Debug\".
+       InitializeBuildStatus:
+         Creating "Debug\Star Foxes Skeleton.unsuccessfulbuild" because "AlwaysCreate" was specified.
+       ClCompile:
+         C:\Program Files\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _WINDOWS /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt directXClass.cpp main.cpp
+         main.cpp
+         directXClass.cpp
+     1>c:\documents and settings\owner\my documents\visual studio 2010\projects\star foxes skeleton\star foxes skeleton\directxclass.cpp(224): warning C4101: 'Locked' : unreferenced local variable
+     1>c:\documents and settings\owner\my documents\visual studio 2010\projects\star foxes skeleton\star foxes skeleton\directxclass.cpp(505): warning C4305: '+=' : truncation from 'double' to 'float'
+         Generating Code...
+       ManifestResourceCompile:
+         C:\Program Files\Microsoft SDKs\Windows\v7.0A\bin\rc.exe /nologo /fo"Debug\Star Foxes Skeleton.exe.embed.manifest.res" "Debug\Star Foxes Skeleton_manifest.rc" 
+       Link:
+         C:\Program Files\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Documents and Settings\Owner\My Documents\Visual Studio 2010\Projects\Star Foxes Skeleton\Debug\Star Foxes Skeleton.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib d3d9.lib D3Dx9.lib /MANIFEST /ManifestFile:"Debug\Star Foxes Skeleton.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"C:\Documents and Settings\Owner\My Documents\Visual Studio 2010\Projects\Star Foxes Skeleton\Debug\Star Foxes Skeleton.pdb" /SUBSYSTEM:WINDOWS /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Documents and Settings\Owner\My Documents\Visual Studio 2010\Projects\Star Foxes Skeleton\Debug\Star Foxes Skeleton.lib" /MACHINE:X86 "Debug\Star Foxes Skeleton.exe.embed.manifest.res"
+         Debug\directXClass.obj
+         Debug\main.obj
+       Manifest:
+         C:\Program Files\Microsoft SDKs\Windows\v7.0A\bin\mt.exe /nologo /verbose /out:"Debug\Star Foxes Skeleton.exe.embed.manifest" /manifest "Debug\Star Foxes Skeleton.exe.intermediate.manifest"
+         C:\Program Files\Microsoft SDKs\Windows\v7.0A\bin\rc.exe /nologo /fo"Debug\Star Foxes Skeleton.exe.embed.manifest.res" "Debug\Star Foxes Skeleton_manifest.rc" 
+       LinkEmbedManifest:
+         C:\Program Files\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Documents and Settings\Owner\My Documents\Visual Studio 2010\Projects\Star Foxes Skeleton\Debug\Star Foxes Skeleton.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib d3d9.lib D3Dx9.lib /MANIFEST /ManifestFile:"Debug\Star Foxes Skeleton.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"C:\Documents and Settings\Owner\My Documents\Visual Studio 2010\Projects\Star Foxes Skeleton\Debug\Star Foxes Skeleton.pdb" /SUBSYSTEM:WINDOWS /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Documents and Settings\Owner\My Documents\Visual Studio 2010\Projects\Star Foxes Skeleton\Debug\Star Foxes Skeleton.lib" /MACHINE:X86 "Debug\Star Foxes Skeleton.exe.embed.manifest.res"
+         Debug\directXClass.obj
+         Debug\main.obj
+         Star Foxes Skeleton.vcxproj -> C:\Documents and Settings\Owner\My Documents\Visual Studio 2010\Projects\Star Foxes Skeleton\Debug\Star Foxes Skeleton.exe
+       FinalizeBuildStatus:
+         Deleting file "Debug\Star Foxes Skeleton.unsuccessfulbuild".
+         Touching "Debug\Star Foxes Skeleton.lastbuildstate".
+     1>Done Building Project "C:\Documents and Settings\Owner\My Documents\Visual Studio 2010\Projects\Star Foxes Skeleton\Star Foxes Skeleton\Star Foxes Skeleton.vcxproj" (build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:26.65
