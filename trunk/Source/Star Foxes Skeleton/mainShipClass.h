@@ -13,6 +13,6 @@ public:
 private:
 	int currentHealth;
 	int maxHealth;
-}
+};
 
 #endif
