@@ -7,4 +7,10 @@
 #include <tchar.h>
 #include <iostream>
 #include "directXClass.h"
+#include "mainShipClass.h"
+#include "playerClass.h"
+
+#define FULLSCREEN TRUE
+#define SCREEN_WIDTH 640
+#define SCREEN_HEIGHT 480
 #endif
