@@ -14,7 +14,25 @@ public:
 	g_pAlphabetSurface(0),
 	g_AlphabetWidth(0),
 	g_AlphabetHeight(0),
-	pSurface(0),bitmapName(bitmapNameNew),g_FrameCount(0),g_Frequency(0){}
+	pSurface(0),bitmapName(bitmapNameNew),g_FrameCount(0),g_Frequency(0),
+	g_pMesh(NULL),
+	g_pMeshMaterials(NULL),
+	g_pMeshTextures(NULL),
+	g_dwNumMaterials(0L),
+	g_pMesh2(NULL),
+	g_pMeshMaterials2(NULL),
+	g_pMeshTextures2(NULL),
+	g_dwNumMaterials2(0L),
+	rotationAboutYMesh1(0),
+	rotationAboutXMesh1(0),
+	rotationAboutYMesh2(0),
+	rotationAboutXMesh2(0),
+	rotationAboutYView(0),
+	rotationAboutXView(0),
+	translateZView(0),
+	translateYMesh1(0),
+	translateXMesh1(0),
+	translateYMesh2(0){}
 	int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pstrCmdLine, int iCmdShow);
 	static long CALLBACK WndProc(HWND hWnd, UINT uMessage, WPARAM wParam, LPARAM lParam);
 	static directXClass *program;
@@ -32,6 +50,10 @@ public:
 	void FrameCount();
 	HRESULT UnloadAlphabet();
 	HRESULT directXClass::InitTiming();
+	VOID SetupMatrices(bool mesh1Active);
+	VOID Cleanup();
+	HRESULT InitGeometry();
+	D3DXMATRIX Translate(const float dx, const float dy, const float dz);
 private:
 	void drawLine(float startX, float startY, float endX, float endY, LPDIRECT3DSURFACE9 pBackSurf);
 	static LPDIRECT3D9 g_pD3D;//COM object
@@ -52,5 +74,24 @@ private:
 	wchar_t* bitmapName;
 	INT64 g_FrameCount;
 	INT64 g_Frequency;
+	LPD3DXMESH              g_pMesh; // Our mesh object in sysmem
+	D3DMATERIAL9*           g_pMeshMaterials; // Materials for our mesh
+	LPDIRECT3DTEXTURE9*     g_pMeshTextures; // Textures for our mesh
+	DWORD                   g_dwNumMaterials;   // Number of mesh materials
+	LPD3DXMESH              g_pMesh2; // Our mesh object in sysmem
+	D3DMATERIAL9*           g_pMeshMaterials2; // Materials for our mesh
+	LPDIRECT3DTEXTURE9*     g_pMeshTextures2; // Textures for our mesh
+	DWORD                   g_dwNumMaterials2;   // Number of mesh materials
+	float rotationAboutYMesh1;
+	float rotationAboutXMesh1;
+	float rotationAboutYMesh2;
+	float rotationAboutXMesh2;
+	float rotationAboutYView;
+	float rotationAboutXView;
+	float translateZView;
+	float translateYMesh1;
+	float translateXMesh1;
+	float translateYMesh2;
+	float translateXMesh2;
 };
 #endif
