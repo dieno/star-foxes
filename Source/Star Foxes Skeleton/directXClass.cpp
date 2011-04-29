@@ -183,8 +183,8 @@ int directXClass::GameInit(){
 		return E_FAIL;
 	}
 	
+	r = InitDirect3DDevice(g_hWndMain, SCREEN_WIDTH, SCREEN_HEIGHT, WINDOWED, D3DFMT_X8R8G8B8, g_pD3D, &g_pDevice);
 
-	r = InitDirect3DDevice(g_hWndMain, SCREEN_WIDTH, SCREEN_HEIGHT, FULLSCREEN, D3DFMT_X8R8G8B8, g_pD3D, &g_pDevice);
 	if(FAILED(r)){//FAILED is a macro that returns false if return value is a failure - safer than using value itself
 		SetError(TEXT("Initialization of the device failed"));
 		return E_FAIL;
