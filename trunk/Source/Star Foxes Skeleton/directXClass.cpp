@@ -86,7 +86,8 @@ int WINAPI directXClass::WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, P
 		GameShutdown();
 		return E_FAIL;
 	}
-
+	
+	InitGeometry();
 	r=LoadBitmapToSurface(bitmapName, &pSurface, g_pDevice);
 	if(FAILED(r)){
 		SetError(TEXT("could not load bitmap surface"));
@@ -142,7 +143,12 @@ int directXClass::InitDirect3DDevice(HWND hWndTarget, int Width, int Height, BOO
 		SetError(TEXT("Could not create the render device"));
 		return E_FAIL;
 	}
+	
+    // Turn on the zbuffer
+    g_pDevice->SetRenderState( D3DRS_ZENABLE, TRUE );
 
+    // Turn on ambient lighting 
+    g_pDevice->SetRenderState( D3DRS_AMBIENT, 0xffffffff );
 //	g_DeviceHeight = Height;
 //	g_DeviceWidth = Width;
 
@@ -178,7 +184,7 @@ int directXClass::GameInit(){
 	}
 	
 
-	r = InitDirect3DDevice(g_hWndMain, 640, 480, TRUE, D3DFMT_X8R8G8B8, g_pD3D, &g_pDevice);
+	r = InitDirect3DDevice(g_hWndMain, SCREEN_WIDTH, SCREEN_HEIGHT, FULLSCREEN, D3DFMT_X8R8G8B8, g_pD3D, &g_pDevice);
 	if(FAILED(r)){//FAILED is a macro that returns false if return value is a failure - safer than using value itself
 		SetError(TEXT("Initialization of the device failed"));
 		return E_FAIL;
@@ -221,6 +227,9 @@ int directXClass::Render(){
 	}
 	//clear the display arera with colour black, ignore stencil buffer
 	g_pDevice->Clear(0,0,D3DCLEAR_TARGET, D3DCOLOR_XRGB(0,0,25), 1.0f, 0);
+    // Clear the backbuffer and the zbuffer
+    g_pDevice->Clear( 0, NULL, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER, 
+                         D3DCOLOR_XRGB(0,0,255), 1.0f, 0 );
 	D3DLOCKED_RECT Locked;
 	//get pointer to backbuffer
 	r=g_pDevice->GetBackBuffer(0,0,D3DBACKBUFFER_TYPE_MONO, &pBackSurf);
@@ -236,7 +245,27 @@ int directXClass::Render(){
 	
 	
 	pBackSurf = 0;
+	// Begin the scene
+	if( SUCCEEDED( g_pDevice->BeginScene() ) )
+	{
+		// Setup the world, view, and projection matrices
+		SetupMatrices(true);
 
+		// Meshes are divided into subsets, one for each material. Render them in
+		// a loop
+		for( DWORD i=0; i<g_dwNumMaterials; i++ )
+		{
+			// Set the material and texture for this subset
+			g_pDevice->SetMaterial( &g_pMeshMaterials[i] );
+			g_pDevice->SetTexture( 0, g_pMeshTextures[i] );
+        
+			// Draw the mesh subset
+			g_pMesh->DrawSubset( i );
+		}
+
+		// End the scene
+		g_pDevice->EndScene();
+	}
 	g_pDevice->Present(NULL, NULL, NULL, NULL);//swap over buffer to primary surface
 	return S_OK;
 }
@@ -510,3 +539,249 @@ void directXClass::drawLine(float startX, float startY, float endX, float endY, 
 	}
 	pSurf->UnlockRect();
 }
+
+//-----------------------------------------------------------------------------
+// Name: SetupMatrices()
+// Desc: Sets up the world, view, and projection transform matrices.
+//-----------------------------------------------------------------------------
+VOID directXClass::SetupMatrices(bool mesh1Active)
+{
+    // For our world matrix, we will just leave it as the identity
+    D3DXMATRIXA16 matWorld;
+	D3DXMATRIXA16 rotationY;
+	D3DXMATRIXA16 rotationX;
+	D3DXMATRIXA16 translate;
+    D3DXMATRIXA16 matWorld2;
+    D3DXMATRIXA16 translate2;
+	if (mesh1Active == true) {
+
+		D3DXMATRIX scale = Translate(0, 0, 0);
+		D3DXMatrixRotationY( &rotationY, rotationAboutYMesh1 );
+		D3DXMatrixRotationX( &rotationX, rotationAboutXMesh1 );
+		translate = Translate(translateXMesh1, translateYMesh1, 0);
+		D3DXMatrixMultiply(&translate2, &scale, &translate);
+	} else {
+
+		D3DXMATRIX scale = Translate(0, 0, 0);
+		scale(0,0) = 0.25f;
+		scale(1,1) = 0.25f;
+		scale(2,2) = 0.25f;
+		D3DXMatrixRotationY( &rotationY, rotationAboutYMesh2 );
+		D3DXMatrixRotationX( &rotationX, rotationAboutXMesh2 );
+		translate = Translate(translateXMesh2-1.25, translateYMesh2, 0);
+		D3DXMatrixMultiply(&translate2, &scale, &translate);
+	}
+	D3DXMatrixMultiply(&matWorld2, &rotationY, &rotationX);
+	D3DXMatrixMultiply(&matWorld, &matWorld2, &translate2);
+    g_pDevice->SetTransform( D3DTS_WORLD, &matWorld );
+
+	
+    D3DXVECTOR3 vEyePt( 0.0f, 3.0f,-5.0f );
+    D3DXVECTOR3 vLookatPt( 0.0f, 0.0f, 0.0f );
+    D3DXVECTOR3 vUpVec( 0.0f, 1.0f, 0.0f );
+	
+    D3DXMATRIXA16 matView2;
+	D3DXMatrixLookAtLH(&matView2, &vEyePt, &vLookatPt, &vUpVec);
+
+	
+    /*D3DXVECTOR3 vEyePt2( 0.0f, 3.0f,-5.0f );
+    D3DXVECTOR3 vLookatPt2( 0.0f, 0.0f, 0.0f );
+    D3DXVECTOR3 vUpVec2( 0.0f, 1.0f, 0.0f );
+    D3DXVECTOR3 vRightVec2( 1.0f, 0.0f, 0.0f );
+	D3DXVECTOR3 vLookVec = vEyePt - vLookatPt;
+	camera.setLookAt(&vLookatPt2);
+	camera.setPosition(&vEyePt2);
+	camera.setUp(&vUpVec2);
+	camera.setRight(&vRightVec2);
+	camera.walk(translateZView);
+	camera.strafe(rotationAboutXView);
+	camera.fly(rotationAboutYView);
+    D3DXMATRIXA16 matView;
+	camera.getViewMatrix(&matView);*/
+    g_pDevice->SetTransform( D3DTS_VIEW, &matView2 );
+
+    // For the projection matrix, we set up a perspective transform (which
+    // transforms geometry from 3D view space to 2D viewport space, with
+    // a perspective divide making objects smaller in the distance). To build
+    // a perpsective transform, we need the field of view (1/4 pi is common),
+    // the aspect ratio, and the near and far clipping planes (which define at
+    // what distances geometry should be no longer be rendered).
+    D3DXMATRIXA16 matProj;
+    D3DXMatrixPerspectiveFovLH( &matProj, D3DX_PI/4, 1.0f, 1.0f, 100.0f );
+    g_pDevice->SetTransform( D3DTS_PROJECTION, &matProj );
+}
+
+//-----------------------------------------------------------------------------
+// Name: InitGeometry()
+// Desc: Load the mesh and build the material and texture arrays
+//-----------------------------------------------------------------------------
+HRESULT directXClass::InitGeometry()
+{
+    LPD3DXBUFFER pD3DXMtrlBuffer;
+
+    if( FAILED( D3DXLoadMeshFromX( TEXT("airwing.x"), D3DXMESH_SYSTEMMEM, 
+                                   g_pDevice, NULL, 
+                                   &pD3DXMtrlBuffer, NULL, &g_dwNumMaterials, 
+                                   &g_pMesh ) ) )
+    {
+        // If model is not in current folder, try parent folder
+        if( FAILED( D3DXLoadMeshFromX( TEXT("..\\airwing.x"), D3DXMESH_SYSTEMMEM, 
+                                    g_pDevice, NULL, 
+                                    &pD3DXMtrlBuffer, NULL, &g_dwNumMaterials, 
+                                    &g_pMesh ) ) )
+        {
+            MessageBox(NULL, TEXT("Could not find tiger.x"), TEXT("Meshes.exe"), MB_OK);
+            return E_FAIL;
+        }
+    }
+
+    // We need to extract the material properties and texture names from the 
+    // pD3DXMtrlBuffer
+    D3DXMATERIAL* d3dxMaterials = (D3DXMATERIAL*)pD3DXMtrlBuffer->GetBufferPointer();
+    g_pMeshMaterials = new D3DMATERIAL9[g_dwNumMaterials];
+    g_pMeshTextures  = new LPDIRECT3DTEXTURE9[g_dwNumMaterials];
+
+    for( DWORD i=0; i<g_dwNumMaterials; i++ )
+    {
+        // Copy the material
+        g_pMeshMaterials[i] = d3dxMaterials[i].MatD3D;
+
+        // Set the ambient color for the material (D3DX does not do this)
+        g_pMeshMaterials[i].Ambient = g_pMeshMaterials[i].Diffuse;
+
+        g_pMeshTextures[i] = NULL;
+        if( d3dxMaterials[i].pTextureFilename != NULL && 
+            lstrlen((LPCWSTR)d3dxMaterials[i].pTextureFilename) > 0 )
+        {
+            // Create the texture
+			int len = lstrlen((LPCWSTR)d3dxMaterials[i].pTextureFilename);
+			wchar_t *wText = new wchar_t[len];
+			::MultiByteToWideChar(  CP_ACP, NULL,d3dxMaterials[i].pTextureFilename, -1, wText,len );
+            if( FAILED( D3DXCreateTextureFromFile( g_pDevice, 
+                                                wText, 
+                                                &g_pMeshTextures[i] ) ) )
+            {
+                // If texture is not in current folder, try parent folder
+                const TCHAR* strPrefix = TEXT("..\\");
+                const int lenPrefix = lstrlen( strPrefix );
+                TCHAR strTexture[MAX_PATH];
+                lstrcpyn( strTexture, strPrefix, MAX_PATH );
+                lstrcpyn( strTexture + lenPrefix, wText, MAX_PATH - lenPrefix );
+                // If texture is not in current folder, try parent folder
+                if( FAILED( D3DXCreateTextureFromFile( g_pDevice, 
+                                                    strTexture, 
+                                                    &g_pMeshTextures[i] ) ) )
+                {
+                    MessageBox(NULL, TEXT("Could not find texture map"), TEXT("Meshes.exe"), MB_OK);
+                }
+            }
+        }
+    }
+
+    // Done with the material buffer
+    pD3DXMtrlBuffer->Release();
+
+   // if( FAILED( D3DXLoadMeshFromX( TEXT("M_DISK.x"), D3DXMESH_SYSTEMMEM, 
+   //                                g_pDevice, NULL, 
+   //                                &pD3DXMtrlBuffer, NULL, &g_dwNumMaterials2, 
+   //                                &g_pMesh2 ) ) )
+   // {
+   //     // If model is not in current folder, try parent folder
+   //     if( FAILED( D3DXLoadMeshFromX( TEXT("..\\M_DISK.x"), D3DXMESH_SYSTEMMEM, 
+   //                                 g_pDevice, NULL, 
+   //                                 &pD3DXMtrlBuffer, NULL, &g_dwNumMaterials2, 
+   //                                 &g_pMesh2 ) ) )
+   //     {
+   //         MessageBox(NULL, TEXT("Could not find M_DISK.x"), TEXT("Meshes.exe"), MB_OK);
+   //         return E_FAIL;
+   //     }
+   // }
+
+   // // We need to extract the material properties and texture names from the 
+   // // pD3DXMtrlBuffer
+   // D3DXMATERIAL* d3dxMaterials2 = (D3DXMATERIAL*)pD3DXMtrlBuffer->GetBufferPointer();
+   // g_pMeshMaterials2 = new D3DMATERIAL9[g_dwNumMaterials2];
+   // g_pMeshTextures2  = new LPDIRECT3DTEXTURE9[g_dwNumMaterials2];
+
+   // for( DWORD i=0; i<g_dwNumMaterials2; i++ )
+   // {
+   //     // Copy the material
+   //     g_pMeshMaterials2[i] = d3dxMaterials2[i].MatD3D;
+
+   //     // Set the ambient color for the material (D3DX does not do this)
+   //     g_pMeshMaterials2[i].Ambient = g_pMeshMaterials2[i].Diffuse;
+
+   //     g_pMeshTextures2[i] = NULL;
+   //     if( d3dxMaterials2[i].pTextureFilename != NULL && 
+   //         lstrlen((LPCWSTR)d3dxMaterials2[i].pTextureFilename) > 0 )
+   //     {
+   //         // Create the texture
+			//int len = lstrlen((LPCWSTR)d3dxMaterials2[i].pTextureFilename);
+			//wchar_t *wText = new wchar_t[len];
+			//::MultiByteToWideChar(  CP_ACP, NULL,d3dxMaterials2[i].pTextureFilename, -1, wText,len );
+   //         if( FAILED( D3DXCreateTextureFromFile( g_pDevice, 
+   //                                             wText, 
+   //                                             &g_pMeshTextures2[i] ) ) )
+   //         {
+   //             // If texture is not in current folder, try parent folder
+   //             const TCHAR* strPrefix = TEXT("..\\");
+   //             const int lenPrefix = lstrlen( strPrefix );
+   //             TCHAR strTexture[MAX_PATH];
+   //             lstrcpyn( strTexture, strPrefix, MAX_PATH );
+   //             lstrcpyn( strTexture + lenPrefix, wText, MAX_PATH - lenPrefix );
+   //             // If texture is not in current folder, try parent folder
+   //             if( FAILED( D3DXCreateTextureFromFile( g_pDevice, 
+   //                                                 strTexture, 
+   //                                                 &g_pMeshTextures2[i] ) ) )
+   //             {
+   //                 MessageBox(NULL, TEXT("Could not find texture map"), TEXT("Meshes.exe"), MB_OK);
+   //             }
+   //         }
+   //     }
+   // }
+
+   // // Done with the material buffer
+   // pD3DXMtrlBuffer->Release();
+    return S_OK;
+}
+
+
+
+
+//-----------------------------------------------------------------------------
+// Name: Cleanup()
+// Desc: Releases all previously initialized objects
+//-----------------------------------------------------------------------------
+VOID directXClass::Cleanup()
+{
+    if( g_pMeshMaterials != NULL ) 
+        delete[] g_pMeshMaterials;
+
+    if( g_pMeshTextures )
+    {
+        for( DWORD i = 0; i < g_dwNumMaterials; i++ )
+        {
+            if( g_pMeshTextures[i] )
+                g_pMeshTextures[i]->Release();
+        }
+        delete[] g_pMeshTextures;
+    }
+    if( g_pMesh != NULL )
+        g_pMesh->Release();
+    
+    if( g_pDevice != NULL )
+        g_pDevice->Release();
+
+    if( g_pD3D != NULL )
+        g_pD3D->Release();
+}
+
+D3DXMATRIX directXClass::Translate(const float dx, const float dy, const float dz) {
+    D3DXMATRIX ret;
+
+    D3DXMatrixIdentity(&ret);
+    ret(3, 0) = dx;
+    ret(3, 1) = dy;
+    ret(3, 2) = dz;
+    return ret;
+}    // End of Translate
