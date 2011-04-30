@@ -1,13 +1,18 @@
 #ifndef PLAYERCLASS_H
 #define PLAYERCLASS_H
 #include "mainShipClass.h"
+#include "directXHeader.h"
 
-class playerClass {
+class PlayerClass {
 public:
-	playerClass(bool playerOrAI, int shipClass):shiptype(),playerOrAI(playerOrAI),shipClass(shipClass){}
+	PlayerClass(LPD3DXMESH mesh, D3DMATERIAL9* meshMat, LPDIRECT3DTEXTURE9* meshTex, DWORD meshNumMat, LPDIRECT3DDEVICE9 newg_pDevice, int shipClass)
+		:shiptype(mesh, meshMat, meshTex, meshNumMat, newg_pDevice), shipClass(shipClass){}
+	PlayerClass(){}
+	void drawSelf() {
+		shiptype.renderSelf();
+	}
 private:
-	mainShipClass shiptype;
-	bool playerOrAI;
+	MainShipClass shiptype;
 	int shipClass;
 };
 
