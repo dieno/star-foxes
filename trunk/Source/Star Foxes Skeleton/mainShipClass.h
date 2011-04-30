@@ -75,13 +75,12 @@ public:
 		return translateYMesh1;
 	}
 
-	void setupWorld();
-
 	void setg_pDevice(LPDIRECT3DDEVICE9 newg_pDevice) {
 		g_pDevice = newg_pDevice;
 	}
 
 private:
+	void setupWorld();
 	int currentHealth;
 	int maxHealth;
 	LPD3DXMESH              g_pMesh; // Our mesh object in sysmem
