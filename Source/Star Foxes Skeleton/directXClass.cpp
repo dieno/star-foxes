@@ -87,7 +87,6 @@ int WINAPI directXClass::WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, P
 		return E_FAIL;
 	}
 	
-	InitGeometry();
 	r=LoadBitmapToSurface(bitmapName, &pSurface, g_pDevice);
 	if(FAILED(r)){
 		SetError(TEXT("could not load bitmap surface"));
@@ -184,6 +183,8 @@ int directXClass::GameInit(){
 	}
 	
 	r = InitDirect3DDevice(g_hWndMain, SCREEN_WIDTH, SCREEN_HEIGHT, WINDOWED, D3DFMT_X8R8G8B8, g_pD3D, &g_pDevice);
+	InitGeometry();
+	player1 = PlayerClass(g_pMesh, g_pMeshMaterials, g_pMeshTextures, g_dwNumMaterials, g_pDevice, 0);
 
 	if(FAILED(r)){//FAILED is a macro that returns false if return value is a failure - safer than using value itself
 		SetError(TEXT("Initialization of the device failed"));
@@ -251,17 +252,7 @@ int directXClass::Render(){
 		// Setup the world, view, and projection matrices
 		SetupMatrices(true);
 
-		// Meshes are divided into subsets, one for each material. Render them in
-		// a loop
-		for( DWORD i=0; i<g_dwNumMaterials; i++ )
-		{
-			// Set the material and texture for this subset
-			g_pDevice->SetMaterial( &g_pMeshMaterials[i] );
-			g_pDevice->SetTexture( 0, g_pMeshTextures[i] );
-        
-			// Draw the mesh subset
-			g_pMesh->DrawSubset( i );
-		}
+		player1.drawSelf();
 
 		// End the scene
 		g_pDevice->EndScene();

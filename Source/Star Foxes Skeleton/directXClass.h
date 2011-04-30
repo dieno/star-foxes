@@ -1,5 +1,6 @@
 #ifndef HDIRECTXCLASS
 #define HDIRECTXCLASS
+#include "playerClass.h"
 #include "directXHeader.h"
 
 
@@ -32,7 +33,8 @@ public:
 	translateZView(0),
 	translateYMesh1(0),
 	translateXMesh1(0),
-	translateYMesh2(0){}
+	translateYMesh2(0),
+	player1(){}
 	int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pstrCmdLine, int iCmdShow);
 	static long CALLBACK WndProc(HWND hWnd, UINT uMessage, WPARAM wParam, LPARAM lParam);
 	static directXClass *program;
@@ -53,7 +55,7 @@ public:
 	VOID SetupMatrices(bool mesh1Active);
 	VOID Cleanup();
 	HRESULT InitGeometry();
-	D3DXMATRIX Translate(const float dx, const float dy, const float dz);
+	static D3DXMATRIX Translate(const float dx, const float dy, const float dz);
 private:
 	void drawLine(float startX, float startY, float endX, float endY, LPDIRECT3DSURFACE9 pBackSurf);
 	static LPDIRECT3D9 g_pD3D;//COM object
@@ -93,5 +95,6 @@ private:
 	float translateXMesh1;
 	float translateYMesh2;
 	float translateXMesh2;
+	PlayerClass player1;
 };
 #endif
