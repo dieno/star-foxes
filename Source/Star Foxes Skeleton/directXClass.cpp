@@ -185,6 +185,8 @@ int directXClass::GameInit(){
 	
 	r = InitDirect3DDevice(g_hWndMain, SCREEN_WIDTH, SCREEN_HEIGHT, WINDOWED, D3DFMT_X8R8G8B8, g_pD3D, &g_pDevice);
 	InitGeometry();
+	LoadAlphabet(TEXT("Alphabet vSmall.bmp"), 8, 16);
+	InitTiming();
 	player1 = PlayerClass(g_pMesh, g_pMeshMaterials, g_pMeshTextures, g_dwNumMaterials, g_pDevice, 0);
 
 	if(FAILED(r)){//FAILED is a macro that returns false if return value is a failure - safer than using value itself
@@ -199,6 +201,7 @@ int directXClass::GameInit(){
 
 //the game loop, renders, counts frames, and quits on esc key down
 int directXClass::GameLoop(){
+	FrameCount();
 	input.read_keyboard();
 	inputCommands();
 	Render();
@@ -248,6 +251,9 @@ int directXClass::Render(){
 	r=D3DXLoadSurfaceFromSurface(pBackSurf, NULL, NULL, pSurface, NULL, NULL, D3DX_FILTER_TRIANGLE,0);
 	if(FAILED(r))
 		SetError(TEXT("did not copy surface"));
+	pBackSurf->LockRect(&Locked, 0, 0);
+	PrintFrameRate(0, 0, TRUE, D3DCOLOR_ARGB(255,255,0,255), (DWORD*)Locked.pBits, Locked.Pitch);
+	pBackSurf->UnlockRect();
 	
 	pBackSurf->Release();//release lock
 	
@@ -804,5 +810,10 @@ void directXClass::inputCommands()
 	if(input.get_keystate(DIK_S))
 	{
 		player1.bankDown(0.05f);
+	}
+
+	if(input.get_keystate(DIK_SPACE))
+	{
+		player1.useAfterBooster();
 	}
 }

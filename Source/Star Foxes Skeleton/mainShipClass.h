@@ -79,6 +79,18 @@ public:
 		g_pDevice = newg_pDevice;
 	}
 
+	float getRotationAboutY() {
+		return rotationAboutYMesh1;
+	}
+
+	float getRotationAboutX() {
+		return rotationAboutXMesh1;
+	}
+
+	float getRotationAboutZ() {
+		return rotationAboutZMesh1;
+	}
+
 private:
 	void setupWorld();
 	int currentHealth;
