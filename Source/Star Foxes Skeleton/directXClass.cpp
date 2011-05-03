@@ -70,7 +70,8 @@ int WINAPI directXClass::WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, P
 		WS_OVERLAPPEDWINDOW,
 		CW_USEDEFAULT,
 		CW_USEDEFAULT,
-		640,480,
+		SCREEN_WIDTH,
+		SCREEN_HEIGHT,
 		NULL,
 		NULL,
 		hInstance,
@@ -191,11 +192,15 @@ int directXClass::GameInit(){
 		return E_FAIL;
 	}
 
+	input.init_keyboard(g_hWndMain);
+
 	return S_OK;
 }
 
 //the game loop, renders, counts frames, and quits on esc key down
 int directXClass::GameLoop(){
+	input.read_keyboard();
+	inputCommands();
 	Render();
 
 	if (GetAsyncKeyState(VK_ESCAPE))
@@ -208,6 +213,8 @@ int directXClass::GameLoop(){
 int directXClass::GameShutdown(){
 	
 	UnloadAlphabet();
+	input.clean_input();
+
 	//release resources. First display adapter because COM object created it, then COM object
 	if(g_pDevice)
 		g_pDevice->Release();
@@ -567,7 +574,7 @@ VOID directXClass::SetupMatrices(bool mesh1Active)
     g_pDevice->SetTransform( D3DTS_WORLD, &matWorld );
 
 	
-    D3DXVECTOR3 vEyePt( 0.0f, 3.0f,-5.0f );
+    D3DXVECTOR3 vEyePt( 0.0f, 3.0f, 5.0f );
     D3DXVECTOR3 vLookatPt( 0.0f, 0.0f, 0.0f );
     D3DXVECTOR3 vUpVec( 0.0f, 1.0f, 0.0f );
 	
@@ -776,3 +783,26 @@ D3DXMATRIX directXClass::Translate(const float dx, const float dy, const float d
     ret(3, 2) = dz;
     return ret;
 }    // End of Translate
+
+void directXClass::inputCommands()
+{
+	if(input.get_keystate(DIK_A))
+	{
+		player1.bankLeft(0.05f);
+	}
+
+	if(input.get_keystate(DIK_D))
+	{
+		player1.bankRight(0.05f);
+	}
+	
+	if(input.get_keystate(DIK_W))
+	{
+		player1.bankUp(0.05f);
+	}
+
+	if(input.get_keystate(DIK_S))
+	{
+		player1.bankDown(0.05f);
+	}
+}

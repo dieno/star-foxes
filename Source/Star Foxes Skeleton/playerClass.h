@@ -6,14 +6,41 @@
 class PlayerClass {
 public:
 	PlayerClass(LPD3DXMESH mesh, D3DMATERIAL9* meshMat, LPDIRECT3DTEXTURE9* meshTex, DWORD meshNumMat, LPDIRECT3DDEVICE9 newg_pDevice, int shipClass)
-		:shiptype(mesh, meshMat, meshTex, meshNumMat, newg_pDevice), shipClass(shipClass){}
+		:shiptype(mesh, meshMat, meshTex, meshNumMat, newg_pDevice), shipClass(shipClass), rotationZ(0), rotationX(0){}
 	PlayerClass(){}
 	void drawSelf() {
 		shiptype.renderSelf();
 	}
+
+	void bankLeft(float value)
+	{
+		rotationZ -= value;
+		shiptype.setRotationAboutZ(rotationZ);
+	}
+
+	void bankRight(float value)
+	{
+		rotationZ += value;
+		shiptype.setRotationAboutZ(rotationZ);
+	}
+
+	void bankUp(float value)
+	{
+		rotationX += value;
+		shiptype.setRotationAboutX(rotationX);
+	}
+
+	void bankDown(float value)
+	{
+		rotationX -= value;
+		shiptype.setRotationAboutX(rotationX);
+	}
+
 private:
 	MainShipClass shiptype;
 	int shipClass;
+	float rotationZ;
+	float rotationX;
 };
 
 #endif

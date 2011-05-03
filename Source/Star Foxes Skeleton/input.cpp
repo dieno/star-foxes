@@ -1,4 +1,4 @@
-#include "Input.h"
+#include "directXHeader.h"
 
 // sets up an interface to the keyboard
 void Input::init_keyboard(HWND hWnd)
