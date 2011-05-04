@@ -52,7 +52,7 @@ public:
 	}
 
 	void setTranslateX(float translateX) {
-		translateYMesh1 = translateX;
+		translateXMesh1 = translateX;
 	}
 
 	void setTranslateY(float translateY) {

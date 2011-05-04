@@ -7,47 +7,42 @@ class PlayerClass {
 public:
 	PlayerClass(LPD3DXMESH mesh, D3DMATERIAL9* meshMat, LPDIRECT3DTEXTURE9* meshTex, DWORD meshNumMat, LPDIRECT3DDEVICE9 newg_pDevice, int shipClass)
 		:shiptype(mesh, meshMat, meshTex, meshNumMat, newg_pDevice), shipClass(shipClass),
-		rotationZ(0), rotationX(0), currentSpeed(0), afterboosterActive(false), boosterTimer(10){}
+		rotationZ(0.0f), rotationX(0.0f), positionX(0.0f), currentSpeed(1.0f), vRotation(0.0f,0.0f,0.0f), vPosition(0.0f,0.0f,0.0f), afterboosterActive(false),
+		isAlive(true), boosterTimer(10){}
 	PlayerClass(){}
+
 	void drawSelf() {
 		shiptype.renderSelf();
 	}
 
-	void bankLeft(float value)
-	{
-		rotationZ -= value;
-		shiptype.setRotationAboutZ(rotationZ);
-	}
-
-	void bankRight(float value)
-	{
-		rotationZ += value;
-		shiptype.setRotationAboutZ(rotationZ);
-	}
+	void bankLeft(float value);
+	void bankRight(float value);
 
 	void bankUp(float value)
 	{
-		rotationX += value;
-		shiptype.setRotationAboutX(rotationX);
+		vRotation.x += value;
+		shiptype.setRotationAboutX(vRotation.x);
 	}
 
 	void bankDown(float value)
 	{
-		rotationX -= value;
-		shiptype.setRotationAboutX(rotationX);
+		vRotation.x -= value;
+		shiptype.setRotationAboutX(vRotation.x);
 	}
 
 	void useAfterBooster() {
 		afterboosterActive = true;
-		currentSpeed = 1000; //place holder
+		currentSpeed = 1000.0f; //place holder
 	}
 
 	void deactivateAfterBooster() {
 		afterboosterActive = false;
-		currentSpeed = 0; //place holder
+		currentSpeed = 1.0f; //place holder
 	}
 
 	void updatePosition(); //put movement in here!
+
+	void updateRotation();
 
 	int getBoosterTimer() {
 		return boosterTimer;
@@ -56,11 +51,15 @@ public:
 private:
 	MainShipClass shiptype;
 	int shipClass;
+	D3DXVECTOR3 vRotation;
+	D3DXVECTOR3 vPosition;
 	float rotationZ;
 	float rotationX;
+	float positionX;
 	float currentSpeed;
 	bool afterboosterActive;
 	int boosterTimer;
+	bool isAlive;
 };
 
 #endif
