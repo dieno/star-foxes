@@ -18,14 +18,13 @@ void MainShipClass::renderSelf() {
 }
 
 void MainShipClass::setupWorld() {
-	D3DXMATRIXA16 matWorld;
 	D3DXMATRIXA16 rotationY;
 	D3DXMATRIXA16 rotationX;
 	D3DXMATRIXA16 rotationZ;
 	D3DXMATRIXA16 translate;
-    D3DXMATRIXA16 matWorld2;
-    D3DXMATRIXA16 matWorld3;
     D3DXMATRIXA16 translate2;
+	D3DXMATRIXA16 translate3;
+
 	D3DXMATRIX scale = directXClass::Translate(0, 0, 0);
 	scale(0,0) = 0.25f;
 	scale(1,1) = 0.25f;
@@ -34,9 +33,10 @@ void MainShipClass::setupWorld() {
 	D3DXMatrixRotationX( &rotationX, rotationAboutXMesh1 );
 	D3DXMatrixRotationZ( &rotationZ, rotationAboutZMesh1 );
 	translate = directXClass::Translate(translateXMesh1, translateYMesh1, translateZMesh1);
-	D3DXMatrixMultiply(&translate2, &scale, &translate);
-	D3DXMatrixMultiply(&matWorld2, &rotationY, &rotationX);
-	D3DXMatrixMultiply(&matWorld3, &matWorld2, &rotationZ);
-	D3DXMatrixMultiply(&matWorld, &matWorld3, &translate2);
-    g_pDevice->SetTransform( D3DTS_WORLD, &matWorld );
+	D3DXMatrixTranslation(&translate2, 0.0f, 0.0f, -1.5f);
+	D3DXMatrixTranslation(&translate3, 0.0f, 0.0f, 1.5f);
+
+    g_pDevice->SetTransform( D3DTS_WORLD, &(translate2 * rotationZ 
+											* rotationY * rotationX 
+											* translate3 * (scale * translate)));
 }

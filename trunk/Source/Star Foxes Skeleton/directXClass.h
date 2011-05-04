@@ -41,7 +41,7 @@ public:
 	static long CALLBACK WndProc(HWND hWnd, UINT uMessage, WPARAM wParam, LPARAM lParam);
 	static directXClass *program;
 	int InitDirect3DDevice(HWND hWndTarget, int Width, int Height, BOOL bWindowed, D3DFORMAT FullScreenFormat, LPDIRECT3D9 pD3D, LPDIRECT3DDEVICE9* ppDevice);
-	void SetError(wchar_t* szFormat, ...);
+	static void SetError(wchar_t* szFormat, ...);
 	int GameInit();
 	int GameLoop();
 	int GameShutdown();
@@ -61,6 +61,9 @@ public:
 private:
 	void drawLine(float startX, float startY, float endX, float endY, LPDIRECT3DSURFACE9 pBackSurf);
 	void inputCommands();
+	void setupCubes();
+	void cleanupCubes();
+	void drawCubes();
 	static LPDIRECT3D9 g_pD3D;//COM object
 	static LPDIRECT3DDEVICE9 g_pDevice;//graphics device
 	static HWND g_hWndMain;//handle to main window
@@ -100,5 +103,6 @@ private:
 	float translateXMesh2;
 	PlayerClass player1;
 	Input input;
+	ID3DXMesh *cubemesh[256];
 };
 #endif

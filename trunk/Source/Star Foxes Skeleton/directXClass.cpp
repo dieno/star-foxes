@@ -195,6 +195,7 @@ int directXClass::GameInit(){
 	}
 
 	input.init_keyboard(g_hWndMain);
+	setupCubes();
 
 	return S_OK;
 }
@@ -204,6 +205,8 @@ int directXClass::GameLoop(){
 	FrameCount();
 	input.read_keyboard();
 	inputCommands();
+	player1.updateRotation();
+	player1.updatePosition();
 	Render();
 
 	if (GetAsyncKeyState(VK_ESCAPE))
@@ -214,7 +217,7 @@ int directXClass::GameLoop(){
 
 //runs when game ends, cleans up everything used by the game
 int directXClass::GameShutdown(){
-	
+	cleanupCubes();
 	UnloadAlphabet();
 	input.clean_input();
 
@@ -267,6 +270,10 @@ int directXClass::Render(){
 
 		player1.drawSelf();
 
+		SetupMatrices(true);
+
+		drawCubes();
+		
 		// End the scene
 		g_pDevice->EndScene();
 	}
@@ -580,7 +587,7 @@ VOID directXClass::SetupMatrices(bool mesh1Active)
     g_pDevice->SetTransform( D3DTS_WORLD, &matWorld );
 
 	
-    D3DXVECTOR3 vEyePt( 0.0f, 3.0f, 5.0f );
+    D3DXVECTOR3 vEyePt( 0.0f, 0.0f, 5.0f );
     D3DXVECTOR3 vLookatPt( 0.0f, 0.0f, 0.0f );
     D3DXVECTOR3 vUpVec( 0.0f, 1.0f, 0.0f );
 	
@@ -815,5 +822,34 @@ void directXClass::inputCommands()
 	if(input.get_keystate(DIK_SPACE))
 	{
 		player1.useAfterBooster();
+	}
+}
+
+void directXClass::setupCubes()
+{
+	for(int i = 0; i < 100; ++i)
+	{
+		D3DXCreateBox(g_pDevice, 0.25f, 0.25f, 0.25f, &cubemesh[i], NULL);
+	}
+}
+
+void directXClass::cleanupCubes()
+{
+	for(int i = 0; i < 100; ++i)
+	{
+		cubemesh[i] = NULL;
+	}
+}
+
+void directXClass::drawCubes()
+{
+	D3DXMATRIX translate;
+	D3DXMatrixTranslation(&translate, 0.0f, -1.0f, 0.0f);
+	g_pDevice->SetTransform( D3DTS_WORLD, &translate);
+	for(int i = 0; i < 100; ++i)
+	{
+		D3DXMatrixTranslation(&translate, 0.0f, 0.0f, ((float) i * 10.0f) / 2.0f);
+		g_pDevice->SetTransform( D3DTS_WORLD, &translate);
+		cubemesh[i]->DrawSubset(0);
 	}
 }
