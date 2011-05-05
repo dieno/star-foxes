@@ -1,4 +1,4 @@
-#include "directXHeader.h"
+/*#include "directXHeader.h"
 
 void PlayerClass::updatePosition()
 {
@@ -97,3 +97,4 @@ void PlayerClass::bankRight(float value)
 	vPosition.x -= value;
 	shiptype.setTranslateX(vPosition.x);
 }
+*/

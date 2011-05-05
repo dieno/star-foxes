@@ -9,8 +9,8 @@
 #include <iostream>
 #include "directXClass.h"
 #include "mainShipClass.h"
-#include "playerClass.h"
 #include "mainPlayerClass.h"
+#include "humanPlayerClass.h"
 #include "input.h"
 
 #pragma comment (lib, "dinput8.lib")

@@ -1,6 +1,6 @@
 #ifndef HDIRECTXCLASS
 #define HDIRECTXCLASS
-#include "playerClass.h"
+#include "mainPlayerClass.h"
 #include "input.h"
 #include "directXHeader.h"
 
@@ -101,7 +101,7 @@ private:
 	float translateXMesh1;
 	float translateYMesh2;
 	float translateXMesh2;
-	PlayerClass player1;
+	MainPlayerClass player1;
 	Input input;
 	ID3DXMesh *cubemesh[256];
 };
