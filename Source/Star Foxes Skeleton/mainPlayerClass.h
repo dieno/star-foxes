@@ -2,7 +2,7 @@
 #define MAINPLAYERCLASS_H
 #include <string>
 #include "mainShipClass.h"
-#include "directXHeader.h"
+//#include "directXHeader.h"
 
 class MainPlayerClass {
 public:
@@ -10,8 +10,12 @@ public:
 		std::string playerName, 
 		int teamNum, 
 		int lives,
-		MainShipClass playerShip):playerName_(playerName), teamNum_(teamNum), lives_(lives), playerShip_(playerShip),isAlive(true){}
-	MainPlayerClass():playerName_(),teamNum_(),lives_(),playerShip_(),isAlive(true){}
+		MainShipClass playerShip):playerName_(playerName), teamNum_(teamNum), lives_(lives), playerShip_(playerShip),
+		rotationZ(0.0f), rotationX(0.0f), positionX(0.0f), currentSpeed(1.0f), vRotation(0.0f,0.0f,0.0f), vPosition(0.0f,0.0f,0.0f), afterboosterActive_(false),
+		isAlive(true), boosterTimer(10){}
+	MainPlayerClass():playerName_(),teamNum_(),lives_(),playerShip_(),
+		rotationZ(0.0f), rotationX(0.0f), positionX(0.0f), currentSpeed(1.0f), vRotation(0.0f,0.0f,0.0f), vPosition(0.0f,0.0f,0.0f), afterboosterActive_(false),
+		isAlive(true), boosterTimer(10){}
 
 	std::string getPlayerName() {
 		return playerName_;
@@ -25,7 +29,7 @@ public:
 		return lives_;
 	}
 
-	void drawSelf() {
+	virtual void drawSelf() {
 		playerShip_.renderSelf();
 	}
 
@@ -88,11 +92,10 @@ private:
 	float rotationZ;
 	float rotationX;
 	float positionX;
-
-	int boosterTimer;
 	bool afterboosterActive_;
-	int currentSpeed;
 	bool isAlive;
+	int boosterTimer;
+	int currentSpeed;
 };
 
 

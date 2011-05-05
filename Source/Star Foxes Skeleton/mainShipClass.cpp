@@ -1,4 +1,8 @@
-#include "directXHeader.h"
+#include <d3d9.h>
+#include <d3dx9.h>
+#include <D3dx9tex.h>
+#include "mainShipClass.h"
+#include "directXClass.h"
 
 void MainShipClass::renderSelf() {
 	// Setup the world, view, and projection matrices

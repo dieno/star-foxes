@@ -187,7 +187,7 @@ int directXClass::GameInit(){
 	InitGeometry();
 	LoadAlphabet(TEXT("Alphabet vSmall.bmp"), 8, 16);
 	InitTiming();
-	player1 = PlayerClass(g_pMesh, g_pMeshMaterials, g_pMeshTextures, g_dwNumMaterials, g_pDevice, 0);
+	player1 = HumanPlayerClass(g_pMesh, g_pMeshMaterials, g_pMeshTextures, g_dwNumMaterials, g_pDevice, "",0, 0);
 
 	if(FAILED(r)){//FAILED is a macro that returns false if return value is a failure - safer than using value itself
 		SetError(TEXT("Initialization of the device failed"));

@@ -1,6 +1,6 @@
 #ifndef PLAYERCLASS_H
 #define PLAYERCLASS_H
-#include "mainShipClass.h"
+/*#include "mainShipClass.h"
 #include "directXHeader.h"
 
 class PlayerClass {
@@ -61,5 +61,5 @@ private:
 	int boosterTimer;
 	bool isAlive;
 };
-
+*/
 #endif
