@@ -64,6 +64,7 @@ private:
 	void setupCubes();
 	void cleanupCubes();
 	void drawCubes();
+	point getMouseCoordinates();
 	static LPDIRECT3D9 g_pD3D;//COM object
 	static LPDIRECT3DDEVICE9 g_pDevice;//graphics device
 	static HWND g_hWndMain;//handle to main window
@@ -104,5 +105,7 @@ private:
 	MainPlayerClass player1;
 	Input input;
 	ID3DXMesh *cubemesh[256];
+	static int currentX;
+	static int currentY;
 };
 #endif

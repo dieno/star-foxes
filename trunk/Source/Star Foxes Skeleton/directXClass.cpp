@@ -11,6 +11,8 @@ float directXClass::endY = 0;
 int directXClass::height = 680;
 int directXClass::width = 480;
 bool directXClass::startMouseMove = false;
+int directXClass::currentX;
+int directXClass::currentY;
 
 //deals with revaildating the window, and the basic window stuff
 long CALLBACK directXClass::WndProc(HWND hWnd, UINT uMessage, WPARAM wParam, LPARAM lParam){
@@ -21,6 +23,12 @@ long CALLBACK directXClass::WndProc(HWND hWnd, UINT uMessage, WPARAM wParam, LPA
 		}
 	case WM_CREATE:
 		{
+			return 0;
+		}
+	case WM_MOUSEMOVE:
+		{
+			currentX = LOWORD(lParam);
+			currentY = HIWORD(lParam);
 			return 0;
 		}
 	case WM_PAINT:
@@ -852,4 +860,8 @@ void directXClass::drawCubes()
 		g_pDevice->SetTransform( D3DTS_WORLD, &translate);
 		cubemesh[i]->DrawSubset(0);
 	}
+}
+
+point directXClass::getMouseCoordinates() {
+	return point(currentX, currentY);
 }
