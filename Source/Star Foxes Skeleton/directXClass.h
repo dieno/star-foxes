@@ -38,7 +38,12 @@ public:
 	translateYMesh2(0),
 	player1(),
 	player2(),
-	input(){}
+	input(),
+	singlePlayerSurface(0),
+	singlePlayer(),
+	multiPlayerSurface(0),
+	multiPlayer(),
+	menuSelect(0){}
 	int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pstrCmdLine, int iCmdShow);
 	static long CALLBACK WndProc(HWND hWnd, UINT uMessage, WPARAM wParam, LPARAM lParam);
 	static directXClass *program;
@@ -53,6 +58,7 @@ public:
 	void directXClass::PrintChar( int x, int y, char Character, BOOL bTransparent, D3DCOLOR ColorKey, DWORD* pDestData, int DestPitch );
 	HRESULT LoadAlphabet( wchar_t* strPathName, int LetterWidth, int LetterHeight );
 	int Render();
+	int RenderMainMenu();
 	void FrameCount();
 	HRESULT UnloadAlphabet();
 	HRESULT directXClass::InitTiming();
@@ -110,5 +116,10 @@ private:
 	ID3DXMesh *cubemesh[256];
 	static int currentX;
 	static int currentY;
+	LPDIRECT3DSURFACE9 singlePlayerSurface;
+	RECT singlePlayer; // rectangle for the single player image
+	LPDIRECT3DSURFACE9 multiPlayerSurface;
+	RECT multiPlayer; // rectangle for the multiplayer image
+	int menuSelect; // int for what menu item is currently selected
 };
 #endif

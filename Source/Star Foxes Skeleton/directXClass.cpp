@@ -101,6 +101,30 @@ int WINAPI directXClass::WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, P
 		SetError(TEXT("could not load bitmap surface"));
 	}
 
+	singlePlayerSurface = 0;
+
+	singlePlayer.bottom = 130;
+	singlePlayer.left = 88;
+	singlePlayer.right = 212;
+	singlePlayer.top = 90;
+
+	r=LoadBitmapToSurface(TEXT("SinglePlayer.bmp"), &singlePlayerSurface, g_pDevice);
+	if(FAILED(r)){
+		SetError(TEXT("could not load bitmap surface"));
+	}
+
+	multiPlayerSurface = 0;
+
+	multiPlayer.bottom = 320;
+	multiPlayer.left = 100;
+	multiPlayer.right = 200;
+	multiPlayer.top = 300;
+
+	r=LoadBitmapToSurface(TEXT("MultiPlayer.bmp"), &multiPlayerSurface, g_pDevice);
+	if(FAILED(r)){
+		SetError(TEXT("could not load bitmap surface"));
+	}
+
 	while(TRUE){
 		if(PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)){
 			if(msg.message == WM_QUIT)
@@ -216,10 +240,80 @@ int directXClass::GameInit(){
 int directXClass::GameLoop(){
 	FrameCount();
 	input.read_keyboard();
-	inputCommands();
-	player1.updateRotation();
-	player1.updatePosition();
-	Render();
+	
+	// Main menu switch, determines whether to go into single or multiplayer
+	switch(menuSelect)
+	{
+		// Singleplayer menu item is selected
+		case 0:
+			// Selects multiplayer menu item if down is pressed
+			if (input.get_keystate(DIK_DOWN))
+			{
+				menuSelect = 1;
+
+				multiPlayer.bottom = 330;
+				multiPlayer.left = 88;
+				multiPlayer.right = 212;
+				multiPlayer.top = 290;
+
+				singlePlayer.bottom = 120;
+				singlePlayer.left = 100;
+				singlePlayer.right = 200;
+				singlePlayer.top = 100;
+
+			}
+			// If enter is pressed the program enters a singleplayer game
+			if (input.get_keystate(DIK_RETURN))
+			{
+				menuSelect = 2;
+			}
+			RenderMainMenu();
+		break;
+
+		// Multiplayer menu item is selected
+		case 1:
+			// Selects singleplayer menu item if up is pressed
+			if (input.get_keystate(DIK_UP))
+			{
+
+				menuSelect = 0;
+
+				singlePlayer.bottom = 130;
+				singlePlayer.left = 88;
+				singlePlayer.right = 212;
+				singlePlayer.top = 90;
+				
+				multiPlayer.bottom = 320;
+				multiPlayer.left = 100;
+				multiPlayer.right = 200;
+				multiPlayer.top = 300;
+				
+			}
+			// If enter is pressed the program enters a multiplayer game
+			if (input.get_keystate(DIK_RETURN))
+			{
+				menuSelect = 3;
+			}
+			RenderMainMenu();
+		break;
+
+		// In Singleplayer game
+		case 2:
+			inputCommands();
+			player1.updateRotation();
+			player1.updatePosition();
+			Render();
+		break;
+
+		// In Multiplayer game, currently the same as single player as there
+		// is currently no difference
+		case 3:
+			inputCommands();
+			player1.updateRotation();
+			player1.updatePosition();
+			Render();
+		break;
+	}
 
 	if (GetAsyncKeyState(VK_ESCAPE))
 		PostQuitMessage(0);
@@ -230,6 +324,7 @@ int directXClass::GameLoop(){
 //runs when game ends, cleans up everything used by the game
 int directXClass::GameShutdown(){
 	cleanupCubes();
+	
 	UnloadAlphabet();
 	input.clean_input();
 
@@ -280,6 +375,8 @@ int directXClass::Render(){
 		// Setup the world, view, and projection matrices
 		SetupMatrices(true);
 
+		
+
 		player1.drawSelf();
 		player2.drawSelf();
 
@@ -290,10 +387,50 @@ int directXClass::Render(){
 		// End the scene
 		g_pDevice->EndScene();
 	}
+	/// HUD CODE GOES HERE
 	g_pDevice->Present(NULL, NULL, NULL, NULL);//swap over buffer to primary surface
 	return S_OK;
 }
 
+int directXClass::RenderMainMenu(){
+	HRESULT r;
+	LPDIRECT3DSURFACE9 pBackSurf = 0;
+	
+
+	if(!g_pDevice){
+		SetError(TEXT("Cannot render because there is no device"));
+		return E_FAIL;
+	}
+	//clear the display arera with colour black, ignore stencil buffer
+	g_pDevice->Clear(0,0,D3DCLEAR_TARGET, D3DCOLOR_XRGB(0,0,25), 1.0f, 0);
+    // Clear the backbuffer and the zbuffer
+    g_pDevice->Clear( 0, NULL, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER, 
+                         D3DCOLOR_XRGB(0,0,255), 1.0f, 0 );
+	D3DLOCKED_RECT Locked;
+	//get pointer to backbuffer
+	r=g_pDevice->GetBackBuffer(0,0,D3DBACKBUFFER_TYPE_MONO, &pBackSurf);
+	if(FAILED(r)){
+		SetError(TEXT("Couldn't get backbuffer"));
+	}
+	
+	pBackSurf->LockRect(&Locked, 0, 0);
+	PrintFrameRate(0, 0, TRUE, D3DCOLOR_ARGB(255,255,0,255), (DWORD*)Locked.pBits, Locked.Pitch);
+	pBackSurf->UnlockRect();
+
+	r=D3DXLoadSurfaceFromSurface(pBackSurf, NULL, &singlePlayer, singlePlayerSurface, NULL, NULL, D3DX_FILTER_TRIANGLE,0);
+	if(FAILED(r))
+		SetError(TEXT("did not copy surface single player"));
+
+	r=D3DXLoadSurfaceFromSurface(pBackSurf, NULL, &multiPlayer, multiPlayerSurface, NULL, NULL, D3DX_FILTER_TRIANGLE,0);
+	if(FAILED(r))
+		SetError(TEXT("did not copy surface multi player"));
+
+	pBackSurf->Release();//release lock
+	
+	pBackSurf = 0;
+	g_pDevice->Present(NULL, NULL, NULL, NULL);//swap over buffer to primary surface
+	return S_OK;
+}
 
 //loads the bitmap onto a surface
 int directXClass::LoadBitmapToSurface(wchar_t* PathName, LPDIRECT3DSURFACE9* ppSurface, LPDIRECT3DDEVICE9 pDevice){
@@ -600,7 +737,7 @@ VOID directXClass::SetupMatrices(bool mesh1Active)
     g_pDevice->SetTransform( D3DTS_WORLD, &matWorld );
 
 	
-    D3DXVECTOR3 vEyePt( 0.0f, 0.0f, 5.0f );
+    D3DXVECTOR3 vEyePt( 0.0f, 3.0f, 5.0f );
     D3DXVECTOR3 vLookatPt( 0.0f, 0.0f, 0.0f );
     D3DXVECTOR3 vUpVec( 0.0f, 1.0f, 0.0f );
 	
