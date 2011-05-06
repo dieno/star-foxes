@@ -195,7 +195,11 @@ int directXClass::GameInit(){
 	InitGeometry();
 	LoadAlphabet(TEXT("Alphabet vSmall.bmp"), 8, 16);
 	InitTiming();
-	player1 = HumanPlayerClass(g_pMesh, g_pMeshMaterials, g_pMeshTextures, g_dwNumMaterials, g_pDevice, "",0, 0);
+	MainShipClass dummyAI = MainShipClass(g_pMesh, g_pMeshMaterials, g_pMeshTextures, g_dwNumMaterials, g_pDevice);
+	dummyAI.setTranslateZ(-3);
+	dummyAI.setRotationAboutY(D3DX_PI);
+	player1 = HumanPlayerClass(g_pMesh, g_pMeshMaterials, g_pMeshTextures, g_dwNumMaterials, g_pDevice, "Human",0, 1);
+	player2 = MainPlayerClass("Dummy",0, 1, dummyAI);
 
 	if(FAILED(r)){//FAILED is a macro that returns false if return value is a failure - safer than using value itself
 		SetError(TEXT("Initialization of the device failed"));
@@ -277,6 +281,7 @@ int directXClass::Render(){
 		SetupMatrices(true);
 
 		player1.drawSelf();
+		player2.drawSelf();
 
 		SetupMatrices(true);
 
