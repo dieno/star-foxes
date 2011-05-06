@@ -2,6 +2,7 @@
 #define HDIRECTXCLASS
 #include "mainPlayerClass.h"
 #include "input.h"
+#include "point.h"
 #include "directXHeader.h"
 
 
