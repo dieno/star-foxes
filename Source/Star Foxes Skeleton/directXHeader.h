@@ -12,6 +12,7 @@
 #include "mainPlayerClass.h"
 #include "humanPlayerClass.h"
 #include "input.h"
+#include "point.h"
 
 #pragma comment (lib, "dinput8.lib")
 #pragma comment (lib, "dxguid.lib")
