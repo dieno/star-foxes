@@ -37,6 +37,7 @@ public:
 	translateXMesh1(0),
 	translateYMesh2(0),
 	player1(),
+	player2(),
 	input(){}
 	int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pstrCmdLine, int iCmdShow);
 	static long CALLBACK WndProc(HWND hWnd, UINT uMessage, WPARAM wParam, LPARAM lParam);
@@ -104,6 +105,7 @@ private:
 	float translateYMesh2;
 	float translateXMesh2;
 	MainPlayerClass player1;
+	MainPlayerClass player2;
 	Input input;
 	ID3DXMesh *cubemesh[256];
 	static int currentX;
