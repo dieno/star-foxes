@@ -7,6 +7,8 @@
 class MainShipClass {
 public:
 	MainShipClass(LPD3DXMESH mesh, D3DMATERIAL9* meshMat, LPDIRECT3DTEXTURE9* meshTex, DWORD meshNumMat, LPDIRECT3DDEVICE9 newg_pDevice):
+		currentHealth(100),
+		maxHealth(100),
 		g_pMesh(mesh),
 		g_pMeshMaterials(meshMat),
 		g_pMeshTextures(meshTex),
@@ -19,7 +21,10 @@ public:
 		translateZMesh1(0),
 		g_pDevice(newg_pDevice){}
 
-	MainShipClass():g_pMesh(NULL),
+	MainShipClass():
+		currentHealth(100),
+		maxHealth(100),
+		g_pMesh(NULL),
 		g_pMeshMaterials(NULL),
 		g_pMeshTextures(NULL),
 		g_dwNumMaterials(0L),
@@ -93,8 +98,17 @@ public:
 		return rotationAboutZMesh1;
 	}
 
+	void setCurrentHealth(int newHealth) {
+		currentHealth = newHealth;
+	}
+
+	static float getAfterburnerSpeed() {
+		return afterburnerSpeed_;
+	}
+
 private:
 	void setupWorld();
+	static float afterburnerSpeed_;
 	int currentHealth;
 	int maxHealth;
 	LPD3DXMESH              g_pMesh; // Our mesh object in sysmem

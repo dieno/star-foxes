@@ -98,7 +98,7 @@ int WINAPI directXClass::WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, P
 	
 	r=LoadBitmapToSurface(bitmapName, &pSurface, g_pDevice);
 	if(FAILED(r)){
-		SetError(TEXT("could not load bitmap surface"));
+		SetError(TEXT("could not load background bitmap surface"));
 	}
 
 	singlePlayerSurface = 0;
@@ -110,7 +110,7 @@ int WINAPI directXClass::WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, P
 
 	r=LoadBitmapToSurface(TEXT("SinglePlayer.bmp"), &singlePlayerSurface, g_pDevice);
 	if(FAILED(r)){
-		SetError(TEXT("could not load bitmap surface"));
+		SetError(TEXT("could not load singleplayer menu item bitmap surface"));
 	}
 
 	multiPlayerSurface = 0;
@@ -122,7 +122,7 @@ int WINAPI directXClass::WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, P
 
 	r=LoadBitmapToSurface(TEXT("MultiPlayer.bmp"), &multiPlayerSurface, g_pDevice);
 	if(FAILED(r)){
-		SetError(TEXT("could not load bitmap surface"));
+		SetError(TEXT("could not load multiplayer menu item bitmap surface"));
 	}
 
 	while(TRUE){
