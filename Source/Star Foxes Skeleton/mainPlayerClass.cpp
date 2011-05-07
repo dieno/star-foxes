@@ -97,3 +97,11 @@ void MainPlayerClass::bankRight(float value)
 	vPosition.x -= value;
 	playerShip_.setTranslateX(vPosition.x);
 }
+
+bool MainPlayerClass::takeHit(int damageTaken) {
+	playerShip_.setCurrentHealth(playerShip_.getCurrentHealth() - damageTaken);
+	if(playerShip_.getCurrentHealth() <= 0) {
+		isAlive = false;
+		return isAlive;
+	}
+}

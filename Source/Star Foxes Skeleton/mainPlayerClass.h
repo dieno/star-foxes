@@ -50,7 +50,7 @@ public:
 
 	void useAfterBooster() {
 		afterboosterActive_ = true;
-		currentSpeed = 1000.0f; //place holder
+		currentSpeed = playerShip_.getAfterburnerSpeed(); //place holder
 	}
 
 	void deactivateAfterBooster() {
@@ -74,6 +74,10 @@ public:
 		return playerShip_.getMaxHealth();
 	}
 
+	//ship takes a hit, damage taken is the damage caused by hit
+	//returns bool true if still alive, false if dead
+	bool takeHit(int damageTaken);
+
 private:
 	//Player's  name (Bob, Bill, Bojangles, etc)
 	std::string playerName_;
@@ -95,7 +99,7 @@ private:
 	bool afterboosterActive_;
 	bool isAlive;
 	int boosterTimer;
-	int currentSpeed;
+	float currentSpeed;
 };
 
 
