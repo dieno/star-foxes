@@ -1,9 +1,16 @@
 #ifndef HDIRECTXCLASS
 #define HDIRECTXCLASS
-#include "mainPlayerClass.h"
-#include "input.h"
-#include "point.h"
+
 #include "directXHeader.h"
+#include "gamecore.h"
+
+#include "mainPlayerClass.h"
+#include "humanPlayerClass.h"
+#include "computerPlayerClass.h"
+
+#define WINDOWED TRUE
+#define SCREEN_WIDTH 640
+#define SCREEN_HEIGHT 480
 
 
 //main class used by the program for everything

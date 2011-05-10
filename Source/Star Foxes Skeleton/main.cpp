@@ -1,4 +1,5 @@
 #include "directXHeader.h"
+#include "directXClass.h"
 
 //main function, deals with everything
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pstrCmdLine, int iCmdShow) {

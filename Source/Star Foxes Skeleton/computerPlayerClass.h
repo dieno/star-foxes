@@ -1,11 +1,10 @@
-#ifndef HUMANPLAYERCLASS_H
-#define HUMANPLAYERCLASS_H
-#include <string>
-#include "directXHeader.h"
+#ifndef COMPUTERPLAYERCLASS_H
+#define COMPUTERPLAYERCLASS_H
+#include "mainPlayerClass.h"
 
-class HumanPlayerClass : public MainPlayerClass {
+class ComputerPlayerClass : public MainPlayerClass {
 public:
-	HumanPlayerClass(
+	ComputerPlayerClass(
 		LPD3DXMESH mesh, 
 		D3DMATERIAL9* meshMat, 
 		LPDIRECT3DTEXTURE9* meshTex, 
@@ -16,13 +15,15 @@ public:
 		int lives)
 	: MainPlayerClass(playerName, teamNum, lives, MainShipClass(mesh, meshMat, meshTex, meshNumMat, newg_pDevice)) {}
 	
-	HumanPlayerClass(MainShipClass shiptype, 
+	ComputerPlayerClass(MainShipClass shiptype, 
 		std::string playerName, 
 		int teamNum, 
 		int lives)
 	: MainPlayerClass(playerName, teamNum, lives, shiptype) {}
 
-	HumanPlayerClass():MainPlayerClass(){}
+	ComputerPlayerClass():MainPlayerClass(){}
+
+
 
 };
 

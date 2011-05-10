@@ -1,8 +1,8 @@
 #ifndef MAINSHIPCLASS_H
 #define MAINSHIPCLASS_H
-#include <d3d9.h>
-#include <d3dx9.h>
-#include <D3dx9tex.h>
+
+#include "directXHeader.h"
+#include "gamecore.h"
 
 class MainShipClass {
 public:

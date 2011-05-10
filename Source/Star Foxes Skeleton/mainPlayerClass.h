@@ -1,8 +1,11 @@
 #ifndef MAINPLAYERCLASS_H
 #define MAINPLAYERCLASS_H
-#include <string>
+
+#include "directXHeader.h"
+#include "gamecore.h"
+
 #include "mainShipClass.h"
-//#include "directXHeader.h"
+#include <string>
 
 class MainPlayerClass {
 public:
