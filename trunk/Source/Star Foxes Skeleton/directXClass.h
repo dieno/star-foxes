@@ -43,6 +43,11 @@ public:
 	singlePlayer(),
 	multiPlayerSurface(0),
 	multiPlayer(),
+	healthSurface(0),
+	healthRect(),
+	radarSurface(0),
+	radarRect(),
+	bgSurface(0),
 	menuSelect(0){}
 	int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pstrCmdLine, int iCmdShow);
 	static long CALLBACK WndProc(HWND hWnd, UINT uMessage, WPARAM wParam, LPARAM lParam);
@@ -120,6 +125,11 @@ private:
 	RECT singlePlayer; // rectangle for the single player image
 	LPDIRECT3DSURFACE9 multiPlayerSurface;
 	RECT multiPlayer; // rectangle for the multiplayer image
+	LPDIRECT3DSURFACE9 healthSurface;
+	RECT healthRect;
+	LPDIRECT3DSURFACE9 radarSurface;
+	RECT radarRect;
+	LPDIRECT3DSURFACE9 bgSurface; //surface for working with the background
 	int menuSelect; // int for what menu item is currently selected
 };
 #endif
