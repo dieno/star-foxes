@@ -1,6 +1,3 @@
-#include <d3d9.h>
-#include <d3dx9.h>
-#include <D3dx9tex.h>
 #include "mainShipClass.h"
 #include "directXClass.h"
 

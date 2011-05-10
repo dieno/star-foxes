@@ -1,4 +1,5 @@
-#include "directXHeader.h"
+#include "mainPlayerClass.h"
+#include "directXClass.h"
 
 void MainPlayerClass::updatePosition()
 {
