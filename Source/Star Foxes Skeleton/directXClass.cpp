@@ -101,12 +101,17 @@ int WINAPI directXClass::WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, P
 		SetError(TEXT("could not load background bitmap surface"));
 	}
 
+	r=LoadBitmapToSurface(TEXT("stars.bmp"), &bgSurface, g_pDevice);
+	if(FAILED(r)){
+		SetError(TEXT("could not load main menu background surface"));
+	}
+
 	singlePlayerSurface = 0;
 
-	singlePlayer.bottom = 130;
-	singlePlayer.left = 88;
-	singlePlayer.right = 212;
-	singlePlayer.top = 90;
+	singlePlayer.bottom = 412;
+	singlePlayer.left = 240;
+	singlePlayer.right = 400;
+	singlePlayer.top = 368;
 
 	r=LoadBitmapToSurface(TEXT("SinglePlayer.bmp"), &singlePlayerSurface, g_pDevice);
 	if(FAILED(r)){
@@ -115,12 +120,36 @@ int WINAPI directXClass::WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, P
 
 	multiPlayerSurface = 0;
 
-	multiPlayer.bottom = 320;
-	multiPlayer.left = 100;
-	multiPlayer.right = 200;
-	multiPlayer.top = 300;
+	multiPlayer.bottom = 440;
+	multiPlayer.left = 270;
+	multiPlayer.right = 370;
+	multiPlayer.top = 420;
 
 	r=LoadBitmapToSurface(TEXT("MultiPlayer.bmp"), &multiPlayerSurface, g_pDevice);
+	if(FAILED(r)){
+		SetError(TEXT("could not load multiplayer menu item bitmap surface"));
+	}
+
+	healthSurface = 0;
+
+	healthRect.bottom = 460;
+	healthRect.left = 60;
+	healthRect.right = 460;
+	healthRect.top = 420;
+
+	r=LoadBitmapToSurface(TEXT("health.bmp"), &healthSurface, g_pDevice);
+	if(FAILED(r)){
+		SetError(TEXT("could not load multiplayer menu item bitmap surface"));
+	}
+
+	radarSurface = 0;
+
+	radarRect.bottom = 460;
+	radarRect.left = 480;
+	radarRect.right = 600;
+	radarRect.top = 340;
+
+	r=LoadBitmapToSurface(TEXT("radar.bmp"), &radarSurface, g_pDevice);
 	if(FAILED(r)){
 		SetError(TEXT("could not load multiplayer menu item bitmap surface"));
 	}
@@ -224,7 +253,6 @@ int directXClass::GameInit(){
 	dummyAI.setRotationAboutY(D3DX_PI);
 	player1 = HumanPlayerClass(g_pMesh, g_pMeshMaterials, g_pMeshTextures, g_dwNumMaterials, g_pDevice, "Human",0, 1);
 	player2 = MainPlayerClass("Dummy",0, 1, dummyAI);
-
 	if(FAILED(r)){//FAILED is a macro that returns false if return value is a failure - safer than using value itself
 		SetError(TEXT("Initialization of the device failed"));
 		return E_FAIL;
@@ -250,16 +278,33 @@ int directXClass::GameLoop(){
 			if (input.get_keystate(DIK_DOWN))
 			{
 				menuSelect = 1;
+				
+				multiPlayer.bottom = 452;
+				multiPlayer.left = 240;
+				multiPlayer.right = 400;
+				multiPlayer.top = 408;
 
-				multiPlayer.bottom = 330;
-				multiPlayer.left = 88;
-				multiPlayer.right = 212;
-				multiPlayer.top = 290;
+				singlePlayer.bottom = 400;
+				singlePlayer.left = 270;
+				singlePlayer.right = 370;
+				singlePlayer.top = 380;
 
-				singlePlayer.bottom = 120;
-				singlePlayer.left = 100;
-				singlePlayer.right = 200;
-				singlePlayer.top = 100;
+			}
+			// Selects multiplayer menu item if within its rectangle
+			if (currentX < multiPlayer.right && currentX > multiPlayer.left && 
+				currentY > multiPlayer.top && currentY < multiPlayer.bottom)
+			{
+				menuSelect = 1;
+
+				multiPlayer.bottom = 452;
+				multiPlayer.left = 240;
+				multiPlayer.right = 400;
+				multiPlayer.top = 408;
+
+				singlePlayer.bottom = 400;
+				singlePlayer.left = 270;
+				singlePlayer.right = 370;
+				singlePlayer.top = 380;
 
 			}
 			// If enter is pressed the program enters a singleplayer game
@@ -278,15 +323,32 @@ int directXClass::GameLoop(){
 
 				menuSelect = 0;
 
-				singlePlayer.bottom = 130;
-				singlePlayer.left = 88;
-				singlePlayer.right = 212;
-				singlePlayer.top = 90;
+				singlePlayer.bottom = 412;
+				singlePlayer.left = 240;
+				singlePlayer.right = 400;
+				singlePlayer.top = 368;
 				
-				multiPlayer.bottom = 320;
-				multiPlayer.left = 100;
-				multiPlayer.right = 200;
-				multiPlayer.top = 300;
+				multiPlayer.bottom = 440;
+				multiPlayer.left = 270;
+				multiPlayer.right = 370;
+				multiPlayer.top = 420;
+				
+			}
+			// Selects singleplayer menu item if within its rectangle
+			if (currentX < singlePlayer.right && currentX > singlePlayer.left && 
+				currentY > singlePlayer.top && currentY < singlePlayer.bottom)
+			{
+				menuSelect = 0;
+
+				singlePlayer.bottom = 412;
+				singlePlayer.left = 240;
+				singlePlayer.right = 400;
+				singlePlayer.top = 368;
+				
+				multiPlayer.bottom = 440;
+				multiPlayer.left = 270;
+				multiPlayer.right = 370;
+				multiPlayer.top = 420;
 				
 			}
 			// If enter is pressed the program enters a multiplayer game
@@ -358,6 +420,8 @@ int directXClass::Render(){
 		SetError(TEXT("Couldn't get backbuffer"));
 	}
 	
+	
+
 	r=D3DXLoadSurfaceFromSurface(pBackSurf, NULL, NULL, pSurface, NULL, NULL, D3DX_FILTER_TRIANGLE,0);
 	if(FAILED(r))
 		SetError(TEXT("did not copy surface"));
@@ -365,6 +429,8 @@ int directXClass::Render(){
 	PrintFrameRate(0, 0, TRUE, D3DCOLOR_ARGB(255,255,0,255), (DWORD*)Locked.pBits, Locked.Pitch);
 	pBackSurf->UnlockRect();
 	
+	
+
 	pBackSurf->Release();//release lock
 	
 	
@@ -387,7 +453,25 @@ int directXClass::Render(){
 		// End the scene
 		g_pDevice->EndScene();
 	}
-	/// HUD CODE GOES HERE
+	
+	//get pointer to backbuffer for HUD
+	r=g_pDevice->GetBackBuffer(0,0,D3DBACKBUFFER_TYPE_MONO, &pBackSurf);
+	if(FAILED(r)){
+		SetError(TEXT("Couldn't get backbuffer"));
+	}
+
+	r=D3DXLoadSurfaceFromSurface(pBackSurf, NULL, &healthRect, healthSurface, NULL, NULL, D3DX_FILTER_TRIANGLE,0);
+	if(FAILED(r))
+		SetError(TEXT("did not copy surface health"));
+
+	r=D3DXLoadSurfaceFromSurface(pBackSurf, NULL, &radarRect, radarSurface, NULL, NULL, D3DX_FILTER_TRIANGLE,0);
+	if(FAILED(r))
+		SetError(TEXT("did not copy surface health"));
+
+	pBackSurf->Release();//release lock
+	
+	pBackSurf = 0;
+
 	g_pDevice->Present(NULL, NULL, NULL, NULL);//swap over buffer to primary surface
 	return S_OK;
 }
@@ -413,6 +497,10 @@ int directXClass::RenderMainMenu(){
 		SetError(TEXT("Couldn't get backbuffer"));
 	}
 	
+	r=D3DXLoadSurfaceFromSurface(pBackSurf, NULL, NULL, bgSurface, NULL, NULL, D3DX_FILTER_TRIANGLE,0);
+	if(FAILED(r))
+		SetError(TEXT("did not copy surface main menu background"));
+
 	pBackSurf->LockRect(&Locked, 0, 0);
 	PrintFrameRate(0, 0, TRUE, D3DCOLOR_ARGB(255,255,0,255), (DWORD*)Locked.pBits, Locked.Pitch);
 	pBackSurf->UnlockRect();
