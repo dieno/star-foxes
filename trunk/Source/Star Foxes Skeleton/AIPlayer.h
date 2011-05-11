@@ -10,7 +10,7 @@ private:
 public:
    void Evaluate();
    void Wander(HWND hWnd);
-   void Update(HWND hWnd);
+   void Update(HWND hWnd, D3DXVECTOR3 pos);
    //AI(void);  
 
 	AIPlayer(

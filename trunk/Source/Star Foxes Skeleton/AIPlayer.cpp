@@ -1,7 +1,7 @@
 #include "AIPlayer.h"
 
 
-void AIPlayer::Update(HWND hWnd, radar)
+void AIPlayer::Update(HWND hWnd, D3DXVECTOR3 pos)
 {
    Wander(hWnd);
 }
@@ -31,13 +31,14 @@ void AIPlayer::Wander(HWND hWnd)
       srand(time(NULL));
       count = rand() % 15;
       srand(time(NULL));
-      dir = rand() % 5 - 1;
+      dir = rand() % 1;
    }
 
    switch(dir)
    {
    case 0: //up 
       this->bankUp(0.03f);
+      //this->bankUp(0.03f);
       /*if(getPositionZ() <= top)
       {
          this->bankDown(0.05f);
@@ -46,7 +47,10 @@ void AIPlayer::Wander(HWND hWnd)
       //count-=;
       break;
    case 1: //down
-      this->bankUp(0.03f);/*
+      //this->bankUp(0.03f);
+      this->bankDown(0.03f);
+      /*
+
       this->bankDown(0.03f);
       if(getPositionZ() >= bottom)
       {
@@ -58,7 +62,7 @@ void AIPlayer::Wander(HWND hWnd)
       break;
    case 2: //left
       this->bankLeft(0.05f);
-      this->bankUp(0.03f);
+      //this->bankUp(0.03f);
       if(getPositionX() >= left)
       {
          this->bankRight(0.05f);
@@ -67,7 +71,7 @@ void AIPlayer::Wander(HWND hWnd)
       break;
    case 3: //right
       this->bankRight(0.05f);
-      this->bankUp(0.03f);
+      //this->bankUp(0.03f);
       if(getPositionX() <= right)
       {
          this->bankLeft(0.05f);
