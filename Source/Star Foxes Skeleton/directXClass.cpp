@@ -251,8 +251,12 @@ int directXClass::GameInit(){
 	MainShipClass dummyAI = MainShipClass(g_pMesh, g_pMeshMaterials, g_pMeshTextures, g_dwNumMaterials, g_pDevice);
 	dummyAI.setTranslateZ(-3);
 	dummyAI.setRotationAboutY(D3DX_PI);
-	player1 = HumanPlayerClass(g_pMesh, g_pMeshMaterials, g_pMeshTextures, g_dwNumMaterials, g_pDevice, "Human",0, 1);
-	player2 = MainPlayerClass("Dummy",0, 1, dummyAI);
+	player1 = HumanPlayerClass(g_pMesh, g_pMeshMaterials, g_pMeshTextures, g_dwNumMaterials, g_pDevice, "Human",0, 1);   
+   _aiplayer1 = AIPlayer(g_pMesh, g_pMeshMaterials, g_pMeshTextures, g_dwNumMaterials, g_pDevice, "Human",0, 1);
+   //static AIPlayer aiplayer = AIPlayer(g_pMesh, g_pMeshMaterials, g_pMeshTextures, g_dwNumMaterials, g_pDevice, "Human",0, 1);
+   _aiPlayer.push_back(&_aiplayer1);
+	//player2 = MainPlayerClass("Dummy",0, 1, dummyAI);
+   
 	if(FAILED(r)){//FAILED is a macro that returns false if return value is a failure - safer than using value itself
 		SetError(TEXT("Initialization of the device failed"));
 		return E_FAIL;
@@ -364,6 +368,17 @@ int directXClass::GameLoop(){
 			inputCommands();
 			player1.updateRotation();
 			player1.updatePosition();
+         for (list<AIPlayer*>::const_iterator ci = _aiPlayer.begin(); ci != _aiPlayer.end(); ++ci)
+         {
+            //(*ci)->bankLeft(0.01f);
+            (*ci)->Update(g_hWndMain);
+            (*ci)->updateRotation();
+            (*ci)->updatePosition();
+            
+         }
+         //_aiPlayer.front()->bankLeft(0.01f);
+         //_aiplayer1.bankLeft(0.01f);
+         //player2.(0.01f);
 			Render();
 		break;
 
@@ -411,7 +426,7 @@ int directXClass::Render(){
 	//clear the display arera with colour black, ignore stencil buffer
 	g_pDevice->Clear(0,0,D3DCLEAR_TARGET, D3DCOLOR_XRGB(0,0,25), 1.0f, 0);
     // Clear the backbuffer and the zbuffer
-    g_pDevice->Clear( 0, NULL, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER, 
+   g_pDevice->Clear( 0, NULL, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER, 
                          D3DCOLOR_XRGB(0,0,255), 1.0f, 0 );
 	D3DLOCKED_RECT Locked;
 	//get pointer to backbuffer
@@ -444,7 +459,11 @@ int directXClass::Render(){
 		
 
 		player1.drawSelf();
-		player2.drawSelf();
+		//player2.drawSelf();
+      for (list<AIPlayer*>::const_iterator ci = _aiPlayer.begin(); ci != _aiPlayer.end(); ++ci)
+      {
+         (*ci)->drawSelf();
+      }     
 
 		SetupMatrices(true);
 
