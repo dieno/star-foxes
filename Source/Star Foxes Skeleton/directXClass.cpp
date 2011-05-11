@@ -371,7 +371,9 @@ int directXClass::GameLoop(){
          for (list<AIPlayer*>::const_iterator ci = _aiPlayer.begin(); ci != _aiPlayer.end(); ++ci)
          {
             //(*ci)->bankLeft(0.01f);
-            (*ci)->Update(g_hWndMain);
+            //MessageBoxA(g_hWndMain, "hi", "hilo", 0);
+            (*ci)->Update(g_hWndMain, player1.getPosition());
+            //(*ci)->bankUp(0.04f);
             (*ci)->updateRotation();
             (*ci)->updatePosition();
             
