@@ -91,6 +91,12 @@ public:
    {
       return vPosition.z;
    }
+
+   D3DXVECTOR3 getPosition()
+   {
+      return vPosition;
+   }
+
 	//ship takes a hit, damage taken is the damage caused by hit
 	//returns bool true if still alive, false if dead
 	bool takeHit(int damageTaken);
