@@ -77,6 +77,20 @@ public:
 		return playerShip_.getMaxHealth();
 	}
 
+   float getPositionX()
+   {
+      return vPosition.x;
+   }
+
+   float getPositionY()
+   {
+      return vPosition.y;
+   }
+
+   float getPositionZ()
+   {
+      return vPosition.z;
+   }
 	//ship takes a hit, damage taken is the damage caused by hit
 	//returns bool true if still alive, false if dead
 	bool takeHit(int damageTaken);
