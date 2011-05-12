@@ -8,6 +8,8 @@
 #include "humanPlayerClass.h"
 #include "computerPlayerClass.h"
 #include "AIPlayer.h"
+#include "Networking/SocketExtras.h"
+#include "Networking/Text.h"
 //#include "Networking/GameChat.h"
 //using namespace std;
 
