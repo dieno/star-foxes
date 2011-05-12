@@ -45,7 +45,7 @@ void MainPlayerClass::updateRotation()
 		if(vRotation.z < -D3DX_PI)
 			vRotation.z = D3DX_PI;
 
-		directXClass::SetError(TEXT("%f"), vRotation.z);
+		//directXClass::SetError(TEXT("%f"), vRotation.z);
 
 		playerShip_.setRotationAboutZ(vRotation.z);
 	}
@@ -73,7 +73,7 @@ void MainPlayerClass::updateRotation()
 		if(vRotation.x < -D3DX_PI)
 			vRotation.x = D3DX_PI;
 
-		directXClass::SetError(TEXT("%f"), vRotation.x);
+		//directXClass::SetError(TEXT("%f"), vRotation.x);
 
 		playerShip_.setRotationAboutX(vRotation.x);
 	}
