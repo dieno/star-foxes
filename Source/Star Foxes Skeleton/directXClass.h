@@ -128,7 +128,7 @@ private:
 	MainPlayerClass player1;
 	MainPlayerClass player2;
    list<AIPlayer*> _aiPlayer;
-   AIPlayer _aiplayer1;
+   //AIPlayer _aiplayer1;
 	Input input;
 	ID3DXMesh *cubemesh[256];
 	static int currentX;
