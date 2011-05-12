@@ -1,6 +1,6 @@
 #pragma once
 
-#include "basics.h"
+#include "../directXHeader.h"
 
 // ----------------------------------------
 // Represents text to be drawn on screen.

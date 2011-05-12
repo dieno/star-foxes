@@ -1,9 +1,10 @@
 #pragma once
-#include "SocketExtras.h"
+#include "../directXClass.h"
+//#include "SocketExtras.h"
 #include "time.h"
-#include <string>
+//#include <string>
 #include <stdio.h>
-#include <list>
+//#include <list>
 using namespace std;
 
 class Client

@@ -1,7 +1,8 @@
 #pragma once
 //#ifndef SOCKETEXTRAS
 //#define SOCKETEXTRAS
-#include "SocketExtras.h"
+//#include "SocketExtras.h"
+#include "../directXClass.h"
 //#endif
 
 #include <string>

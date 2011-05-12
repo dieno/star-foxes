@@ -1,7 +1,7 @@
-#include <cstdlib>
+#include "../directXClass.h"
+/*#include <cstdlib>
 #include <string>
-#include <list>
-#include "Text.h"
+#include <list>*/
 
 using namespace std;
 

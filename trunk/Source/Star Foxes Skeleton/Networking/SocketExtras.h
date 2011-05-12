@@ -3,8 +3,9 @@
 #define SOCKETEXTRAS
 #define WM_SERVER		104
 #define WM_CLIENT		105
-#include <winsock2.h>
-#pragma comment(lib,"ws2_32.lib")
+#include "../directXClass.h"
+/*#include <winsock2.h>
+#pragma comment(lib,"ws2_32.lib")*/
 
 enum ESocketEvent
 {
