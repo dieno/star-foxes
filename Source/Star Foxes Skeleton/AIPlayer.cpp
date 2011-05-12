@@ -3,94 +3,88 @@
 
 void AIPlayer::Update(HWND hWnd, D3DXVECTOR3 pos)
 {
-   Wander(hWnd);
+   //srand((unsigned)time(0));
+   //Wander(hWnd);
+   Flee(hWnd, pos);
 }
+
+void AIPlayer::Flee(HWND hWnd, D3DXVECTOR3 pos)
+{
+   float x = pos.x - getPositionX();
+   float y = pos.y - getPositionY();
+   float z = pos.z - getPositionZ();
+   float dist = sqrt(x*x + y*y + z*z);
+
+   static int dir = 0;// = rand() % 5;
+   static int count = 0;
+   static bool fleeing = false;
+
+   if(dist <= 1 && count <=0)
+   {
+      dir = rand() % 4;
+      count = 10;
+   }
+
+   if(count > 0)
+   {
+      Move(hWnd, dir, &fleeing);      
+      count--;
+   }
+}
+
+EDir AIPlayer::Move(HWND hWnd, int dir, bool *outbound)
+{
+   static float top = -0.5;
+   static float bottom = 0.5;
+   static float left = 1;
+   static float right = -1;
+
+   switch(dir)
+   {
+   case UP:      
+      if(getRotation().x < .2 && getPosition().z > -1.5)
+         this->bankUp(0.04f);
+      return UP;
+   case DWN:      
+      if(getRotation().x > -.2 && getPosition().z < 1.5)
+         this->bankDown(0.04f);       
+      return DWN;
+   case LFT:      
+      this->bankLeft(0.05f);
+      if(getPositionX() >= left)      
+         this->bankRight(0.05f);      
+      return LFT;
+   case RGHT:
+      this->bankRight(0.05f);
+      if(getPositionX() <= right)
+      {
+         this->bankLeft(0.05f);
+      }
+      return RGHT;
+   default:
+      return DIR_NONE;
+   }
+}
+
 
 void AIPlayer::Wander(HWND hWnd)
 {   
    static int dir = -1;
    static int count = 0;
-   static float top = -2;//getPositionY() ;
-   static float bottom = 2;//= getPositionY();
-   static float left = 1;//getPositionX();
-   static float right = -1;//getPositionX();
-   //MessageBox(this->
-   //float shit;
-   /*char* shitty = (char*) malloc(25);
-   sprintf(shitty, "%f", getPositionZ());
-   MessageBoxA(hWnd, shitty, "hi", 0);
-   */
+   static int c = 0;
+   bool thing = false;
 
-   if(count <= 0 )/*|| 
-      getPositionX() >= left ||
-      getPositionX() <= right ||
-      getPositionZ() >= bottom ||
-      getPositionZ() <= top)*/
+   if(count <= 0 )
    {
-      count = 0;
-      srand(time(NULL));
-      count = rand() % 15;
-      srand(time(NULL));
-      dir = rand() % 1;
+      count = 0;      
+      count = rand() % 50;
+      dir =  rand() % 5;
    }
 
-   switch(dir)
-   {
-   case 0: //up 
-      this->bankUp(0.03f);
-      //this->bankUp(0.03f);
-      /*if(getPositionZ() <= top)
-      {
-         this->bankDown(0.05f);
-         count = 0;
-      }*/
-      //count-=;
-      break;
-   case 1: //down
-      //this->bankUp(0.03f);
-      this->bankDown(0.03f);
-      /*
-
-      this->bankDown(0.03f);
-      if(getPositionZ() >= bottom)
-      {
-         this->bankUp(0.03f);
-         count = 0;
-      }    */
-      //count-=10;
-      //this->bankUp(0.03f);
-      break;
-   case 2: //left
-      this->bankLeft(0.05f);
-      //this->bankUp(0.03f);
-      if(getPositionX() >= left)
-      {
-         this->bankRight(0.05f);
-         count = 0;
-      }
-      break;
-   case 3: //right
-      this->bankRight(0.05f);
-      //this->bankUp(0.03f);
-      if(getPositionX() <= right)
-      {
-         this->bankLeft(0.05f);
-         count = 0;
-      }
-   //case 4: // none      
-     // break;
-   default:
-      count = 0;
-      break;
-   }
+   Move(hWnd, dir, &thing);
    count--;
+}
 
-}
-/*
-AIPlayer::AI(void)
-{
-}
-*/
 
 AIPlayer::~AIPlayer(void)
 {
