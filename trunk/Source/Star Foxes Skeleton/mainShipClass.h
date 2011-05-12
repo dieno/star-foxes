@@ -40,6 +40,13 @@ public:
 		return currentHealth;
 	}
 
+   void SetMtrlColor(D3DXCOLOR ambient, D3DXCOLOR emissive, D3DXCOLOR difusse)
+   {
+      g_pMeshMaterials->Ambient = ambient;
+      g_pMeshMaterials->Emissive = emissive;
+      g_pMeshMaterials->Diffuse = difusse;
+   }
+
 	int getMaxHealth() {
 		return maxHealth;
 	}
