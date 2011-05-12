@@ -1,11 +1,32 @@
 #include "AIPlayer.h"
 
+void AIPlayer::SetBehaviour(EBehaviour beh)
+{
+   _behave = beh;
+}
+
+// Always set bounds of movement of ship calling this function, otherwise won't move.
+void AIPlayer::SetBounds(D3DXVECTOR3 pos)
+{
+   _mv->top = pos.y - 0.5f;
+   _mv->bottom = pos.y + 0.5;
+   _mv->left = pos.x + 2.5;
+   _mv->right = pos.x - 2.5;
+}
 
 void AIPlayer::Update(HWND hWnd, D3DXVECTOR3 pos)
 {
    //srand((unsigned)time(0));
    //Wander(hWnd);
-   Flee(hWnd, pos);
+   switch(_behave)
+   {
+   case FLEE:
+      Flee(hWnd, pos);
+      break;
+   default:
+      Wander(hWnd);
+      break;
+   }
 }
 
 void AIPlayer::Flee(HWND hWnd, D3DXVECTOR3 pos)
@@ -15,30 +36,23 @@ void AIPlayer::Flee(HWND hWnd, D3DXVECTOR3 pos)
    float z = pos.z - getPositionZ();
    float dist = sqrt(x*x + y*y + z*z);
 
-   static int dir = 0;// = rand() % 5;
-   static int count = 0;
    static bool fleeing = false;
 
-   if(dist <= 1 && count <=0)
+   if(dist <= 1 && _mv->count <=0)
    {
-      dir = rand() % 4;
-      count = 10;
+      _mv->dir = rand() % 4;
+      _mv->count = 10;
    }
 
-   if(count > 0)
+   if(_mv->count > 0)
    {
-      Move(hWnd, dir, &fleeing);      
-      count--;
+      Move(hWnd, _mv->dir, &fleeing);      
+      _mv->count--;
    }
 }
 
 EDir AIPlayer::Move(HWND hWnd, int dir, bool *outbound)
 {
-   static float top = -0.5;
-   static float bottom = 0.5;
-   static float left = 1;
-   static float right = -1;
-
    switch(dir)
    {
    case UP:      
@@ -51,12 +65,12 @@ EDir AIPlayer::Move(HWND hWnd, int dir, bool *outbound)
       return DWN;
    case LFT:      
       this->bankLeft(0.05f);
-      if(getPositionX() >= left)      
+      if(getPositionX() >= _mv->left)      
          this->bankRight(0.05f);      
       return LFT;
    case RGHT:
       this->bankRight(0.05f);
-      if(getPositionX() <= right)
+      if(getPositionX() <= _mv->right)
       {
          this->bankLeft(0.05f);
       }
@@ -69,20 +83,20 @@ EDir AIPlayer::Move(HWND hWnd, int dir, bool *outbound)
 
 void AIPlayer::Wander(HWND hWnd)
 {   
-   static int dir = -1;
-   static int count = 0;
-   static int c = 0;
+   //static int dir = -1;
+   //_mv->count = 0;
+   //static int c = 0;
    bool thing = false;
 
-   if(count <= 0 )
+   if(_mv->count <= 0 )
    {
-      count = 0;      
-      count = rand() % 50;
-      dir =  rand() % 5;
+      //count = 0;      
+      _mv->count = rand() % 50;
+      _mv->dir =  rand() % 5;
    }
 
-   Move(hWnd, dir, &thing);
-   count--;
+   Move(hWnd, _mv->dir, &thing);
+   _mv->count--;
 }
 
 
