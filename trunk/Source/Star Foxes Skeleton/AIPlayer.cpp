@@ -1,19 +1,23 @@
 #include "AIPlayer.h"
 
+// Sets the behaviour of the AI: Flee, attack, wander, seek.
 void AIPlayer::SetBehaviour(EBehaviour beh)
 {
-   _behave = beh;
+   _behave = beh;   
 }
 
-// Always set bounds of movement of ship calling this function, otherwise won't move.
+// Sets the x and y bounds in which the AI can move around.
+// Always set bounds of movement of AI by calling this function, otherwise it won't move.
 void AIPlayer::SetBounds(D3DXVECTOR3 pos)
 {
    _mv->top = pos.y - 0.5f;
-   _mv->bottom = pos.y + 0.5;
-   _mv->left = pos.x + 2.5;
-   _mv->right = pos.x - 2.5;
+   _mv->bottom = pos.y + 0.5f;
+   _mv->left = pos.x + 2.5f;
+   _mv->right = pos.x - 2.5f;
 }
 
+// Heart of the AI. Updates AI behaviour.
+// TODO: Behaviour evaluator to evaluate what behaviour to activate.
 void AIPlayer::Update(HWND hWnd, D3DXVECTOR3 pos)
 {
    //srand((unsigned)time(0));
@@ -29,32 +33,35 @@ void AIPlayer::Update(HWND hWnd, D3DXVECTOR3 pos)
    }
 }
 
+// AI Behaviour: makes AI wander around randomly.
 void AIPlayer::Wander(HWND hWnd)
 {   
    bool thing = false;
 
    if(_mv->count <= 0 )
    {  
-      _mv->count = rand() % 50;
-      _mv->dir =  rand() % 9;
+      _mv->count = std::rand() % 50;
+      _mv->dir =  std::rand() % 9;
    }
 
    Move(hWnd, _mv->dir, &thing);
    _mv->count--;
 }
 
+// AI Behaviour: makes the AI flee from a point in the screen.
+// param pos: the location in screen to flee from.
 void AIPlayer::Flee(HWND hWnd, D3DXVECTOR3 pos)
 {
    float x = pos.x - getPositionX();
    float y = pos.y - getPositionY();
    float z = pos.z - getPositionZ();
-   float dist = sqrt(x*x + y*y + z*z);
+   float dist = std::sqrt(x*x + y*y + z*z);
 
    static bool fleeing = false;
 
    if(dist <= 1 && _mv->count <=0)
    {
-      _mv->dir = rand() % 9;
+      _mv->dir = std::rand() % 9;
       _mv->count = 10;
    }
 
@@ -65,6 +72,9 @@ void AIPlayer::Flee(HWND hWnd, D3DXVECTOR3 pos)
    }
 }
 
+// Moves AI to 8 determined directions: up, down, upleft, downright, etc.
+// The movement happens within bounds set with SetBounds() function.
+// If the AI stops whenever it tries to go outside the bounds.
 EDir AIPlayer::Move(HWND hWnd, int dir, bool *outbound)
 {
    switch(dir)
