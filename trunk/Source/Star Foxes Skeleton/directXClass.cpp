@@ -368,8 +368,10 @@ int directXClass::GameLoop(){
 			inputCommands();
 			player1.updateRotation();
 			player1.updatePosition();
+         //directXClass::SetError(TEXT("p1: %f"), player1.getPositionZ());
          for (list<AIPlayer*>::const_iterator ci = _aiPlayer.begin(); ci != _aiPlayer.end(); ++ci)
          {
+           //directXClass::SetError(TEXT("p1: %f"), player1.getRotation().z); 
             //(*ci)->bankLeft(0.01f);
             //MessageBoxA(g_hWndMain, "hi", "hilo", 0);
             (*ci)->Update(g_hWndMain, player1.getPosition());
@@ -1060,7 +1062,7 @@ void directXClass::inputCommands()
 {
 	if(input.get_keystate(DIK_A))
 	{
-		player1.bankLeft(0.05f);
+		player1.bankLeft(0.05f);      
 	}
 
 	if(input.get_keystate(DIK_D))
@@ -1070,11 +1072,14 @@ void directXClass::inputCommands()
 	
 	if(input.get_keystate(DIK_W))
 	{
+      //if(player1.getPositionZ() > -1.5)
 		player1.bankUp(0.05f);
+      
 	}
 
 	if(input.get_keystate(DIK_S))
 	{
+      //if(player1.getPositionZ() < 1.5)
 		player1.bankDown(0.05f);
 	}
 
