@@ -46,6 +46,19 @@ public:
 
 	void renderSelf();
 
+   void setTranslation(float x, float y, float z) {
+      translateYMesh1 = y;
+      translateZMesh1 = z;
+      translateXMesh1 = x;
+   }
+
+   void setRotation(float x, float y, float z) {
+      rotationAboutYMesh1 = y;
+      rotationAboutXMesh1 = x;
+      rotationAboutZMesh1 = z;
+
+   }
+
 	void setRotationAboutY(float rotationY) {
 		rotationAboutYMesh1 = rotationY;
 	}
