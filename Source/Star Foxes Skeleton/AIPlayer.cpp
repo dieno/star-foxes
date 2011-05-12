@@ -29,6 +29,20 @@ void AIPlayer::Update(HWND hWnd, D3DXVECTOR3 pos)
    }
 }
 
+void AIPlayer::Wander(HWND hWnd)
+{   
+   bool thing = false;
+
+   if(_mv->count <= 0 )
+   {  
+      _mv->count = rand() % 50;
+      _mv->dir =  rand() % 9;
+   }
+
+   Move(hWnd, _mv->dir, &thing);
+   _mv->count--;
+}
+
 void AIPlayer::Flee(HWND hWnd, D3DXVECTOR3 pos)
 {
    float x = pos.x - getPositionX();
@@ -40,7 +54,7 @@ void AIPlayer::Flee(HWND hWnd, D3DXVECTOR3 pos)
 
    if(dist <= 1 && _mv->count <=0)
    {
-      _mv->dir = rand() % 4;
+      _mv->dir = rand() % 9;
       _mv->count = 10;
    }
 
@@ -75,30 +89,26 @@ EDir AIPlayer::Move(HWND hWnd, int dir, bool *outbound)
          this->bankLeft(0.05f);
       }
       return RGHT;
+   case UPRGHT:
+      Move(hWnd, UP, NULL);
+      Move(hWnd, RGHT, NULL);
+      return UPRGHT;
+   case UPLEFT:
+      Move(hWnd, UP, NULL);
+      Move(hWnd, LFT, NULL);
+      return UPLEFT;
+   case DWNRGHT:
+      Move(hWnd, DWN, NULL);
+      Move(hWnd, RGHT, NULL);
+      return DWNRGHT;
+   case DWNLFT:
+      Move(hWnd, DWN, NULL);
+      Move(hWnd, LFT, NULL);
+      return DWNLFT;
    default:
       return DIR_NONE;
    }
 }
-
-
-void AIPlayer::Wander(HWND hWnd)
-{   
-   //static int dir = -1;
-   //_mv->count = 0;
-   //static int c = 0;
-   bool thing = false;
-
-   if(_mv->count <= 0 )
-   {
-      //count = 0;      
-      _mv->count = rand() % 50;
-      _mv->dir =  rand() % 5;
-   }
-
-   Move(hWnd, _mv->dir, &thing);
-   _mv->count--;
-}
-
 
 AIPlayer::~AIPlayer(void)
 {

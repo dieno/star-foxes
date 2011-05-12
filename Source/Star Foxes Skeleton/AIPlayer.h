@@ -10,6 +10,10 @@ enum EDir
    DWN = 1,
    LFT = 2,
    RGHT = 3,
+   UPRGHT = 4,
+   UPLEFT = 5,
+   DWNRGHT = 6,
+   DWNLFT = 7,
    DIR_NONE
 };
 
