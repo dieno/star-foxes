@@ -1,6 +1,11 @@
 #include "mainPlayerClass.h"
 #include "directXClass.h"
 
+MainShipClass* MainPlayerClass::GetShip()
+{
+   return &playerShip_;
+}
+
 void MainPlayerClass::updatePosition()
 {
 	D3DXVECTOR3 vMovement(0.0f, 0.0f, 0.0f);
