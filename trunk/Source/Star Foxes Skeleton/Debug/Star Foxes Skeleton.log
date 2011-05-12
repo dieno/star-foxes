@@ -1,4 +1,4 @@
-﻿Build started 12/05/2011 3:01:05 PM.
+﻿Build started 12/05/2011 4:16:40 PM.
      1>Project "C:\Users\Sully\Danny\bcit\term4\Projects course\SVN\Source\Star Foxes Skeleton\Star Foxes Skeleton.vcxproj" on node 2 (build target(s)).
      1>InitializeBuildStatus:
          Creating "Debug\Star Foxes Skeleton.unsuccessfulbuild" because "AlwaysCreate" was specified.
@@ -6,7 +6,7 @@
          C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _WINDOWS /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt directXClass.cpp
          directXClass.cpp
          c:\program files (x86)\microsoft directx sdk (june 2010)\include\dinput.h: DIRECTINPUT_VERSION undefined. Defaulting to version 0x0800
-     1>c:\users\sully\danny\bcit\term4\projects course\svn\source\star foxes skeleton\directxclass.cpp(1140): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+     1>c:\users\sully\danny\bcit\term4\projects course\svn\source\star foxes skeleton\directxclass.cpp(1141): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
                  c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(371) : see declaration of 'sprintf'
        ManifestResourceCompile:
          All outputs are up-to-date.
@@ -37,4 +37,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:02.29
+Time Elapsed 00:00:02.02

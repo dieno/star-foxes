@@ -257,21 +257,21 @@ int directXClass::GameInit(){
 	player1 = HumanPlayerClass(g_pMesh, g_pMeshMaterials, g_pMeshTextures, g_dwNumMaterials, g_pDevice, "Human",0, 1);
 
    static D3DMATERIAL9* mat1 = new D3DMATERIAL9;
-   static AIPlayer ai1 = AIPlayer(g_pMesh, mat1, g_pMeshTextures, 1, g_pDevice, "Human",0, 1);
+   static AIPlayer ai1 = AIPlayer(g_pMesh, mat1, g_pMeshTextures, 1, g_pDevice, "AI",0, 1);
    ai1.GetShip()->setTranslation(100, 100, -5);
    ai1.GetShip()->setRotation(0, 3.1f, 0);   
    ai1.SetBounds(ai1.getPosition());   
    ai1.GetShip()->SetMtrlColor(D3DXCOLOR(0, 255.0f, 0, 255.0f), D3DXCOLOR(0, 255.0f, 0, 255.0f), D3DXCOLOR(0, 255.0f, 0, 255.0f));
    
    static D3DMATERIAL9* mat2 = new D3DMATERIAL9;
-   static AIPlayer ai2 = AIPlayer(g_pMesh, mat2, g_pMeshTextures, 1, g_pDevice, "Human",0, 1);
+   static AIPlayer ai2 = AIPlayer(g_pMesh, mat2, g_pMeshTextures, 1, g_pDevice, "AI",0, 1);
    ai2.GetShip()->setTranslation(100, 100, -5);
    ai2.GetShip()->setRotation(0, 3.1f, 0);
    ai2.SetBounds(ai2.getPosition());
    ai2.GetShip()->SetMtrlColor(D3DXCOLOR(0, 255.0f, 0, 255.0f), D3DXCOLOR(0, 255.0f, 0, 255.0f), D3DXCOLOR(0, 255.0f, 0, 255.0f));
 
    static D3DMATERIAL9* mat3 = new D3DMATERIAL9;
-   static AIPlayer ai3 = AIPlayer(g_pMesh, mat3, g_pMeshTextures, 1, g_pDevice, "Human",0, 1);
+   static AIPlayer ai3 = AIPlayer(g_pMesh, mat3, g_pMeshTextures, 1, g_pDevice, "AI",0, 1);
    ai3.GetShip()->setTranslation(100, 100, -5);
    ai3.GetShip()->setRotation(0, 3.1f, 0);
    ai3.SetBounds(ai3.getPosition());
@@ -279,20 +279,20 @@ int directXClass::GameInit(){
    ai3.GetShip()->SetMtrlColor(D3DXCOLOR(0, 0, 255.0f, 255.0f), D3DXCOLOR(0, 0, 255.0f, 255.0f), D3DXCOLOR(0, 0, 255.0f, 255.0f));
 
    static D3DMATERIAL9* mat4 = new D3DMATERIAL9;
-   static AIPlayer ai4 = AIPlayer(g_pMesh, mat4, g_pMeshTextures, 1, g_pDevice, "Human",0, 1);
+   static AIPlayer ai4 = AIPlayer(g_pMesh, mat4, g_pMeshTextures, 1, g_pDevice, "AI",0, 1);
    ai4.GetShip()->setTranslation(100, 100, -5);
    ai4.GetShip()->setRotation(0, 3.1f, 0);
    ai4.SetBounds(ai4.getPosition());
-   ai4.GetShip()->SetMtrlColor(D3DXCOLOR(255.0f, 0, 0, 255.0f), D3DXCOLOR(255.0f, 0, 0, 255.0f), D3DXCOLOR(255.0f, 0, 0, 255.0f));
    ai4.SetBehaviour(SEEK);
-
-
+   ai4.GetShip()->SetMtrlColor(D3DXCOLOR(255.0f, 0, 0, 255.0f), D3DXCOLOR(255.0f, 0, 0, 255.0f), D3DXCOLOR(255.0f, 0, 0, 255.0f));   
+   
    //static AIPlayer aiplayer = AIPlayer(g_pMesh, g_pMeshMaterials, g_pMeshTextures, g_dwNumMaterials, g_pDevice, "Human",0, 1);
    _aiPlayer.push_back(&ai3);
    _aiPlayer.push_back(&ai1);
    _aiPlayer.push_back(&ai2);
    _aiPlayer.push_back(&ai4);
-	//player2 = MainPlayerClass("Dummy",0, 1, dummyAI);
+   
+   //player2 = MainPlayerClass("Dummy",0, 1, dummyAI);
    
 	if(FAILED(r)){//FAILED is a macro that returns false if return value is a failure - safer than using value itself
 		SetError(TEXT("Initialization of the device failed"));
@@ -501,16 +501,17 @@ int directXClass::Render(){
 
 		player1.drawSelf();
 		//player2.drawSelf();
-      for (std::list<AIPlayer*>::const_iterator ci = _aiPlayer.begin(); ci != _aiPlayer.end(); ++ci)
-      {
-         (*ci)->drawSelf();
-      }     
+
 
 		SetupMatrices(true);
 
 		drawCubes();
         _chat.RenderChat();
-		
+      
+      for (std::list<AIPlayer*>::const_iterator ci = _aiPlayer.begin(); ci != _aiPlayer.end(); ++ci)
+      {
+         (*ci)->drawSelf();
+      }		
 		// End the scene
 		g_pDevice->EndScene();
 	}
@@ -886,8 +887,8 @@ VOID directXClass::SetupMatrices(bool mesh1Active)
     g_pDevice->SetTransform( D3DTS_WORLD, &matWorld );
 
 	
-    D3DXVECTOR3 vEyePt( 0.0f, 3.0f, 5.0f );
-    D3DXVECTOR3 vLookatPt( 0.0f, 0.0f, 0.0f );
+    D3DXVECTOR3 vEyePt( 0.0f, 1.0f, 5.0f );
+    D3DXVECTOR3 vLookatPt( 0.0f, 1.0f, 0.0f );
     D3DXVECTOR3 vUpVec( 0.0f, 1.0f, 0.0f );
 	
     D3DXMATRIXA16 matView2;
@@ -970,8 +971,8 @@ HRESULT directXClass::InitGeometry()
 			int len = lstrlen((LPCWSTR)d3dxMaterials[i].pTextureFilename);
 			wchar_t *wText = new wchar_t[len];
 			::MultiByteToWideChar(  CP_ACP, NULL,d3dxMaterials[i].pTextureFilename, -1, wText,len );
-            if( FAILED( D3DXCreateTextureFromFile( g_pDevice, 
-                                                wText, 
+            if( FAILED( D3DXCreateTextureFromFile( g_pDevice,
+                                                wText,
                                                 &g_pMeshTextures[i] ) ) )
             {
                 // If texture is not in current folder, try parent folder
@@ -1219,9 +1220,16 @@ void directXClass::inputCommands()
 
 void directXClass::setupCubes()
 {
-	for(int i = 0; i < 100; ++i)
+   static float x = 2.0f;
+   D3DXCreateBox(g_pDevice, 2, 10, 5, &cubemesh[0], NULL);
+   D3DXCreateBox(g_pDevice, 3, 5, 4, &cubemesh[1], NULL);
+   D3DXCreateBox(g_pDevice, 5, 12, 10, &cubemesh[2], NULL);
+   D3DXCreateBox(g_pDevice, 2, 10, 8, &cubemesh[3], NULL);
+   D3DXCreateBox(g_pDevice, 4, 12, 12, &cubemesh[4], NULL);
+
+	for(int i = 5; i < 100; ++i)
 	{
-		D3DXCreateBox(g_pDevice, 0.25f, 0.25f, 0.25f, &cubemesh[i], NULL);
+		D3DXCreateBox(g_pDevice, x+1.0f, x +0.1f, 0.25f, &cubemesh[i], NULL);
 	}
 }
 
@@ -1238,9 +1246,16 @@ void directXClass::drawCubes()
 	D3DXMATRIX translate;
 	D3DXMatrixTranslation(&translate, 0.0f, -1.0f, 0.0f);
 	g_pDevice->SetTransform( D3DTS_WORLD, &translate);
-	for(int i = 0; i < 100; ++i)
+   D3DMATERIAL9* mat = new D3DMATERIAL9();
+   mat->Ambient= D3DXCOLOR(255.0f, 0, 255.0f, 255.0f);
+   g_pDevice->SetMaterial( mat);
+	      
+   for(int i = 0; i < 100; ++i)
 	{
-		D3DXMatrixTranslation(&translate, 0.0f, 0.0f, ((float) i * 10.0f) / 2.0f);
+      if(i % 2 == 0)
+		   D3DXMatrixTranslation(&translate, -4, 0.0f, ((float) (i+1) * -20.0f) / 2.0f);
+      else
+         D3DXMatrixTranslation(&translate, 4, 0.0f, ((float) (i+1) * -20.0f) / 2.0f);
 		g_pDevice->SetTransform( D3DTS_WORLD, &translate);
 		cubemesh[i]->DrawSubset(0);
 	}
