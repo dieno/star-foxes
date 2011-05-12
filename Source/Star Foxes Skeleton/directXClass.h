@@ -8,8 +8,8 @@
 #include "humanPlayerClass.h"
 #include "computerPlayerClass.h"
 #include "AIPlayer.h"
-#include <list>
-using namespace std;
+//#include "Networking/GameChat.h"
+//using namespace std;
 
 #define WINDOWED TRUE
 #define SCREEN_WIDTH 640
@@ -127,7 +127,7 @@ private:
 	float translateXMesh2;
 	MainPlayerClass player1;
 	MainPlayerClass player2;
-   list<AIPlayer*> _aiPlayer;
+   std::list<AIPlayer*> _aiPlayer;
    //AIPlayer _aiplayer1;
 	Input input;
 	ID3DXMesh *cubemesh[256];

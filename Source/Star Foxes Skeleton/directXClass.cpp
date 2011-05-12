@@ -385,7 +385,7 @@ int directXClass::GameLoop(){
 			player1.updateRotation();
 			player1.updatePosition();
          //directXClass::SetError(TEXT("p1: %f"), player1.getPositionZ());
-         for (list<AIPlayer*>::const_iterator ci = _aiPlayer.begin(); ci != _aiPlayer.end(); ++ci)
+         for (std::list<AIPlayer*>::const_iterator ci = _aiPlayer.begin(); ci != _aiPlayer.end(); ++ci)
          {
            //directXClass::SetError(TEXT("p1: %f"), player1.getRotation().z); 
             //(*ci)->bankLeft(0.01f);
@@ -480,7 +480,7 @@ int directXClass::Render(){
 
 		player1.drawSelf();
 		//player2.drawSelf();
-      for (list<AIPlayer*>::const_iterator ci = _aiPlayer.begin(); ci != _aiPlayer.end(); ++ci)
+      for (std::list<AIPlayer*>::const_iterator ci = _aiPlayer.begin(); ci != _aiPlayer.end(); ++ci)
       {
          (*ci)->drawSelf();
       }     
