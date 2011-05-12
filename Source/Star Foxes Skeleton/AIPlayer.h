@@ -1,8 +1,11 @@
 //#pragma once
 //#include "directXHeader.h"
-#include "MainPlayerClass.h"
-#include <time.h>
+#include "directXClass.h"
+//#include "MainPlayerClass.h"
 #include <math.h>
+
+#ifndef AIPLAYER
+#define AIPLAYER
 
 enum EDir
 {
@@ -27,8 +30,8 @@ enum EBehaviour
 
 typedef struct Movement
 {
-   int count;
-   int dir;
+   int count; // count of movement
+   int dir; // direction of movement
    float top; // top bound
    float bottom; // bottom bound
    float left; // left bound
@@ -79,3 +82,4 @@ public:
    ~AIPlayer(void);
 };
 
+#endif
