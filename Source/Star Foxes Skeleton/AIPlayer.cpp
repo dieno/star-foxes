@@ -1,4 +1,5 @@
 #include "AIPlayer.h"
+#include <math.h>
 
 // Sets the behaviour of the AI: Flee, attack, wander, seek.
 void AIPlayer::SetBehaviour(EBehaviour beh)
@@ -21,12 +22,15 @@ void AIPlayer::SetBounds(D3DXVECTOR3 pos)
 void AIPlayer::Update(HWND hWnd, D3DXVECTOR3 pos)
 {
    //srand((unsigned)time(0));
-   //Wander(hWnd);
+	Seek(pos);
    switch(_behave)
    {
    case FLEE:
       Flee(hWnd, pos);
       break;
+   case SEEK:
+	  Seek(pos);
+	  break;
    default:
       Wander(hWnd);
       break;
@@ -118,6 +122,31 @@ EDir AIPlayer::Move(HWND hWnd, int dir, bool *outbound)
    default:
       return DIR_NONE;
    }
+}
+
+void AIPlayer::Seek(D3DXVECTOR3 enemyPos) {
+
+	float x = this->getPositionX();
+	float z = this->getPositionZ();
+	float y = this->getPositionY();
+	
+	if((enemyPos.x > x) && ((abs(enemyPos.x) - abs(x)) > 0.1f)) {
+		this->bankLeft(0.02f);
+	} else if((enemyPos.x < x) && ((abs(enemyPos.x) - abs(x)) > 0.1f)){
+		this->bankRight(0.02f);
+	}
+
+	if((enemyPos.z > z) && ((abs(enemyPos.z) - abs(z)) > 0.06f)) {
+		this->bankDown(0.01f);
+	} else if((enemyPos.z < z) && ((abs(enemyPos.z) - abs(z)) > 0.06f)){
+		this->bankUp(0.01f);	
+	}
+
+	if(enemyPos.y > this->getPositionY()) {
+
+	} else {
+
+	}
 }
 
 AIPlayer::~AIPlayer(void)

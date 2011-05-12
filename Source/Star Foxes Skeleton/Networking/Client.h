@@ -2,9 +2,9 @@
 #include "../directXClass.h"
 //#include "SocketExtras.h"
 #include "time.h"
-//#include <string>
+//#include <std::string>
 #include <stdio.h>
-//#include <list>
+//#include <std::list>
 using namespace std;
 
 class Client
@@ -17,8 +17,8 @@ private:
    int szSize;
    char* _id;
    int _c;
-   list<char*> _msg;
-   string _tmppop;
+   std::list<char*> _msg;
+   std::string _tmppop;
    char _tmpmsg[128];
    char* _name;
    //char szHistory[10000];
@@ -31,9 +31,9 @@ public:
    void SetHost(char *hostip);
    void Shutdown();
    void SendMsg(char msg[]);
-   ESocketError ConnectToHost(string* msg);
-   ESocketError AsyncSelect(HWND hWnd, UINT wm, string* msg);
-   ESocketError IniClientSocket(string* msg);
+   ESocketError ConnectToHost(std::string* msg);
+   ESocketError AsyncSelect(HWND hWnd, UINT wm, std::string* msg);
+   ESocketError IniClientSocket(std::string* msg);
    void InitializeObject();
    Client(char *id);
    Client(void);

@@ -45,6 +45,7 @@ private:
    PMovement _mv;
 public:
    void Evaluate();
+   void Seek(D3DXVECTOR3 enemyPos);
    void Wander(HWND hWnd);
    void Flee(HWND hWnd, D3DXVECTOR3 pos);
    void Update(HWND hWnd, D3DXVECTOR3 pos);
