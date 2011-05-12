@@ -41,6 +41,9 @@ long CALLBACK directXClass::WndProc(HWND hWnd, UINT uMessage, WPARAM wParam, LPA
 			PostQuitMessage(0);
 			return 0;
 		}
+   case WM_KEYDOWN:
+      program->KeyDownChat(wParam, hWnd);
+      return 0;
 	default:
 		{
 			return DefWindowProc(hWnd, uMessage, wParam, lParam);
@@ -254,17 +257,17 @@ int directXClass::GameInit(){
 	player1 = HumanPlayerClass(g_pMesh, g_pMeshMaterials, g_pMeshTextures, g_dwNumMaterials, g_pDevice, "Human",0, 1);
    static AIPlayer ai1 = AIPlayer(g_pMesh, g_pMeshMaterials, g_pMeshTextures, g_dwNumMaterials, g_pDevice, "Human",0, 1);
    ai1.GetShip()->setTranslation(100, 100, -5);
-   ai1.GetShip()->setRotation(0, 3.1, 0);
+   ai1.GetShip()->setRotation(0, 3.1f, 0);
    ai1.SetBounds(ai1.getPosition());
    
    static AIPlayer ai2 = AIPlayer(g_pMesh, g_pMeshMaterials, g_pMeshTextures, g_dwNumMaterials, g_pDevice, "Human",0, 1);
    ai2.GetShip()->setTranslation(100, 100, -5);
-   ai2.GetShip()->setRotation(0, 3.1, 0);
+   ai2.GetShip()->setRotation(0, 3.1f, 0);
    ai2.SetBounds(ai2.getPosition());
 
    static AIPlayer ai3 = AIPlayer(g_pMesh, g_pMeshMaterials, g_pMeshTextures, g_dwNumMaterials, g_pDevice, "Human",0, 1);
    ai3.GetShip()->setTranslation(100, 100, -5);
-   ai3.GetShip()->setRotation(0, 3.1, 0);
+   ai3.GetShip()->setRotation(0, 3.1f, 0);
    ai3.SetBounds(ai3.getPosition());
    ai3.SetBehaviour(FLEE);
    //static AIPlayer aiplayer = AIPlayer(g_pMesh, g_pMeshMaterials, g_pMeshTextures, g_dwNumMaterials, g_pDevice, "Human",0, 1);
@@ -488,6 +491,7 @@ int directXClass::Render(){
 		SetupMatrices(true);
 
 		drawCubes();
+      _chat.RenderChat();
 		
 		// End the scene
 		g_pDevice->EndScene();
@@ -819,7 +823,7 @@ void directXClass::drawLine(float startX, float startY, float endX, float endY, 
 	D3DLOCKED_RECT Locked;
 	pSurf->LockRect(&Locked,0,0);
 	DWORD* pData = (DWORD*)(Locked.pBits);
-	for (float t = 0; t < 1; t += 0.001) {
+	for (float t = 0; t < 1; t += 0.001f) {
 		int X = (int)(startX + t * (endX - startX));
         int Y = (int)(startY + t * (endY - startY));
 		DWORD Offset = (Y*Locked.Pitch/4 + X);
@@ -856,7 +860,7 @@ VOID directXClass::SetupMatrices(bool mesh1Active)
 		scale(2,2) = 0.25f;
 		D3DXMatrixRotationY( &rotationY, rotationAboutYMesh2 );
 		D3DXMatrixRotationX( &rotationX, rotationAboutXMesh2 );
-		translate = Translate(translateXMesh2-1.25, translateYMesh2, 0);
+		translate = Translate(translateXMesh2-1.25f, translateYMesh2, 0);
 		D3DXMatrixMultiply(&translate2, &scale, &translate);
 	}
 	D3DXMatrixMultiply(&matWorld2, &rotationY, &rotationX);
@@ -922,6 +926,9 @@ HRESULT directXClass::InitGeometry()
             return E_FAIL;
         }
     }
+    
+    // CHAT: Initialize chat
+    IniChat();
 
     // We need to extract the material properties and texture names from the 
     // pD3DXMtrlBuffer
@@ -1033,8 +1040,95 @@ HRESULT directXClass::InitGeometry()
     return S_OK;
 }
 
+// CHAT: initializes game chat.
+void directXClass::IniChat()
+{
+   SIZE charsz;
+   charsz.cx = 10; charsz.cy = 15;
+   Text *text = new Text(g_pDevice, false, charsz);
+   text->setRect(0, 50, 500, 50);
+   text->setColor(250, 250, 250, 255);
+   //text->setColor(0, 0, 0, 255);
+   //text->setColor(250, 0, 0, 255);
+   _chat.SetTextFormat(text);
+}
 
+// CHAT: Keydown for the chat
+bool directXClass::KeyDownChat(WPARAM wParam, HWND hWnd)
+{
+   static int c = 0;
+   static char str[1];
+   if(_chat.IsWritingOn())
+   {
+      if(wParam == VK_RETURN)
+      {
+         //_client.SendMsg(_chat.GetCurrentMsgC());
+         const char *msg = _chat.GetCurrentMsgC();
+         _chat.AddMsgToHistory(msg);
 
+         /**char netmsg[3];
+         int len = strlen(msg);
+         for(int i = 0; i < len; i++)
+         {
+            char m[1] = {msg[i]};
+            //_msgt.CreateMsg(netmsg, MSG_TXT, &_clientID, m);
+            //client.SendMsg(netmsg);
+         }
+         char m[1] = {NULL};
+         _msgt.CreateMsg(netmsg, MSG_TXT, &_clientID, m);
+         _client.SendMsg(netmsg);
+         **/
+         _chat.ClearCurrentMsg();
+         //_chat.SendMsg();
+         //_server.BroadcastMsg(_chat.GetCurrentMsg().c_str());
+
+         _chat.EndWrite();
+      }
+      else if(wParam == VK_BACK)
+         _chat.DeleteLastChar();
+      else
+         _chat.Write(wParam);
+      
+      return true;
+   }
+   else
+   {
+      if(wParam == 'Y')   
+      {
+         _chat.StartWrite();
+         return true;
+      }
+      if(wParam == 'P')
+      {
+         //CreateServer(hWnd);
+         _chat.AddMsgToHistory("Server Created!");
+         return true;
+      }
+      if(wParam == 'L')
+      {
+         //CreateClient(hWnd, "192.168.0.198");
+         _chat.AddMsgToHistory("Client connected to server .198!");
+         return true;
+      }
+      if(wParam == 'O')
+      {
+         //CreateClient(hWnd, "192.168.0.190");
+         ///CreateClient(hWnd, "localhost");
+         _chat.AddMsgToHistory("Client connected to server Localhost!");
+         return true;
+      }
+      if(wParam == 'M')
+      {
+         sprintf(str, "%d", c++);
+         ///_server.BroadcastMsg(str, 1);
+         if(c >= 10)
+            c=0;
+         return true;
+      }
+   }
+
+   return false;
+}
 
 //-----------------------------------------------------------------------------
 // Name: Cleanup()
@@ -1101,7 +1195,7 @@ void directXClass::inputCommands()
 
 	if(input.get_keystate(DIK_SPACE))
 	{
-		player1.useAfterBooster();
+		//player1.useAfterBooster();
 	}
 }
 

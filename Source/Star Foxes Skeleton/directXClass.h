@@ -8,8 +8,10 @@
 #include "humanPlayerClass.h"
 #include "computerPlayerClass.h"
 #include "AIPlayer.h"
-#include "Networking/SocketExtras.h"
-#include "Networking/Text.h"
+#include "Networking\SocketExtras.h"
+#include "Networking\Text.h"
+#include "Networking\GameChat.h"
+#include "Networking\MsgTranslator.h"
 //#include "Networking/GameChat.h"
 //using namespace std;
 
@@ -89,6 +91,8 @@ private:
 	void setupCubes();
 	void cleanupCubes();
 	void drawCubes();
+   void IniChat();
+   bool KeyDownChat(WPARAM wParam, HWND hWnd);
 	point getMouseCoordinates();
 	static LPDIRECT3D9 g_pD3D;//COM object
 	static LPDIRECT3DDEVICE9 g_pDevice;//graphics device
@@ -145,5 +149,7 @@ private:
 	RECT radarRect;
 	LPDIRECT3DSURFACE9 bgSurface; //surface for working with the background
 	int menuSelect; // int for what menu item is currently selected
+   GameChat _chat;
+   //MsgTranslator _msgt;
 };
 #endif
