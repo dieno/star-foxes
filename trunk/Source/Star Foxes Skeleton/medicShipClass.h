@@ -3,12 +3,12 @@
 
 #include "mainShipClass.h"
 
-class StandardShipClass : public MainShipClass {
+class MedicShipClass : public MainShipClass {
 public:
-	StandardShipClass(LPD3DXMESH mesh, D3DMATERIAL9* meshMat, LPDIRECT3DTEXTURE9* meshTex, DWORD meshNumMat, LPDIRECT3DDEVICE9 newg_pDevice)
+	MedicShipClass(LPD3DXMESH mesh, D3DMATERIAL9* meshMat, LPDIRECT3DTEXTURE9* meshTex, DWORD meshNumMat, LPDIRECT3DDEVICE9 newg_pDevice)
 		:MainShipClass(mesh, meshMat, meshTex, meshNumMat, newg_pDevice){
-			setMaxHealth(120);
-			setCurrentHealth(120);
+			setMaxHealth(100);
+			setCurrentHealth(100);
 	}
 
 	static float getAfterburnerSpeed() {
