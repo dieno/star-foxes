@@ -1,5 +1,7 @@
 #include "GameChat.h"
 
+using namespace std;
+
 void GameChat::DrawHistory()
 {
 }

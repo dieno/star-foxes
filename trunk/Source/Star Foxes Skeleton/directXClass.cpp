@@ -270,10 +270,18 @@ int directXClass::GameInit(){
    ai3.GetShip()->setRotation(0, 3.1f, 0);
    ai3.SetBounds(ai3.getPosition());
    ai3.SetBehaviour(FLEE);
+
+   static AIPlayer ai4 = AIPlayer(g_pMesh, g_pMeshMaterials, g_pMeshTextures, g_dwNumMaterials, g_pDevice, "Human",0, 1);
+   ai4.GetShip()->setTranslation(100, 100, -5);
+   ai4.GetShip()->setRotation(0, 3.1f, 0);
+   ai4.SetBounds(ai4.getPosition());
+   ai4.SetBehaviour(SEEK);
+
    //static AIPlayer aiplayer = AIPlayer(g_pMesh, g_pMeshMaterials, g_pMeshTextures, g_dwNumMaterials, g_pDevice, "Human",0, 1);
    _aiPlayer.push_back(&ai3);
    _aiPlayer.push_back(&ai1);
    _aiPlayer.push_back(&ai2);
+   _aiPlayer.push_back(&ai4);
 	//player2 = MainPlayerClass("Dummy",0, 1, dummyAI);
    
 	if(FAILED(r)){//FAILED is a macro that returns false if return value is a failure - safer than using value itself
@@ -491,7 +499,7 @@ int directXClass::Render(){
 		SetupMatrices(true);
 
 		drawCubes();
-      _chat.RenderChat();
+        _chat.RenderChat();
 		
 		// End the scene
 		g_pDevice->EndScene();

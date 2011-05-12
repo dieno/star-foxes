@@ -1,5 +1,7 @@
 #include "Text.h"
 
+using namespace std;
+
 // -----------------------------------------------------------------
 // Draws the text to the device specified when Text instantiated.
 // -----------------------------------------------------------------

@@ -1,6 +1,8 @@
 #include "Server.h"
 
-SOCKET* Server::GetBackList()
+using namespace std;
+
+SOCKET* Server::GetBacklist()
 {
    return &ClientSocket.back();
 }

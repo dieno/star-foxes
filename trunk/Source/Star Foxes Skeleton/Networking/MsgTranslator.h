@@ -1,6 +1,6 @@
 #pragma once
 #include "../directXClass.h"
-//#include <string.h>
+//#include <std::string.h>
 //#include <Windows.h>
 //using namespace std;
 

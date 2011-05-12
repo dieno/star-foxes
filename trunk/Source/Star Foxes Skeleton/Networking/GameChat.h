@@ -1,9 +1,8 @@
 #include "../directXClass.h"
-/*#include <cstdlib>
-#include <string>
-#include <list>*/
 
-using namespace std;
+/*#include <cstdlib>
+#include <std::string>
+#include <std::list>*/
 
 #ifndef GAMECHAT
 #define GAMECHAT
@@ -13,8 +12,8 @@ class GameChat
 private:
    bool _writingOn;
    char _owner[128];
-   string _msg;   
-   list<string> _history;
+   std::string _msg;   
+   std::list<std::string> _history;
    int _histlimit;
    Text* _msgtext;   
 
@@ -32,11 +31,11 @@ public:
    void DrawInputField();
    void DrawHistory();
    void DeleteLastChar();
-   void AddMsgToHistory(string msg);
+   void AddMsgToHistory(std::string msg);
    bool IsWritingOn();
-   string GetCurrentMsg();
+   std::string GetCurrentMsg();
    const char* GetCurrentMsgC();
-   list<string>* GetHistory();
+   std::list<std::string>* GetHistory();
    GameChat(void);
    ~GameChat(void);
 };
