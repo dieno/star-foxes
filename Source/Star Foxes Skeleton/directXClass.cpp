@@ -900,7 +900,7 @@ HRESULT directXClass::InitGeometry()
                                     &pD3DXMtrlBuffer, NULL, &g_dwNumMaterials, 
                                     &g_pMesh ) ) )
         {
-            MessageBox(NULL, TEXT("Could not find tiger.x"), TEXT("Meshes.exe"), MB_OK);
+            MessageBox(NULL, TEXT("Could not find airwing.x"), TEXT("Meshes.exe"), MB_OK);
             return E_FAIL;
         }
     }

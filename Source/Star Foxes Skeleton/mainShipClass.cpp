@@ -2,6 +2,7 @@
 #include "directXClass.h"
 
 float MainShipClass::afterburnerSpeed_ =  5.0f;
+float MainShipClass::damagePerShot =  1.0f;
 
 void MainShipClass::renderSelf() {
 	// Setup the world, view, and projection matrices

@@ -98,12 +98,20 @@ public:
 		return rotationAboutZMesh1;
 	}
 
+	void setMaxHealth(int newMaxHealth) {
+		maxHealth = newMaxHealth;
+	}
+
 	void setCurrentHealth(int newHealth) {
 		currentHealth = newHealth;
 	}
 
 	static float getAfterburnerSpeed() {
 		return afterburnerSpeed_;
+	}
+
+	static float getDamagePerShot() {
+		return damagePerShot;
 	}
 
 private:
@@ -122,6 +130,7 @@ private:
 	float translateXMesh1;
 	float translateZMesh1;
 	LPDIRECT3DDEVICE9 g_pDevice;
+	static float damagePerShot;
 };
 
 #endif
