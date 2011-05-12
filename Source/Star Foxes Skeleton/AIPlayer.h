@@ -52,7 +52,7 @@ public:
    EDir Move(HWND hWnd, int dir, bool* outbound);
    void SetBehaviour(EBehaviour beh);
    void SetBounds(D3DXVECTOR3 pos);
-  
+   void IniAI();
    //AI(void);  
 
 	AIPlayer(
@@ -65,7 +65,7 @@ public:
 		int teamNum, 
 		int lives)
 	: MainPlayerClass(playerName, teamNum, lives, MainShipClass(mesh, meshMat, meshTex, meshNumMat, newg_pDevice)) {
-   _mv = new Movement();
+    IniAI();
    }
 	
 	AIPlayer(MainShipClass shiptype, 
@@ -73,12 +73,12 @@ public:
 		int teamNum, 
 		int lives)
 	: MainPlayerClass(playerName, teamNum, lives, shiptype) {
-   _mv = new Movement();
+      IniAI();
    }
 
-	   AIPlayer():MainPlayerClass(){
-      _mv = new Movement();
-   }   
+	AIPlayer():MainPlayerClass(){
+      IniAI();
+   }
 
    ~AIPlayer(void);
 };

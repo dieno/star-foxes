@@ -149,6 +149,13 @@ void AIPlayer::Seek(D3DXVECTOR3 enemyPos) {
 	}
 }
 
+// Initializes AI. Function usually called in constructor.
+void AIPlayer::IniAI()
+{
+   _mv = new Movement();
+   _mv->dir = -1;
+}
+
 AIPlayer::~AIPlayer(void)
 {
 }

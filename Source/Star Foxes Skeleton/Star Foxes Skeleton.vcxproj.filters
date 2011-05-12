@@ -13,6 +13,26 @@
     <ClCompile Include="playerClass.cpp">
       <Filter>Player Files</Filter>
     </ClCompile>
+    <ClCompile Include="input.cpp" />
+    <ClCompile Include="mainPlayerClass.cpp">
+      <Filter>Game Loop Files</Filter>
+    </ClCompile>
+    <ClCompile Include="AIPlayer.cpp" />
+    <ClCompile Include="Networking\Client.cpp">
+      <Filter>Networking Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Networking\GameChat.cpp">
+      <Filter>Networking Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Networking\MsgTranslator.cpp">
+      <Filter>Networking Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Networking\Server.cpp">
+      <Filter>Networking Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Networking\Text.cpp">
+      <Filter>Networking Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="mainShipClass.h">
@@ -26,6 +46,29 @@
     </ClInclude>
     <ClInclude Include="playerClass.h">
       <Filter>Player Files</Filter>
+    </ClInclude>
+    <ClInclude Include="input.h" />
+    <ClInclude Include="mainPlayerClass.h">
+      <Filter>Game Loop Files</Filter>
+    </ClInclude>
+    <ClInclude Include="AIPlayer.h" />
+    <ClInclude Include="Networking\Client.h">
+      <Filter>Networking Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Networking\GameChat.h">
+      <Filter>Networking Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Networking\MsgTranslator.h">
+      <Filter>Networking Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Networking\Server.h">
+      <Filter>Networking Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Networking\SocketExtras.h">
+      <Filter>Networking Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Networking\Text.h">
+      <Filter>Networking Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
