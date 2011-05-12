@@ -12,7 +12,8 @@ enum ESocketEvent
    EV_ACCEPT,
    EV_CLOSE,
    EV_SERVER_ERR,
-   EV_NONE
+   EV_NONE,
+   EV_0
 };
 
 enum ESocketError
