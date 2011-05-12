@@ -168,7 +168,7 @@ Client::Client(void)
    //char* name = (char*)malloc(1024);
    //char* name2 = (char*)malloc(1024);
    _id = (char*) malloc(128);
-   itoa(rand() % 100 + 1, _id, time(NULL));
+   _itoa(rand() % 100 + 1, _id, time(NULL));
    //_id = "me";
    InitializeObject();
 }

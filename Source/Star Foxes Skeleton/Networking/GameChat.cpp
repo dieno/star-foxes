@@ -12,6 +12,32 @@ void GameChat::Draw()
 {
 }
 
+void GameChat::RenderChat()
+{
+   if(IsWritingOn())
+   {
+      string msg = "= ";
+      msg.append(GetCurrentMsg());
+      GetTextFormat()->draw(msg.c_str());
+   }
+
+   list<string>* hist = GetHistory();
+   int x = 10;
+   int y = 100;
+   RECT* rct = new RECT;
+   rct->top = y;
+   rct->left = x;
+   rct->bottom = 50;
+   rct->right = 200;
+
+   for (list<string>::iterator ci = hist->begin(); ci != hist->end(); ++ci)
+   {
+      GetTextFormat()->draw(ci->c_str(), rct);
+      rct->top += 12;
+      rct->bottom += 12;
+   }
+}
+
 void GameChat::SetTextFormat(Text* text)
 {
    _msgtext = text;

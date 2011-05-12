@@ -5,6 +5,9 @@
 
 using namespace std;
 
+#ifndef GAMECHAT
+#define GAMECHAT
+
 class GameChat
 {
 private:
@@ -16,6 +19,7 @@ private:
    Text* _msgtext;   
 
 public:
+   void RenderChat();
    Text* GetTextFormat();
    void SetTextFormat(Text *text);
    void StartWrite();
@@ -37,3 +41,4 @@ public:
    ~GameChat(void);
 };
 
+#endif
