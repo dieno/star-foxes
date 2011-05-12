@@ -1,6 +1,7 @@
 #pragma once
-#include <string.h>
-#include <Windows.h>
+#include "../directXClass.h"
+//#include <string.h>
+//#include <Windows.h>
 //using namespace std;
 
 enum EMSG_TYPE

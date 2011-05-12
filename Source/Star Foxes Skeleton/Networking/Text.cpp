@@ -80,7 +80,7 @@ void Text::IniText(LPDIRECT3DDEVICE9 gD3dDevice, bool rightToLeft, SIZE charsz)
 
    D3DXCreateFont(gD3dDevice, charsz.cy, charsz.cx, FW_NORMAL, 1, FALSE, DEFAULT_CHARSET, 
       OUT_DEFAULT_PRECIS, DEFAULT_QUALITY, DEFAULT_PITCH | FF_DONTCARE, 
-      "Arial", &m_font );
+      TEXT("Arial"), &m_font );
    setRect(100, 100, 500, 500);
    setColor(255, 255, 255, 255);
 }
