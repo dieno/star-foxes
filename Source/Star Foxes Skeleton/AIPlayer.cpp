@@ -11,10 +11,10 @@ void AIPlayer::SetBehaviour(EBehaviour beh)
 // Always set bounds of movement of AI by calling this function, otherwise it won't move.
 void AIPlayer::SetBounds(D3DXVECTOR3 pos)
 {
-   _mv->top = pos.y - 0.5f;
-   _mv->bottom = pos.y + 0.5f;
-   _mv->left = pos.x + 2.5f;
-   _mv->right = pos.x - 2.5f;
+   _mv->top = pos.y - 4.0f;
+   _mv->bottom = pos.y - 1.0f;
+   _mv->left = pos.x + 3.5f;
+   _mv->right = pos.x - 3.5f;
 }
 
 // Heart of the AI. Updates AI behaviour.
@@ -22,7 +22,7 @@ void AIPlayer::SetBounds(D3DXVECTOR3 pos)
 void AIPlayer::Update(HWND hWnd, D3DXVECTOR3 pos)
 {
    //srand((unsigned)time(0));
-	Seek(pos);
+	//Seek(pos);
    switch(_behave)
    {
    case FLEE:
@@ -84,11 +84,11 @@ EDir AIPlayer::Move(HWND hWnd, int dir, bool *outbound)
    switch(dir)
    {
    case UP:      
-      if(getRotation().x < .2 && getPosition().z > -1.5)
+      if(getRotation().x < .2 && getPosition().z > _mv->top)
          this->bankUp(0.04f);
       return UP;
-   case DWN:      
-      if(getRotation().x > -.2 && getPosition().z < 1.5)
+   case DWN:
+      if(getRotation().x > -.2 && getPosition().z < _mv->bottom)
          this->bankDown(0.04f);       
       return DWN;
    case LFT:      
