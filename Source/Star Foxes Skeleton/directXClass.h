@@ -8,6 +8,7 @@
 #include "humanPlayerClass.h"
 #include "computerPlayerClass.h"
 #include "AIPlayer.h"
+#include "terrain.h"
 #include "Networking\SocketExtras.h"
 #include "Networking\Text.h"
 #include "Networking\GameChat.h"
@@ -62,7 +63,8 @@ public:
 	radarSurface(0),
 	radarRect(),
 	bgSurface(0),
-	menuSelect(0){}
+	menuSelect(0),
+	mainTerrain(){}
 	int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pstrCmdLine, int iCmdShow);
 	static long CALLBACK WndProc(HWND hWnd, UINT uMessage, WPARAM wParam, LPARAM lParam);
 	static directXClass *program;
@@ -78,6 +80,8 @@ public:
 	HRESULT LoadAlphabet( wchar_t* strPathName, int LetterWidth, int LetterHeight );
 	int Render();
 	int RenderMainMenu();
+	int RenderRadar(D3DXVECTOR3 shipLocations[]);
+	int UpdateHUD();
 	void FrameCount();
 	HRESULT UnloadAlphabet();
 	HRESULT directXClass::InitTiming();
@@ -149,7 +153,8 @@ private:
 	RECT radarRect;
 	LPDIRECT3DSURFACE9 bgSurface; //surface for working with the background
 	int menuSelect; // int for what menu item is currently selected
-   GameChat _chat;
-   //MsgTranslator _msgt;
+    GameChat _chat;
+    Terrain mainTerrain; 
+    //MsgTranslator _msgt;
 };
 #endif
