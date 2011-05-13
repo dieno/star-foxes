@@ -1,7 +1,7 @@
 #ifndef HUMANPLAYERCLASS_H
 #define HUMANPLAYERCLASS_H
 #include <string>
-#include "directXHeader.h"
+//#include "directXHeader.h"
 
 class HumanPlayerClass : public MainPlayerClass {
 public:

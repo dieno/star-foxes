@@ -11,8 +11,9 @@ float directXClass::endY = 0;
 int directXClass::height = 680;
 int directXClass::width = 480;
 bool directXClass::startMouseMove = false;
-int directXClass::currentX;
-int directXClass::currentY;
+float directXClass::lastTime = 0.0f;
+int directXClass::currentX = 0;
+int directXClass::currentY = 0;
 
 //deals with revaildating the window, and the basic window stuff
 long CALLBACK directXClass::WndProc(HWND hWnd, UINT uMessage, WPARAM wParam, LPARAM lParam){
@@ -157,6 +158,8 @@ int WINAPI directXClass::WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, P
 		SetError(TEXT("could not load multiplayer menu item bitmap surface"));
 	}
 
+	lastTime = (float) timeGetTime();
+
 	while(TRUE){
 		if(PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)){
 			if(msg.message == WM_QUIT)
@@ -165,7 +168,10 @@ int WINAPI directXClass::WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, P
 			DispatchMessage(&msg);
 		}
 		else{
-			GameLoop();
+			float currTime = (float) timeGetTime();
+			float timeDelta = (currTime - lastTime) * 0.001f; // get elapsed time since last update in seconds
+			GameLoop(timeDelta);
+			lastTime = currTime;
 		}
 	}
 	GameShutdown();// clean up the game
@@ -242,12 +248,18 @@ void directXClass::SetError(wchar_t* szFormat, ...){
 int directXClass::GameInit(){
 	HRESULT r = 0;//return values
 	g_pD3D = Direct3DCreate9(D3D_SDK_VERSION);//COM object
-	if( g_pD3D == NULL){
+
+	if(g_pD3D == NULL){
 		SetError(TEXT("Could not create IDirect3D9 object"));
 		return E_FAIL;
 	}
 	
 	r = InitDirect3DDevice(g_hWndMain, SCREEN_WIDTH, SCREEN_HEIGHT, WINDOWED, D3DFMT_X8R8G8B8, g_pD3D, &g_pDevice);
+	if(FAILED(r)){//FAILED is a macro that returns false if return value is a failure - safer than using value itself
+		SetError(TEXT("Initialization of the device failed"));
+		return E_FAIL;
+	}
+	
 	InitGeometry();
 	LoadAlphabet(TEXT("Alphabet vSmall.bmp"), 8, 16);
 	InitTiming();
@@ -306,14 +318,18 @@ int directXClass::GameInit(){
 	input.init_keyboard(g_hWndMain);
 	setupCubes();
 
+	updateCameraTarget();
+	camera.reset();
+
 	return S_OK;
 }
 
 //the game loop, renders, counts frames, and quits on esc key down
-int directXClass::GameLoop(){
+int directXClass::GameLoop(float timeDelta) {
 	FrameCount();
-	input.read_keyboard();
 	
+	input.read_keyboard();
+
 	// Main menu switch, determines whether to go into single or multiplayer
 	switch(menuSelect)
 	{
@@ -407,8 +423,13 @@ int directXClass::GameLoop(){
 		// In Singleplayer game
 		case 2:
 			inputCommands();
-			player1.updateRotation();
-			player1.updatePosition();
+			//player1.updateRotation();
+			//player1.updatePosition();
+
+			player1.updatePosition(timeDelta);
+
+			updateCameraTarget();
+			camera.reset();//Update(timeDelta);
 
 			if(input.get_keystate(DIK_M))
 			{
@@ -420,30 +441,34 @@ int directXClass::GameLoop(){
 			}
 			UpdateHUD();
 
-         //directXClass::SetError(TEXT("p1: %f"), player1.getPositionZ());
-         for (std::list<AIPlayer*>::const_iterator ci = _aiPlayer.begin(); ci != _aiPlayer.end(); ++ci)
-         {
-           //directXClass::SetError(TEXT("p1: %f"), player1.getRotation().z); 
-            //(*ci)->bankLeft(0.01f);
-            //MessageBoxA(g_hWndMain, "hi", "hilo", 0);
-            (*ci)->Update(g_hWndMain, player1.getPosition());
-            //(*ci)->bankUp(0.04f);
-            (*ci)->updateRotation();
-            (*ci)->updatePosition();
+			//directXClass::SetError(TEXT("p1: %f"), player1.getPositionZ());
+			for (std::list<AIPlayer*>::const_iterator ci = _aiPlayer.begin(); ci != _aiPlayer.end(); ++ci)
+			{
+				//directXClass::SetError(TEXT("p1: %f"), player1.getRotation().z); 
+				//(*ci)->bankLeft(0.01f);
+				//MessageBoxA(g_hWndMain, "hi", "hilo", 0);
+				(*ci)->Update(g_hWndMain, player1.getPosition());
+				//(*ci)->bankUp(0.04f);
+				// (*ci)->updateRotation();
+				//(*ci)->updatePosition();
             
-         }
-         //_aiPlayer.front()->bankLeft(0.01f);
-         //_aiplayer1.bankLeft(0.01f);
-         //player2.(0.01f);
-			Render();
+			}
+			//_aiPlayer.front()->bankLeft(0.01f);
+			//_aiplayer1.bankLeft(0.01f);
+			//player2.(0.01f);
+            Render();
 		break;
 
 		// In Multiplayer game, currently the same as single player as there
 		// is currently no difference
 		case 3:
 			inputCommands();
-			player1.updateRotation();
-			player1.updatePosition();
+
+			player1.updatePosition(timeDelta);
+
+			updateCameraTarget();
+			camera.reset();//Update(timeDelta);
+
 			if(input.get_keystate(DIK_M))
 			{
 				player1.takeHit(5);
@@ -484,16 +509,20 @@ int directXClass::GameShutdown(){
 int directXClass::Render(){
 	HRESULT r;
 	LPDIRECT3DSURFACE9 pBackSurf = 0;
+
 	if(!g_pDevice){
 		SetError(TEXT("Cannot render because there is no device"));
 		return E_FAIL;
 	}
+
 	//clear the display arera with colour black, ignore stencil buffer
-	g_pDevice->Clear(0,0,D3DCLEAR_TARGET, D3DCOLOR_XRGB(0,0,25), 1.0f, 0);
-    // Clear the backbuffer and the zbuffer
-   g_pDevice->Clear( 0, NULL, D3DCLEAR_TARGET|D3DCLEAR_ZBUFFER, 
-                         D3DCOLOR_XRGB(0,0,255), 1.0f, 0 );
+	g_pDevice->Clear(0, NULL, D3DCLEAR_TARGET, D3DCOLOR_XRGB(0,100,100), 1.0f, 0);
+
+    // Clear the zbuffer
+    g_pDevice->Clear( 0, NULL, D3DCLEAR_ZBUFFER, D3DCOLOR_XRGB(0,0,0), 1.0f, 0 );
+ 
 	D3DLOCKED_RECT Locked;
+
 	//get pointer to backbuffer
 	r=g_pDevice->GetBackBuffer(0,0,D3DBACKBUFFER_TYPE_MONO, &pBackSurf);
 	if(FAILED(r)){
@@ -513,21 +542,28 @@ int directXClass::Render(){
 
 	pBackSurf->Release();//release lock
 	
-	
 	pBackSurf = 0;
+
 	// Begin the scene
 	if( SUCCEEDED( g_pDevice->BeginScene() ) )
 	{
+		setupLights();
+
+		g_pDevice->SetRenderState(D3DRS_NORMALIZENORMALS, true);
+		g_pDevice->SetRenderState(D3DRS_SPECULARENABLE, TRUE);
+
 		// Setup the world, view, and projection matrices
 		SetupMatrices(true);
 
-		
-		mainTerrain.renderSelf();
+		D3DXMATRIX mView = camera.getViewMatrix();
+		//g_pDevice->SetTransform(D3DTS_VIEW, &mView);
+
+		mainTerrain.renderSelf();	
 		player1.drawSelf();
 		//player2.drawSelf();
 
 
-		SetupMatrices(true);
+		//SetupMatrices(true);
 
 		drawCubes();
         _chat.RenderChat();
@@ -613,7 +649,7 @@ int directXClass::RenderRadar(D3DXVECTOR3 shipLocations[])
 
 int directXClass::UpdateHUD()
 {
-	healthRect.right = 400 * (player1.getShipCurrentHealth() / (float)player1.getShipMaxHealth()) + 60;
+	healthRect.right = (LONG) (400 * (player1.getShipCurrentHealth() / (float)player1.getShipMaxHealth()) + 60);
 	return S_OK;
 }
 
@@ -930,21 +966,6 @@ VOID directXClass::SetupMatrices(bool mesh1Active)
     D3DXMATRIXA16 matView2;
 	D3DXMatrixLookAtLH(&matView2, &vEyePt, &vLookatPt, &vUpVec);
 
-	
-    /*D3DXVECTOR3 vEyePt2( 0.0f, 3.0f,-5.0f );
-    D3DXVECTOR3 vLookatPt2( 0.0f, 0.0f, 0.0f );
-    D3DXVECTOR3 vUpVec2( 0.0f, 1.0f, 0.0f );
-    D3DXVECTOR3 vRightVec2( 1.0f, 0.0f, 0.0f );
-	D3DXVECTOR3 vLookVec = vEyePt - vLookatPt;
-	camera.setLookAt(&vLookatPt2);
-	camera.setPosition(&vEyePt2);
-	camera.setUp(&vUpVec2);
-	camera.setRight(&vRightVec2);
-	camera.walk(translateZView);
-	camera.strafe(rotationAboutXView);
-	camera.fly(rotationAboutYView);
-    D3DXMATRIXA16 matView;
-	camera.getViewMatrix(&matView);*/
     g_pDevice->SetTransform( D3DTS_VIEW, &matView2 );
 
     // For the projection matrix, we set up a perspective transform (which
@@ -954,7 +975,7 @@ VOID directXClass::SetupMatrices(bool mesh1Active)
     // the aspect ratio, and the near and far clipping planes (which define at
     // what distances geometry should be no longer be rendered).
     D3DXMATRIXA16 matProj;
-    D3DXMatrixPerspectiveFovLH( &matProj, D3DX_PI/4, 1.0f, 1.0f, 100.0f );
+    D3DXMatrixPerspectiveFovLH( &matProj, D3DX_PI/4, (FLOAT)SCREEN_WIDTH / (FLOAT)SCREEN_HEIGHT, 1.0f, 100.0f );
     g_pDevice->SetTransform( D3DTS_PROJECTION, &matProj );
 }
 
@@ -1227,30 +1248,52 @@ void directXClass::inputCommands()
 {
 	if(input.get_keystate(DIK_A))
 	{
-		player1.bankLeft(0.05f);      
+		player1.right(false);
+		player1.left(true);
+	}
+	else if(input.get_keystate(DIK_D))
+	{
+		player1.left(false);
+		player1.right(true);
+	}
+	else
+	{
+		player1.right(false);
+		player1.left(false);
 	}
 
-	if(input.get_keystate(DIK_D))
-	{
-		player1.bankRight(0.05f);
-	}
 	
 	if(input.get_keystate(DIK_W))
 	{
-      //if(player1.getPositionZ() > -1.5)
-		player1.bankUp(0.05f);
-      
+		player1.up(false);
+		player1.down(true);
+	}
+	else if(input.get_keystate(DIK_S))
+	{
+		player1.down(false);
+		player1.up(true);
+	}
+	else
+	{
+		player1.up(false);
+		player1.down(false);
 	}
 
-	if(input.get_keystate(DIK_S))
+	if(input.get_keystate(DIK_L))
 	{
-      //if(player1.getPositionZ() < 1.5)
-		player1.bankDown(0.05f);
+		if(dirLightEnabled)
+			dirLightEnabled = false;
+		else
+			dirLightEnabled = true;
 	}
 
 	if(input.get_keystate(DIK_SPACE))
 	{
-		//player1.useAfterBooster();
+		player1.boost(true);
+	}
+	else
+	{
+		player1.boost(false);
 	}
 }
 
@@ -1279,7 +1322,7 @@ void directXClass::cleanupCubes()
 
 void directXClass::drawCubes()
 {
-	D3DXMATRIX translate;
+	D3DXMATRIX translate, translate2;
 	D3DXMatrixTranslation(&translate, 0.0f, -1.0f, 0.0f);
 	g_pDevice->SetTransform( D3DTS_WORLD, &translate);
    D3DMATERIAL9* mat = new D3DMATERIAL9();
@@ -1299,4 +1342,42 @@ void directXClass::drawCubes()
 
 point directXClass::getMouseCoordinates() {
 	return point(currentX, currentY);
+}
+
+void directXClass::updateCameraTarget()
+{
+	camera.setvChasePosition(player1.getPositionVector());
+	camera.setvChaseDirection(player1.getDirectionVector());
+	camera.setvUp(player1.getUpVector());
+}
+
+D3DLIGHT9 directXClass::initDirectionalLight(D3DXVECTOR3* direction, D3DXCOLOR* color)
+{
+	D3DLIGHT9 light;
+	::ZeroMemory(&light, sizeof(light));
+	light.Type = D3DLIGHT_DIRECTIONAL;
+	light.Ambient = *color * 0.4f;
+	light.Diffuse = *color;
+	light.Specular = *color * 0.6f;
+	light.Direction = *direction;
+
+	return light;
+}
+
+void directXClass::setupLights()
+{
+	D3DXVECTOR3 vDir(0.0f, 0.0f, 1.0f);
+	D3DXCOLOR c = D3DXCOLOR(1.0f, 1.0f, 1.0f, 1.0f);
+	dirLight = initDirectionalLight(&vDir, &c);
+
+	g_pDevice->SetLight(0, &dirLight);
+
+	if(dirLightEnabled)
+	{
+		g_pDevice->LightEnable(0, TRUE);
+	}
+	else
+	{
+		g_pDevice->LightEnable(0, FALSE);
+	}
 }

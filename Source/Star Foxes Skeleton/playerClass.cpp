@@ -44,8 +44,6 @@ void PlayerClass::updateRotation()
 		if(vRotation.z < -D3DX_PI)
 			vRotation.z = D3DX_PI;
 
-		directXClass::SetError(TEXT("%f"), vRotation.z);
-
 		shiptype.setRotationAboutZ(vRotation.z);
 	}
 
@@ -53,14 +51,14 @@ void PlayerClass::updateRotation()
 	{
 		if(vRotation.x < 0.0f)
 		{
-			vRotation.x += 0.02f;
+			vRotation.x += 0.025f;
 
 			if(vRotation.x >= 0.01f)
 				vRotation.x = 0.0f;
 		}
 		else
 		{
-			vRotation.x -= 0.02f;
+			vRotation.x -= 0.025f;
 
 			if(vRotation.x <= 0.01f)
 				vRotation.x = 0.0f;
@@ -72,12 +70,9 @@ void PlayerClass::updateRotation()
 		if(vRotation.x < -D3DX_PI)
 			vRotation.x = D3DX_PI;
 
-		directXClass::SetError(TEXT("%f"), vRotation.x);
-
 		shiptype.setRotationAboutX(vRotation.x);
 	}
 
-	//shiptype.setRotationAboutZ(D3DX_PI);
 }
 
 void PlayerClass::bankLeft(float value)

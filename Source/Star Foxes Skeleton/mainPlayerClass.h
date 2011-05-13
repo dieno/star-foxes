@@ -1,4 +1,4 @@
-﻿#ifndef MAINPLAYERCLASS_H
+#ifndef MAINPLAYERCLASS_H
 #define MAINPLAYERCLASS_H
 
 #include "directXHeader.h"
@@ -21,8 +21,21 @@ public:
 		rotationZ(0.0f), rotationX(0.0f), positionX(0.0f), currentSpeed(1.0f), vRotation(0.0f,0.0f,0.0f), vPosition(0.0f,0.0f,0.0f), afterboosterActive_(false),
 		isAlive(true), boosterTimer(10){}
 
+	void left(bool active) {playerShip_.bankLeft(active);}
+	void right(bool active) {playerShip_.bankRight(active);}
+	void up(bool active) {playerShip_.bankUp(active);}
+	void down(bool active) {playerShip_.bankDown(active);}
+	void boost(bool active) {playerShip_.boost(active);}
 
-   MainShipClass* GetShip();
+	void updatePosition(float timeDelta); //put movement in here!
+
+	void updateRotation(D3DXVECTOR3* vRotation);
+
+	D3DXVECTOR3 getPositionVector() {return playerShip_.getPositionVector();}
+	D3DXVECTOR3 getDirectionVector() {return playerShip_.getDirectionVector();}
+	D3DXVECTOR3 getUpVector() {return playerShip_.getUpVector();}
+
+    MainShipClass* GetShip();
 	std::string getPlayerName() {
 		return playerName_;
 	}
@@ -63,10 +76,6 @@ public:
 		afterboosterActive_ = false;
 		currentSpeed = 1.0f; //place holder
 	}
-
-	void updatePosition(); //put movement in here!
-
-	void updateRotation();
 
 	int getBoosterTimer() {
 		return boosterTimer;
