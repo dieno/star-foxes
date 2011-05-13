@@ -15,6 +15,15 @@ public:
 		int teamNum, 
 		int lives)
 	: MainPlayerClass(playerName, teamNum, lives, MainShipClass(mesh, meshMat, meshTex, meshNumMat, newg_pDevice)) {}
+
+	
+	HumanPlayerClass(
+		PMESHSTRUCT meshStruct,
+		LPDIRECT3DDEVICE9 newg_pDevice, 
+		std::string playerName, 
+		int teamNum, 
+		int lives)
+	: MainPlayerClass(playerName, teamNum, lives, MainShipClass(meshStruct, newg_pDevice)) {}
 	
 	HumanPlayerClass(MainShipClass shiptype, 
 		std::string playerName, 

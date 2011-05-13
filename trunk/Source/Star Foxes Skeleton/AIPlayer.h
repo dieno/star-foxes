@@ -67,6 +67,16 @@ public:
 	: MainPlayerClass(playerName, teamNum, lives, MainShipClass(mesh, meshMat, meshTex, meshNumMat, newg_pDevice)) {
     IniAI();
    }
+
+	AIPlayer(
+		PMESHSTRUCT meshStruct,
+		LPDIRECT3DDEVICE9 newg_pDevice, 
+		std::string playerName, 
+		int teamNum, 
+		int lives)
+	: MainPlayerClass(playerName, teamNum, lives, MainShipClass(meshStruct, newg_pDevice)) {
+    IniAI();
+   }
 	
 	AIPlayer(MainShipClass shiptype, 
 		std::string playerName, 

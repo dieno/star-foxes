@@ -1,4 +1,4 @@
-#ifndef MAINPLAYERCLASS_H
+﻿#ifndef MAINPLAYERCLASS_H
 #define MAINPLAYERCLASS_H
 
 #include "directXHeader.h"
@@ -16,9 +16,11 @@ public:
 		MainShipClass playerShip):playerName_(playerName), teamNum_(teamNum), lives_(lives), playerShip_(playerShip),
 		rotationZ(0.0f), rotationX(0.0f), positionX(0.0f), currentSpeed(1.0f), vRotation(0.0f,0.0f,0.0f), vPosition(0.0f,0.0f,0.0f), afterboosterActive_(false),
 		isAlive(true), boosterTimer(10){}
+
 	MainPlayerClass():playerName_(),teamNum_(),lives_(),playerShip_(),
 		rotationZ(0.0f), rotationX(0.0f), positionX(0.0f), currentSpeed(1.0f), vRotation(0.0f,0.0f,0.0f), vPosition(0.0f,0.0f,0.0f), afterboosterActive_(false),
 		isAlive(true), boosterTimer(10){}
+
 
    MainShipClass* GetShip();
 	std::string getPlayerName() {
