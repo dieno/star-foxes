@@ -42,8 +42,9 @@ class AIPlayer: public MainPlayerClass
 {
 private:
    EBehaviour _behave;
-   PMovement _mv;
+   
 public:
+   PMovement _mv;
    void Evaluate();
    void Seek(D3DXVECTOR3 enemyPos);
    void Wander(HWND hWnd);
