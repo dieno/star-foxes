@@ -112,8 +112,8 @@ void MainShipClass::updateWorldMatrix()
 	D3DXVec3Cross(&vRight_, &vUp_, &vDirection_);
 	D3DXVec3Normalize(&vRight_, &vRight_);
 
-	directXClass::SetError(TEXT("up: X: %f, Y: %f, Z: %f dir: X: %f, Y: %f, Z: %f right: X: %f, Y: %f, Z: %f"), vUp_.x, vUp_.y, vUp_.z, vDirection_.x, vDirection_.y, vDirection_.z, vRight_.x, vRight_.y, vRight_.z);
-	directXClass::SetError(TEXT("----------------------"));
+	//directXClass::SetError(TEXT("up: X: %f, Y: %f, Z: %f dir: X: %f, Y: %f, Z: %f right: X: %f, Y: %f, Z: %f"), vUp_.x, vUp_.y, vUp_.z, vDirection_.x, vDirection_.y, vDirection_.z, vRight_.x, vRight_.y, vRight_.z);
+	//directXClass::SetError(TEXT("----------------------"));
 
 	D3DXMATRIX mScale;
 	D3DXMatrixIdentity(&mScale);
@@ -159,11 +159,12 @@ void MainShipClass::bankRight(bool active)
 	if(active)
 	{
 		vRotation_.x = 1.0f;
+      directXClass::SetError(TEXT("up: X: %f, Y: %f, Z: %f dir: X: %f, Y: %f, Z: %f right: X: %f, Y: %f, Z: %f"), vUp_.x, vUp_.y, vUp_.z, vDirection_.x, vDirection_.y, vDirection_.z, vRight_.x, vRight_.y, vRight_.z);
 	}
 	else
 	{
 		vRotation_.x = 0.0f;
-	}
+	}   
 }
 
 void MainShipClass::bankLeft(bool active)
@@ -171,11 +172,12 @@ void MainShipClass::bankLeft(bool active)
 	if(active)
 	{
 		vRotation_.x = -1.0f;
+      directXClass::SetError(TEXT("up: X: %f, Y: %f, Z: %f dir: X: %f, Y: %f, Z: %f right: X: %f, Y: %f, Z: %f"), vUp_.x, vUp_.y, vUp_.z, vDirection_.x, vDirection_.y, vDirection_.z, vRight_.x, vRight_.y, vRight_.z);
 	}
 	else
 	{
 		vRotation_.x = 0.0f;
-	}
+	}   
 }
 
 void MainShipClass::bankUp(bool active)
@@ -186,11 +188,13 @@ void MainShipClass::bankUp(bool active)
 			vRotation_.y = -1.0f;
 		else
 			vRotation_.y = 1.0f;
+      directXClass::SetError(TEXT("up: X: %f, Y: %f, Z: %f dir: X: %f, Y: %f, Z: %f right: X: %f, Y: %f, Z: %f"), vUp_.x, vUp_.y, vUp_.z, vDirection_.x, vDirection_.y, vDirection_.z, vRight_.x, vRight_.y, vRight_.z);
 	}
 	else
 	{
 		vRotation_.y = 0.0f;
 	}
+   
 }
 
 void MainShipClass::bankDown(bool active)
@@ -201,11 +205,12 @@ void MainShipClass::bankDown(bool active)
 			vRotation_.y = 1.0f;
 		else
 			vRotation_.y = -1.0f;
+      directXClass::SetError(TEXT("up: X: %f, Y: %f, Z: %f dir: X: %f, Y: %f, Z: %f right: X: %f, Y: %f, Z: %f"), vUp_.x, vUp_.y, vUp_.z, vDirection_.x, vDirection_.y, vDirection_.z, vRight_.x, vRight_.y, vRight_.z);
 	}
 	else
 	{
 		vRotation_.y = 0.0f;
-	}
+	}   
 }
 
 void MainShipClass::boost(bool active)
@@ -213,11 +218,12 @@ void MainShipClass::boost(bool active)
 	if(active)
 	{
 		thrustAmount_ = 0.001f;
+      directXClass::SetError(TEXT("up: X: %f, Y: %f, Z: %f dir: X: %f, Y: %f, Z: %f right: X: %f, Y: %f, Z: %f"), vUp_.x, vUp_.y, vUp_.z, vDirection_.x, vDirection_.y, vDirection_.z, vRight_.x, vRight_.y, vRight_.z);
 	}
 	else
 	{
 		thrustAmount_ = 0.0f;
-	}
+	}   
 }
 
 
