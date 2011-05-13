@@ -13,6 +13,7 @@
 #include "Networking\Text.h"
 #include "Networking\GameChat.h"
 #include "Networking\MsgTranslator.h"
+#include "Camera.h"
 //#include "Networking/GameChat.h"
 //using namespace std;
 
@@ -54,6 +55,7 @@ public:
 	player1(),
 	player2(),
 	input(),
+	camera(),
 	singlePlayerSurface(0),
 	singlePlayer(),
 	multiPlayerSurface(0),
@@ -64,14 +66,16 @@ public:
 	radarRect(),
 	bgSurface(0),
 	menuSelect(0),
-	mainTerrain(){}
+	mainTerrain(),
+	dirLight(),
+	dirLightEnabled(true){}
 	int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pstrCmdLine, int iCmdShow);
 	static long CALLBACK WndProc(HWND hWnd, UINT uMessage, WPARAM wParam, LPARAM lParam);
 	static directXClass *program;
 	int InitDirect3DDevice(HWND hWndTarget, int Width, int Height, BOOL bWindowed, D3DFORMAT FullScreenFormat, LPDIRECT3D9 pD3D, LPDIRECT3DDEVICE9* ppDevice);
 	static void SetError(wchar_t* szFormat, ...);
 	int GameInit();
-	int GameLoop();
+	int GameLoop(float timeDelta);
 	int GameShutdown();
 	int LoadBitmapToSurface(wchar_t* PathName, LPDIRECT3DSURFACE9* ppSurface, LPDIRECT3DDEVICE9 pDevice);
 	void PrintFrameRate( int x, int y, BOOL bTransparent, D3DCOLOR ColorKey, DWORD* pDestData, int DestPitch );
@@ -95,8 +99,11 @@ private:
 	void setupCubes();
 	void cleanupCubes();
 	void drawCubes();
-   void IniChat();
-   bool KeyDownChat(WPARAM wParam, HWND hWnd);
+	void updateCameraTarget();
+    void IniChat();
+	D3DLIGHT9 initDirectionalLight(D3DXVECTOR3* direction, D3DXCOLOR* color);
+	void setupLights();
+    bool KeyDownChat(WPARAM wParam, HWND hWnd);
 	point getMouseCoordinates();
 	static LPDIRECT3D9 g_pD3D;//COM object
 	static LPDIRECT3DDEVICE9 g_pDevice;//graphics device
@@ -155,6 +162,10 @@ private:
 	int menuSelect; // int for what menu item is currently selected
     GameChat _chat;
     Terrain mainTerrain; 
+	Camera camera;
+	static float lastTime;
+	D3DLIGHT9 dirLight;
+	bool dirLightEnabled;
     //MsgTranslator _msgt;
 };
 #endif

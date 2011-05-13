@@ -1,14 +1,17 @@
 #include "mainPlayerClass.h"
 #include "directXClass.h"
 
+
+
 MainShipClass* MainPlayerClass::GetShip()
 {
    return &playerShip_;
 }
 
-void MainPlayerClass::updatePosition()
+void MainPlayerClass::updatePosition(float timeDelta)
 {
-	D3DXVECTOR3 vMovement(0.0f, 0.0f, 0.0f);
+	playerShip_.Update(timeDelta);
+	/*D3DXVECTOR3 vMovement(0.0f, 0.0f, 0.0f);
 
 	if(isAlive)
 	{
@@ -22,12 +25,12 @@ void MainPlayerClass::updatePosition()
 		playerShip_.setTranslateY(vMovement.z);
 		//shiptype.setTranslateY(vMovement.y);
 		//shiptype.setTranslateZ(vPosition.z);
-	}
+	}*/
 }
 
-void MainPlayerClass::updateRotation()
+void MainPlayerClass::updateRotation(D3DXVECTOR3* vRotation)
 {
-	if(vRotation.z != 0.0f)
+/*	if(vRotation.z != 0.0f)
 	{
 		if(vRotation.z < 0.0f)
 		{
@@ -83,7 +86,7 @@ void MainPlayerClass::updateRotation()
 		playerShip_.setRotationAboutX(vRotation.x);
 	}
 
-	//shiptype.setRotationAboutZ(D3DX_PI);
+	//shiptype.setRotationAboutZ(D3DX_PI);*/
 }
 
 void MainPlayerClass::bankLeft(float value)
