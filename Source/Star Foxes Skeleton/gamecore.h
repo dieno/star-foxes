@@ -3,5 +3,6 @@
 
 #include "input.h"
 #include "point.h"
+#include "meshStruct.h"
 
 #endif

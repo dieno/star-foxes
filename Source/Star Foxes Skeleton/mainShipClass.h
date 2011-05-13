@@ -21,6 +21,21 @@ public:
 		translateZMesh1(0),
 		g_pDevice(newg_pDevice){}
 
+	MainShipClass(PMESHSTRUCT meshStruct, LPDIRECT3DDEVICE9 newg_pDevice):
+		currentHealth(100),
+		maxHealth(100),
+		g_pMesh(meshStruct->g_pMesh),
+		g_pMeshMaterials(meshStruct->g_pMeshMaterials),
+		g_pMeshTextures(meshStruct->g_pMeshTextures),
+		g_dwNumMaterials(meshStruct->g_dwNumMaterials),
+		rotationAboutYMesh1(0),
+		rotationAboutXMesh1(0),
+		rotationAboutZMesh1(0),
+		translateYMesh1(0),
+		translateXMesh1(0),
+		translateZMesh1(0),
+		g_pDevice(newg_pDevice){}
+
 	MainShipClass():
 		currentHealth(100),
 		maxHealth(100),

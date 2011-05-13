@@ -11,6 +11,12 @@ public:
 			setCurrentHealth(100);
 	}
 
+	MedicShipClass(PMESHSTRUCT meshStruct, LPDIRECT3DDEVICE9 newg_pDevice)
+		:MainShipClass(meshStruct, newg_pDevice){
+			setMaxHealth(100);
+			setCurrentHealth(100);
+	}
+
 	static float getAfterburnerSpeed() {
 		return afterburnerSpeed_;
 	}
