@@ -255,6 +255,9 @@ int directXClass::GameInit(){
 	dummyAI.setTranslateZ(-3);
 	dummyAI.setRotationAboutY(D3DX_PI);
 	player1 = HumanPlayerClass(g_pMesh, g_pMeshMaterials, g_pMeshTextures, g_dwNumMaterials, g_pDevice, "Human",0, 1);
+	mainTerrain = Terrain(g_pMesh2, g_pMeshMaterials2, g_pMeshTextures2, g_dwNumMaterials2, g_pDevice);
+	mainTerrain.setTranslateY(-2);
+	mainTerrain.SetMtrlColor(D3DXCOLOR(0.0f, 0.1f, 0.0f, 0.0f), D3DXCOLOR(0.0f, 0.1f, 0.0f, 0.0f), D3DXCOLOR(0, 0.1f, 0.0f, 0.0f));
 
    static D3DMATERIAL9* mat1 = new D3DMATERIAL9;
    static AIPlayer ai1 = AIPlayer(g_pMesh, mat1, g_pMeshTextures, 1, g_pDevice, "AI",0, 1);
@@ -286,6 +289,7 @@ int directXClass::GameInit(){
    ai4.SetBehaviour(SEEK);
    ai4.GetShip()->SetMtrlColor(D3DXCOLOR(255.0f, 0, 0, 255.0f), D3DXCOLOR(255.0f, 0, 0, 255.0f), D3DXCOLOR(255.0f, 0, 0, 255.0f));   
    
+
    //static AIPlayer aiplayer = AIPlayer(g_pMesh, g_pMeshMaterials, g_pMeshTextures, g_dwNumMaterials, g_pDevice, "Human",0, 1);
    _aiPlayer.push_back(&ai3);
    _aiPlayer.push_back(&ai1);
@@ -405,6 +409,17 @@ int directXClass::GameLoop(){
 			inputCommands();
 			player1.updateRotation();
 			player1.updatePosition();
+
+			if(input.get_keystate(DIK_M))
+			{
+				player1.takeHit(5);
+			}
+			if(input.get_keystate(DIK_N))
+			{
+				player1.takeHit(-5);
+			}
+			UpdateHUD();
+
          //directXClass::SetError(TEXT("p1: %f"), player1.getPositionZ());
          for (std::list<AIPlayer*>::const_iterator ci = _aiPlayer.begin(); ci != _aiPlayer.end(); ++ci)
          {
@@ -429,6 +444,15 @@ int directXClass::GameLoop(){
 			inputCommands();
 			player1.updateRotation();
 			player1.updatePosition();
+			if(input.get_keystate(DIK_M))
+			{
+				player1.takeHit(5);
+			}
+			if(input.get_keystate(DIK_N))
+			{
+				player1.takeHit(-5);
+			}
+			UpdateHUD();
 			Render();
 		break;
 	}
@@ -498,7 +522,7 @@ int directXClass::Render(){
 		SetupMatrices(true);
 
 		
-
+		mainTerrain.renderSelf();
 		player1.drawSelf();
 		//player2.drawSelf();
 
@@ -581,6 +605,18 @@ int directXClass::RenderMainMenu(){
 	g_pDevice->Present(NULL, NULL, NULL, NULL);//swap over buffer to primary surface
 	return S_OK;
 }
+
+int directXClass::RenderRadar(D3DXVECTOR3 shipLocations[])
+{
+	return S_OK;
+}
+
+int directXClass::UpdateHUD()
+{
+	healthRect.right = 400 * (player1.getShipCurrentHealth() / (float)player1.getShipMaxHealth()) + 60;
+	return S_OK;
+}
+
 
 //loads the bitmap onto a surface
 int directXClass::LoadBitmapToSurface(wchar_t* PathName, LPDIRECT3DSURFACE9* ppSurface, LPDIRECT3DDEVICE9 pDevice){
@@ -995,67 +1031,67 @@ HRESULT directXClass::InitGeometry()
     // Done with the material buffer
     pD3DXMtrlBuffer->Release();
 
-   // if( FAILED( D3DXLoadMeshFromX( TEXT("M_DISK.x"), D3DXMESH_SYSTEMMEM, 
-   //                                g_pDevice, NULL, 
-   //                                &pD3DXMtrlBuffer, NULL, &g_dwNumMaterials2, 
-   //                                &g_pMesh2 ) ) )
-   // {
-   //     // If model is not in current folder, try parent folder
-   //     if( FAILED( D3DXLoadMeshFromX( TEXT("..\\M_DISK.x"), D3DXMESH_SYSTEMMEM, 
-   //                                 g_pDevice, NULL, 
-   //                                 &pD3DXMtrlBuffer, NULL, &g_dwNumMaterials2, 
-   //                                 &g_pMesh2 ) ) )
-   //     {
-   //         MessageBox(NULL, TEXT("Could not find M_DISK.x"), TEXT("Meshes.exe"), MB_OK);
-   //         return E_FAIL;
-   //     }
-   // }
+    if( FAILED( D3DXLoadMeshFromX( TEXT("terrain.x"), D3DXMESH_SYSTEMMEM, 
+                                   g_pDevice, NULL, 
+                                   &pD3DXMtrlBuffer, NULL, &g_dwNumMaterials2, 
+                                   &g_pMesh2 ) ) )
+    {
+        // If model is not in current folder, try parent folder
+        if( FAILED( D3DXLoadMeshFromX( TEXT("..\\terrain.x"), D3DXMESH_SYSTEMMEM, 
+                                    g_pDevice, NULL, 
+                                    &pD3DXMtrlBuffer, NULL, &g_dwNumMaterials2, 
+                                    &g_pMesh2 ) ) )
+        {
+            MessageBox(NULL, TEXT("Could not find terrain.x"), TEXT("Meshes.exe"), MB_OK);
+            return E_FAIL;
+        }
+    }
 
-   // // We need to extract the material properties and texture names from the 
-   // // pD3DXMtrlBuffer
-   // D3DXMATERIAL* d3dxMaterials2 = (D3DXMATERIAL*)pD3DXMtrlBuffer->GetBufferPointer();
-   // g_pMeshMaterials2 = new D3DMATERIAL9[g_dwNumMaterials2];
-   // g_pMeshTextures2  = new LPDIRECT3DTEXTURE9[g_dwNumMaterials2];
+    // We need to extract the material properties and texture names from the 
+    // pD3DXMtrlBuffer
+    D3DXMATERIAL* d3dxMaterials2 = (D3DXMATERIAL*)pD3DXMtrlBuffer->GetBufferPointer();
+    g_pMeshMaterials2 = new D3DMATERIAL9[g_dwNumMaterials2];
+    g_pMeshTextures2  = new LPDIRECT3DTEXTURE9[g_dwNumMaterials2];
 
-   // for( DWORD i=0; i<g_dwNumMaterials2; i++ )
-   // {
-   //     // Copy the material
-   //     g_pMeshMaterials2[i] = d3dxMaterials2[i].MatD3D;
+    for( DWORD i=0; i<g_dwNumMaterials2; i++ )
+    {
+        // Copy the material
+        g_pMeshMaterials2[i] = d3dxMaterials2[i].MatD3D;
 
-   //     // Set the ambient color for the material (D3DX does not do this)
-   //     g_pMeshMaterials2[i].Ambient = g_pMeshMaterials2[i].Diffuse;
+        // Set the ambient color for the material (D3DX does not do this)
+        g_pMeshMaterials2[i].Ambient = g_pMeshMaterials2[i].Diffuse;
 
-   //     g_pMeshTextures2[i] = NULL;
-   //     if( d3dxMaterials2[i].pTextureFilename != NULL && 
-   //         lstrlen((LPCWSTR)d3dxMaterials2[i].pTextureFilename) > 0 )
-   //     {
-   //         // Create the texture
-			//int len = lstrlen((LPCWSTR)d3dxMaterials2[i].pTextureFilename);
-			//wchar_t *wText = new wchar_t[len];
-			//::MultiByteToWideChar(  CP_ACP, NULL,d3dxMaterials2[i].pTextureFilename, -1, wText,len );
-   //         if( FAILED( D3DXCreateTextureFromFile( g_pDevice, 
-   //                                             wText, 
-   //                                             &g_pMeshTextures2[i] ) ) )
-   //         {
-   //             // If texture is not in current folder, try parent folder
-   //             const TCHAR* strPrefix = TEXT("..\\");
-   //             const int lenPrefix = lstrlen( strPrefix );
-   //             TCHAR strTexture[MAX_PATH];
-   //             lstrcpyn( strTexture, strPrefix, MAX_PATH );
-   //             lstrcpyn( strTexture + lenPrefix, wText, MAX_PATH - lenPrefix );
-   //             // If texture is not in current folder, try parent folder
-   //             if( FAILED( D3DXCreateTextureFromFile( g_pDevice, 
-   //                                                 strTexture, 
-   //                                                 &g_pMeshTextures2[i] ) ) )
-   //             {
-   //                 MessageBox(NULL, TEXT("Could not find texture map"), TEXT("Meshes.exe"), MB_OK);
-   //             }
-   //         }
-   //     }
-   // }
+        g_pMeshTextures2[i] = NULL;
+        if( d3dxMaterials2[i].pTextureFilename != NULL && 
+            lstrlen((LPCWSTR)d3dxMaterials2[i].pTextureFilename) > 0 )
+        {
+            // Create the texture
+			int len = lstrlen((LPCWSTR)d3dxMaterials2[i].pTextureFilename);
+			wchar_t *wText = new wchar_t[len];
+			::MultiByteToWideChar(  CP_ACP, NULL,d3dxMaterials2[i].pTextureFilename, -1, wText,len );
+            if( FAILED( D3DXCreateTextureFromFile( g_pDevice, 
+                                                wText, 
+                                                &g_pMeshTextures2[i] ) ) )
+            {
+                // If texture is not in current folder, try parent folder
+                const TCHAR* strPrefix = TEXT("..\\");
+                const int lenPrefix = lstrlen( strPrefix );
+                TCHAR strTexture[MAX_PATH];
+                lstrcpyn( strTexture, strPrefix, MAX_PATH );
+                lstrcpyn( strTexture + lenPrefix, wText, MAX_PATH - lenPrefix );
+                // If texture is not in current folder, try parent folder
+                if( FAILED( D3DXCreateTextureFromFile( g_pDevice, 
+                                                    strTexture, 
+                                                    &g_pMeshTextures2[i] ) ) )
+                {
+                    MessageBox(NULL, TEXT("Could not find texture map"), TEXT("Meshes.exe"), MB_OK);
+                }
+            }
+        }
+    }
 
-   // // Done with the material buffer
-   // pD3DXMtrlBuffer->Release();
+   // Done with the material buffer
+    pD3DXMtrlBuffer->Release();
     return S_OK;
 }
 
