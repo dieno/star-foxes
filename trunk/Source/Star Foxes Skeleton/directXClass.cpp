@@ -303,9 +303,10 @@ int directXClass::GameInit(){
    
 
    //static AIPlayer aiplayer = AIPlayer(g_pMesh, g_pMeshMaterials, g_pMeshTextures, g_dwNumMaterials, g_pDevice, "Human",0, 1);
-   _aiPlayer.push_back(&ai3);
+   
    _aiPlayer.push_back(&ai1);
    _aiPlayer.push_back(&ai2);
+   _aiPlayer.push_back(&ai3);
    _aiPlayer.push_back(&ai4);
    
    //player2 = MainPlayerClass("Dummy",0, 1, dummyAI);
@@ -959,12 +960,12 @@ VOID directXClass::SetupMatrices(bool mesh1Active)
     g_pDevice->SetTransform( D3DTS_WORLD, &matWorld );
 
 	
-    D3DXVECTOR3 vEyePt( 0.0f, 1.0f, 5.0f );
+    D3DXVECTOR3 vEyePt( 0.0f, 1.0f, -15.0f );
     D3DXVECTOR3 vLookatPt( 0.0f, 1.0f, 0.0f );
     D3DXVECTOR3 vUpVec( 0.0f, 1.0f, 0.0f );
 	
     D3DXMATRIXA16 matView2;
-	D3DXMatrixLookAtLH(&matView2, &vEyePt, &vLookatPt, &vUpVec);
+	 D3DXMatrixLookAtLH(&matView2, &vEyePt, &vLookatPt, &vUpVec);
 
     g_pDevice->SetTransform( D3DTS_VIEW, &matView2 );
 
@@ -1331,10 +1332,10 @@ void directXClass::drawCubes()
 	      
    for(int i = 0; i < 100; ++i)
 	{
-      if(i % 2 == 0)
-		   D3DXMatrixTranslation(&translate, -4, 0.0f, ((float) (i+1) * -20.0f) / 2.0f);
+      if(i % 2 != 0)
+		   D3DXMatrixTranslation(&translate, -4, 0.0f, ((float) (i+1) * 20.0f) / 2.0f);
       else
-         D3DXMatrixTranslation(&translate, 4, 0.0f, ((float) (i+1) * -20.0f) / 2.0f);
+         D3DXMatrixTranslation(&translate, 4, 0.0f, ((float) (i+1) * 20.0f) / 2.0f);
 		g_pDevice->SetTransform( D3DTS_WORLD, &translate);
 		cubemesh[i]->DrawSubset(0);
 	}
