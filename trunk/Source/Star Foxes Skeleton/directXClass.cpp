@@ -557,7 +557,7 @@ int directXClass::Render(){
 		SetupMatrices(true);
 
 		D3DXMATRIX mView = camera.getViewMatrix();
-		//g_pDevice->SetTransform(D3DTS_VIEW, &mView);
+		g_pDevice->SetTransform(D3DTS_VIEW, &mView);
 
 		mainTerrain.renderSelf();	
 		player1.drawSelf();
