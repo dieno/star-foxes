@@ -4,7 +4,7 @@
 #include "directXHeader.h"
 #include "gamecore.h"
 
-#define Y_AXIS_INVERTED true
+#define Y_AXIS_INVERTED false
 
 class MainShipClass {
 public:

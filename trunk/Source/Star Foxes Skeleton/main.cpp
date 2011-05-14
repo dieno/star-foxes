@@ -8,6 +8,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pstrCmdLin
 	directXClass program = directXClass(bitmapName);
 	directXClass::program = &program;
 	program.WinMain(hInstance, hPrevInstance, pstrCmdLine, iCmdShow);
+	return 0;
 }
 
 

@@ -4,6 +4,10 @@
 float MainShipClass::afterburnerSpeed_ =  5.0f;
 float MainShipClass::damagePerShot =  1.0f;
 
+D3DXVECTOR3 MainShipClass::vRight_	   = D3DXVECTOR3(1.0f,0.0f,0.0f);
+D3DXVECTOR3 MainShipClass::vUp_		   = D3DXVECTOR3(0.0f,1.0f,0.0f);
+D3DXVECTOR3 MainShipClass::vDirection_ = D3DXVECTOR3(0.0f,0.0f,1.0f);
+
 void MainShipClass::renderSelf() {
 	// Setup the world, view, and projection matrices
 	setupWorld();
@@ -27,8 +31,8 @@ void MainShipClass::Update(float timeDelta)
 
 	vRotationAmount = vRotation_ * RotationRate_ * timeDelta;
 
-	if(vUp_.y < 0)
-		vRotationAmount.x = -vRotationAmount.x;
+	//if(vUp_.y < 0)
+		//vRotationAmount.x = -vRotationAmount.x;
 
 	yaw(vRotationAmount.x);
 	pitch(vRotationAmount.y);
@@ -117,20 +121,23 @@ void MainShipClass::updateWorldMatrix()
 
 	D3DXMATRIX mScale;
 	D3DXMatrixIdentity(&mScale);
-	D3DXMatrixScaling(&mScale, vScale_.x, vScale_.y, vScale_.z);
+	D3DXMatrixScaling(&mScale, 1.0f,1.0f,1.0f);
 
 	D3DXMATRIX mRotate;
 	D3DXMatrixIdentity(&mRotate);
-	mRotate(0, 0) = -vRight_.x; mRotate(0, 1) = -vUp_.x; mRotate(0, 2) = vDirection_.x; mRotate(0, 3) = 0.0f;
-	mRotate(1, 0) = vRight_.y; mRotate(1, 1) =  vUp_.y; mRotate(1, 2) = vDirection_.y; mRotate(1, 3) = 0.0f;
-	mRotate(2, 0) = -vRight_.z; mRotate(2, 1) = -vUp_.z; mRotate(2, 2) = vDirection_.z; mRotate(2, 3) = 0.0f;
+	mRotate(0, 0) = vRight_.x; mRotate(0, 1) = vUp_.x; mRotate(0, 2) = vDirection_.x; mRotate(0, 3) = 0.0f;
+	mRotate(1, 0) = vRight_.y; mRotate(1, 1) = vUp_.y; mRotate(1, 2) = vDirection_.y; mRotate(1, 3) = 0.0f;
+	mRotate(2, 0) = vRight_.z; mRotate(2, 1) = vUp_.z; mRotate(2, 2) = vDirection_.z; mRotate(2, 3) = 0.0f;
 	mRotate(3, 0) = 0.0f;	   mRotate(3, 1) =  0.0f;  mRotate(3, 2) =  0.0f;         mRotate(3, 3) = 1.0f;
+
+	D3DXMATRIX mTransposedRotate;
+	D3DXMatrixTranspose(&mTransposedRotate, &mRotate);
 
 	D3DXMATRIX mTranslate;
 	D3DXMatrixIdentity(&mTranslate);
 	D3DXMatrixTranslation(&mTranslate, vPosition_.x, vPosition_.y, vPosition_.z);
 
-	mWorld_ = mScale * mRotate * mTranslate;
+	mWorld_ = mScale * mTransposedRotate * mTranslate;//mScale * mRotate ;
 }
 
 void MainShipClass::setupWorld() 
