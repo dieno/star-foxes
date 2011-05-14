@@ -9,7 +9,7 @@ public:
 	Camera(): vChasePosition_(0.0f,0.0f,0.0f), 
 			  vChaseDirection_(0.0f,0.0f,0.0f), 
 			  vUp_(0.0f,1.0f,0.0f), 
-			  vDesiredPositionOffset_(0.0f,10.0f,20.0f),
+			  vDesiredPositionOffset_(0.0f,10.0f,-20.0f),
 			  vDesiredPosition_(0.0f,0.0f,0.0f), 
 			  vLookAt_(0.0f,0.0f,0.0f),
 			  vLookAtOffset_(0.0f,0.0f,0.0f), 
