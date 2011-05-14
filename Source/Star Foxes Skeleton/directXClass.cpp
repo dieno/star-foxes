@@ -430,7 +430,7 @@ int directXClass::GameLoop(float timeDelta) {
 			player1.updatePosition(timeDelta);
 
 			updateCameraTarget();
-			camera.reset();//Update(timeDelta);
+			camera.Update(timeDelta);//reset();
 
 			if(input.get_keystate(DIK_M))
 			{
@@ -571,7 +571,7 @@ int directXClass::Render(){
       
       for (std::list<AIPlayer*>::const_iterator ci = _aiPlayer.begin(); ci != _aiPlayer.end(); ++ci)
       {
-         (*ci)->drawSelf();
+         //(*ci)->drawSelf();
       }		
 		// End the scene
 		g_pDevice->EndScene();
