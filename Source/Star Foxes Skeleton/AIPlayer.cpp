@@ -1,5 +1,8 @@
 #include "AIPlayer.h"
+
 #include <math.h>
+
+using namespace std;
 
 // Sets the behaviour of the AI: Flee, attack, wander, seek.
 void AIPlayer::SetBehaviour(EBehaviour beh)
@@ -59,7 +62,7 @@ void AIPlayer::Flee(HWND hWnd, D3DXVECTOR3 pos)
    float x = pos.x - getPositionX();
    float y = pos.y - getPositionY();
    float z = pos.z - getPositionZ();
-   float dist = std::sqrt(x*x + y*y + z*z);
+   float dist = sqrt(x*x + y*y + z*z);
 
    static bool fleeing = false;
 
@@ -126,27 +129,32 @@ EDir AIPlayer::Move(HWND hWnd, int dir, bool *outbound)
 
 void AIPlayer::Seek(D3DXVECTOR3 enemyPos) {
 
-	float x = this->getPositionX();
-	float z = this->getPositionZ();
-	float y = this->getPositionY();
-	
-	if((enemyPos.x > x) && ((abs(enemyPos.x) - abs(x)) > 0.1f)) {
-		this->bankLeft(0.02f);
-	} else if((enemyPos.x < x) && ((abs(enemyPos.x) - abs(x)) > 0.1f)){
-		this->bankRight(0.02f);
+	float x = getPositionX();
+	float z = getPositionZ();
+	float y = getPositionY();
+	float xDif = enemyPos.x - getPositionX();
+    float yDif = enemyPos.y - getPositionY();
+    float zDif = enemyPos.z - getPositionZ();
+
+	float dist = sqrt(xDif*xDif + yDif*yDif + zDif*zDif);
+	bool offset = dist >= 2;
+
+	if((enemyPos.x > x) && (offset)) {
+		this->bankLeft(0.03f);
+		//directXClass::SetError(TEXT("SEEK: Moving [left] | from %f | to %f"), x, enemyPos.x);  
+	} else if((enemyPos.x < x) && (offset)){
+		this->bankRight(0.03f);
+		//directXClass::SetError(TEXT("SEEK: Moving [right] | from %f | to %f"), x, enemyPos.x);  
 	}
 
-	if((enemyPos.z > z) && ((abs(enemyPos.z) - abs(z)) > 0.06f)) {
-		this->bankDown(0.01f);
-	} else if((enemyPos.z < z) && ((abs(enemyPos.z) - abs(z)) > 0.06f)){
-		this->bankUp(0.01f);	
+	if((enemyPos.z > z) && (offset)) {
+		this->bankDown(0.02f);
+		//directXClass::SetError(TEXT("SEEK: Moving [down] | from %f | to %f"), z, enemyPos.z);  
+	} else if((enemyPos.z < z) && (offset)){
+		this->bankUp(0.02f);	
+		//directXClass::SetError(TEXT("SEEK: Moving [up] | from %f | to %f"), z, enemyPos.z);  
 	}
 
-	if(enemyPos.y > this->getPositionY()) {
-
-	} else {
-
-	}
 }
 
 // Initializes AI. Function usually called in constructor.
