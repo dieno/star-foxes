@@ -17,6 +17,7 @@ enum EDir
    UPLEFT = 5,
    DWNRGHT = 6,
    DWNLFT = 7,
+   FWRD = 8,
    DIR_NONE
 };
 
@@ -54,7 +55,7 @@ public:
    void SetBehaviour(EBehaviour beh);
    void SetBounds(D3DXVECTOR3 pos);
    void IniAI();
-   //AI(void);  
+   //AI(void);
 
 	AIPlayer(
 		LPD3DXMESH mesh, 

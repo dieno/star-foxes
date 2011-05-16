@@ -26,6 +26,7 @@ void AIPlayer::Update(HWND hWnd, D3DXVECTOR3 pos)
 {
    //srand((unsigned)time(0));
 	//Seek(pos);
+   Move(hWnd, FWRD, NULL);
    switch(_behave)
    {
    case FLEE:
@@ -51,7 +52,7 @@ void AIPlayer::Wander(HWND hWnd)
       _mv->dir =  std::rand() % 9;
    }
 
-   Move(hWnd, _mv->dir, &thing);
+   
    _mv->count--;
 }
 
@@ -122,6 +123,10 @@ EDir AIPlayer::Move(HWND hWnd, int dir, bool *outbound)
       Move(hWnd, DWN, NULL);
       Move(hWnd, LFT, NULL);
       return DWNLFT;
+
+   case FWRD:
+      this->boost(true);
+      return FWRD;
    default:
       return DIR_NONE;
    }
