@@ -274,11 +274,12 @@ int directXClass::GameInit(){
    static D3DMATERIAL9* mat1 = new D3DMATERIAL9;
    static AIPlayer ai1 = AIPlayer(g_pMesh, mat1, g_pMeshTextures, 1, g_pDevice, "AI",0, 1);
    //ai1.GetShip()->setTranslation(10, 10, 10);   
-   ai1.GetShip()->SetPosition(0, 1, 50);
+   ai1.GetShip()->SetPosition(0, 10, 50);
    ai1.GetShip()->SetRotation(D3DX_PI, 0, 0);
    ai1.GetShip()->Update(2);
    ai1.GetShip()->SetRotation(0, 0, 0);
    //ai1.SetRotation(0, D3DX_PI, 0);
+   ai1.SetBehaviour(SEEK);
    ai1.SetBounds(ai1.getPosition());   
    ai1.GetShip()->SetMtrlColor(D3DXCOLOR(0, 255.0f, 0, 255.0f), D3DXCOLOR(0, 255.0f, 0, 255.0f), D3DXCOLOR(0, 255.0f, 0, 255.0f));
    
@@ -454,7 +455,7 @@ int directXClass::GameLoop(float timeDelta) {
 				//directXClass::SetError(TEXT("p1: %f"), player1.getRotation().z); 
 				//(*ci)->bankLeft(0.01f);
 				//MessageBoxA(g_hWndMain, "hi", "hilo", 0);
-				(*ci)->Update(g_hWndMain, player1.getPosition());
+				(*ci)->Update(g_hWndMain, player1.getPositionVector());
             (*ci)->updatePosition(timeDelta);
 				//(*ci)->bankUp(0.04f);
 				// (*ci)->updateRotation();
