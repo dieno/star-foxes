@@ -33,6 +33,12 @@
     <ClCompile Include="Networking\Text.cpp">
       <Filter>Networking Files</Filter>
     </ClCompile>
+    <ClCompile Include="terrain.cpp">
+      <Filter>Graphics Files</Filter>
+    </ClCompile>
+    <ClCompile Include="camera.cpp">
+      <Filter>Physics Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="mainShipClass.h">
@@ -69,6 +75,12 @@
     </ClInclude>
     <ClInclude Include="Networking\Text.h">
       <Filter>Networking Files</Filter>
+    </ClInclude>
+    <ClInclude Include="terrain.h">
+      <Filter>Graphics Files</Filter>
+    </ClInclude>
+    <ClInclude Include="camera.h">
+      <Filter>Physics Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

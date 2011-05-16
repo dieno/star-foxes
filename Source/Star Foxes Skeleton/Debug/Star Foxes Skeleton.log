@@ -1,35 +1,15 @@
-﻿Build started 12/05/2011 4:16:40 PM.
+﻿Build started 16/05/2011 12:44:10 AM.
      1>Project "C:\Users\Sully\Danny\bcit\term4\Projects course\SVN\Source\Star Foxes Skeleton\Star Foxes Skeleton.vcxproj" on node 2 (build target(s)).
      1>InitializeBuildStatus:
          Creating "Debug\Star Foxes Skeleton.unsuccessfulbuild" because "AlwaysCreate" was specified.
        ClCompile:
-         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\CL.exe /c /ZI /nologo /W3 /WX- /Od /Oy- /D WIN32 /D _DEBUG /D _WINDOWS /D _UNICODE /D UNICODE /Gm /EHsc /RTC1 /MDd /GS /fp:precise /Zc:wchar_t /Zc:forScope /Fo"Debug\\" /Fd"Debug\vc100.pdb" /Gd /TP /analyze- /errorReport:prompt directXClass.cpp
-         directXClass.cpp
-         c:\program files (x86)\microsoft directx sdk (june 2010)\include\dinput.h: DIRECTINPUT_VERSION undefined. Defaulting to version 0x0800
-     1>c:\users\sully\danny\bcit\term4\projects course\svn\source\star foxes skeleton\directxclass.cpp(1141): warning C4996: 'sprintf': This function or variable may be unsafe. Consider using sprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
-                 c:\program files (x86)\microsoft visual studio 10.0\vc\include\stdio.h(371) : see declaration of 'sprintf'
+         All outputs are up-to-date.
        ManifestResourceCompile:
          All outputs are up-to-date.
        Link:
-         C:\Program Files (x86)\Microsoft Visual Studio 10.0\VC\bin\link.exe /ERRORREPORT:PROMPT /OUT:"C:\Users\Sully\Danny\bcit\term4\Projects course\SVN\Source\Debug\Star Foxes Skeleton.exe" /INCREMENTAL /NOLOGO kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib d3d9.lib D3Dx9.lib /MANIFEST /ManifestFile:"Debug\Star Foxes Skeleton.exe.intermediate.manifest" /MANIFESTUAC:"level='asInvoker' uiAccess='false'" /DEBUG /PDB:"C:\Users\Sully\Danny\bcit\term4\Projects course\SVN\Source\Debug\Star Foxes Skeleton.pdb" /SUBSYSTEM:WINDOWS /TLBID:1 /DYNAMICBASE /NXCOMPAT /IMPLIB:"C:\Users\Sully\Danny\bcit\term4\Projects course\SVN\Source\Debug\Star Foxes Skeleton.lib" /MACHINE:X86 "Debug\Star Foxes Skeleton.exe.embed.manifest.res"
-         Debug\AIPlayer.obj
-         Debug\directXClass.obj
-         Debug\input.obj
-         Debug\main.obj
-         Debug\mainPlayerClass.obj
-         Debug\mainShipClass.obj
-         Debug\Client.obj
-         Debug\GameChat.obj
-         Debug\MsgTranslator.obj
-         Debug\Server.obj
-         Debug\Text.obj
-         Debug\playerClass.obj
+         All outputs are up-to-date.
        Manifest:
-         C:\Program Files (x86)\Microsoft SDKs\Windows\v7.0A\bin\mt.exe /nologo /verbose /out:"Debug\Star Foxes Skeleton.exe.embed.manifest" /manifest "Debug\Star Foxes Skeleton.exe.intermediate.manifest"
          All outputs are up-to-date.
-       LinkEmbedManifest:
-         All outputs are up-to-date.
-         Star Foxes Skeleton.vcxproj -> C:\Users\Sully\Danny\bcit\term4\Projects course\SVN\Source\Debug\Star Foxes Skeleton.exe
        FinalizeBuildStatus:
          Deleting file "Debug\Star Foxes Skeleton.unsuccessfulbuild".
          Touching "Debug\Star Foxes Skeleton.lastbuildstate".
@@ -37,4 +17,4 @@
 
 Build succeeded.
 
-Time Elapsed 00:00:02.02
+Time Elapsed 00:00:00.13

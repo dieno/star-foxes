@@ -89,6 +89,16 @@ void MainPlayerClass::updateRotation(D3DXVECTOR3* vRotation)
 	//shiptype.setRotationAboutZ(D3DX_PI);*/
 }
 
+void MainPlayerClass::SetRotation(float x, float y, float z) {
+   vRotation.x = x;
+   vRotation.y = y;
+   vRotation.z = z;
+   playerShip_.setRotationAboutX(x);
+   playerShip_.setRotationAboutY(y);
+   playerShip_.setRotationAboutZ(z);
+   //playerShip_.setTranslateX(vPosition.x);
+}
+
 void MainPlayerClass::bankLeft(float value)
 {
 	vRotation.z -= value;

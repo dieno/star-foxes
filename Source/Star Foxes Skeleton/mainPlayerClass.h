@@ -14,11 +14,11 @@ public:
 		int teamNum, 
 		int lives,
 		MainShipClass playerShip):playerName_(playerName), teamNum_(teamNum), lives_(lives), playerShip_(playerShip),
-		rotationZ(0.0f), rotationX(0.0f), positionX(0.0f), currentSpeed(1.0f), vRotation(0.0f,0.0f,0.0f), vPosition(0.0f,0.0f,0.0f), afterboosterActive_(false),
+		rotationZ(0.0f), rotationX(0.0f), positionX(0.0f), currentSpeed(1.0f), vRotation(0.0f,0.0f,0.0f), vPosition(0.0f,0.0f,20.0f), afterboosterActive_(false),
 		isAlive(true), boosterTimer(10){}
 
 	MainPlayerClass():playerName_(),teamNum_(),lives_(),playerShip_(),
-		rotationZ(0.0f), rotationX(0.0f), positionX(0.0f), currentSpeed(1.0f), vRotation(0.0f,0.0f,0.0f), vPosition(0.0f,0.0f,0.0f), afterboosterActive_(false),
+		rotationZ(0.0f), rotationX(0.0f), positionX(0.0f), currentSpeed(1.0f), vRotation(0.0f,0.0f,0.0f), vPosition(0.0f,0.0f,20.0f), afterboosterActive_(false),
 		isAlive(true), boosterTimer(10){}
 
 	void left(bool active) {playerShip_.bankLeft(active);}
@@ -116,6 +116,8 @@ public:
 	//ship takes a hit, damage taken is the damage caused by hit
 	//returns bool true if still alive, false if dead
 	bool takeHit(int damageTaken);
+
+   void SetRotation(float x, float y, float z) ;
 
 private:
 	//Player's  name (Bob, Bill, Bojangles, etc)
