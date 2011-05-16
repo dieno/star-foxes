@@ -34,7 +34,9 @@ public:
 		Mass_(1.0f),
 		MaxForce_(24000.0f),
 		Drag_(0.97f),
-		thrustAmount_(0.0f){}
+		thrustAmount_(0.0f){
+         IniVectors();
+      }
 
 	MainShipClass(PMESHSTRUCT meshStruct, LPDIRECT3DDEVICE9 newg_pDevice):
 		currentHealth(100),
@@ -62,7 +64,9 @@ public:
 		Mass_(1.0f),
 		MaxForce_(24000.0f),
 		Drag_(0.97f),
-		thrustAmount_(0.0f){}
+		thrustAmount_(0.0f){
+         IniVectors();
+      }
 
 	MainShipClass():
 		currentHealth(100),
@@ -90,10 +94,17 @@ public:
 		Mass_(1.0f),
 		MaxForce_(24000.0f),
 		Drag_(0.97f),
-		thrustAmount_(0.0f){}
+		thrustAmount_(0.0f){
+         IniVectors();
+      }
 
 	//NEW STUFF
-
+   void IniVectors()
+   {
+      vRight_	   = D3DXVECTOR3(1.0f,0.0f,0.0f);
+      vUp_		   = D3DXVECTOR3(0.0f,1.0f,0.0f);
+      vDirection_ = D3DXVECTOR3(0.0f,0.0f,1.0f);
+   }
 	// draws the ship to the world
 	void Draw();	
 
@@ -161,13 +172,6 @@ public:
       translateXMesh1 = x;
    }
 
-   void setRotation(float x, float y, float z) {
-      rotationAboutYMesh1 = y;
-      rotationAboutXMesh1 = x;
-      rotationAboutZMesh1 = z;
-
-   }
-
 	void setRotationAboutY(float rotationY) {
 		rotationAboutYMesh1 = rotationY;
 	}
@@ -183,6 +187,13 @@ public:
 	void setTranslateX(float translateX) {
 		translateXMesh1 = translateX;
 	}
+
+   void SetRotation(float x, float y, float z)
+   {
+      vRotation_.x = x;
+      vRotation_.y = y;
+      vRotation_.z = z;
+   }
 
 	void setTranslateY(float translateY) {
 		translateYMesh1 = translateY;
@@ -211,7 +222,7 @@ public:
 	float getRotationAboutY() {
 		return rotationAboutYMesh1;
 	}
-
+   
 	float getRotationAboutX() {
 		return rotationAboutXMesh1;
 	}
@@ -236,6 +247,13 @@ public:
 		return damagePerShot;
 	}
 
+   void SetPosition(float x, float y, float z)
+   {
+      vPosition_.x = x;
+      vPosition_.y = y;
+      vPosition_.z = z;
+   }
+
 private:
 	static float afterburnerSpeed_;
 	int currentHealth;
@@ -259,9 +277,9 @@ private:
 	D3DXVECTOR3 vPosition_;
 	D3DXVECTOR3 vScale_;
 	D3DXVECTOR3 vRotation_;
-	static D3DXVECTOR3 vDirection_;
-	static D3DXVECTOR3 vUp_;
-	static D3DXVECTOR3 vRight_;
+	 D3DXVECTOR3 vDirection_;
+	 D3DXVECTOR3 vUp_;
+	 D3DXVECTOR3 vRight_;
 	D3DXVECTOR3 vVelocity_;
 
 	D3DXMATRIX mWorld_; // world transformation matrix
