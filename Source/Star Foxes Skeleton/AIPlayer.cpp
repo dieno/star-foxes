@@ -14,10 +14,10 @@ void AIPlayer::SetBehaviour(EBehaviour beh)
 // Always set bounds of movement of AI by calling this function, otherwise it won't move.
 void AIPlayer::SetBounds(D3DXVECTOR3 pos)
 {
-   _mv->top = pos.y - 4.0f;
-   _mv->bottom = pos.y - 1.0f;
-   _mv->left = pos.x + 3.5f;
-   _mv->right = pos.x - 3.5f;
+   _mv->top = 20;
+   _mv->bottom = 0;
+   _mv->left = -20;
+   _mv->right = 20;
 }
 
 // Heart of the AI. Updates AI behaviour.
@@ -34,6 +34,8 @@ void AIPlayer::Update(HWND hWnd, D3DXVECTOR3 pos)
       break;
    case SEEK:
 	  Seek(pos);
+     //Flee(hWnd, pos);
+     //Wander(hWnd);
 	  break;
    default:
       Wander(hWnd);
@@ -47,12 +49,16 @@ void AIPlayer::Wander(HWND hWnd)
    bool thing = false;
 
    if(_mv->count <= 0 )
-   {  
+   {
+      this->down(false);
+      this->up(false);
+      this->right(false);
+      this->left(false);
       _mv->count = std::rand() % 50;
-      _mv->dir =  std::rand() % 9;
+      _mv->dir =  std::rand() % 2 + 2;//9;
    }
 
-   
+   Move(hWnd, _mv->dir, NULL);
    _mv->count--;
 }
 
@@ -60,22 +66,26 @@ void AIPlayer::Wander(HWND hWnd)
 // param pos: the location in screen to flee from.
 void AIPlayer::Flee(HWND hWnd, D3DXVECTOR3 pos)
 {
-   float x = pos.x - getPositionX();
-   float y = pos.y - getPositionY();
-   float z = pos.z - getPositionZ();
+   float x = pos.x - getPositionVector().x;
+   float y = pos.y - getPositionVector().y;
+   float z = pos.z - getPositionVector().z;
    float dist = sqrt(x*x + y*y + z*z);
 
    static bool fleeing = false;
 
    if(dist <= 1 && _mv->count <=0)
    {
+      up(false);
+      down(false);
+      left(false);
+      right(false);
       _mv->dir = std::rand() % 9;
       _mv->count = 10;
    }
 
    if(_mv->count > 0)
    {
-      Move(hWnd, _mv->dir, &fleeing);      
+      Move(hWnd, _mv->dir, &fleeing);
       _mv->count--;
    }
 }
@@ -87,44 +97,57 @@ EDir AIPlayer::Move(HWND hWnd, int dir, bool *outbound)
 {
    switch(dir)
    {
-   case UP:      
-      if(getRotation().x < .2 && getPosition().z > _mv->top)
-         this->bankUp(0.04f);
-      return UP;
-   case DWN:
-      if(getRotation().x > -.2 && getPosition().z < _mv->bottom)
-         this->bankDown(0.04f);       
-      return DWN;
-   case LFT:      
-      this->bankLeft(0.05f);
-      if(getPositionX() >= _mv->left)      
-         this->bankRight(0.05f);      
-      return LFT;
-   case RGHT:
-      this->bankRight(0.05f);
-      if(getPositionX() <= _mv->right)
+   case UP: //0
+      if(getPositionVector().y < _mv->top)
+         this->down(true);//this->up(0.04f);
+      else
       {
-         this->bankLeft(0.05f);
+         this->down(false);
+         this->up(true);
+         _mv->dir = DWN;
+      }
+      return UP;
+   case DWN: //1
+      if(getPositionVector().y > _mv->bottom)
+      //if(getPosition())
+         this->up(true);//this->down(0.04f);
+      else
+      {
+         this->down(true);
+         this->up(false);
+         _mv->dir = UP;
+      }
+      return DWN;
+   case LFT: //2
+      this->left(true);//this->left(0.05f);
+      if(getPositionVector().x >= _mv->left)
+         this->right(true);//this->right(0.05f);
+      return LFT;
+   case RGHT: //3
+      this->right(true);//this->right(0.05f);
+      if(getPositionVector().x <= _mv->right)
+      {
+         //this->left(0.05f);
+         this->left(true);
       }
       return RGHT;
-   case UPRGHT:
+   case UPRGHT: //4
       Move(hWnd, UP, NULL);
       Move(hWnd, RGHT, NULL);
       return UPRGHT;
-   case UPLEFT:
+   case UPLEFT: //5
       Move(hWnd, UP, NULL);
       Move(hWnd, LFT, NULL);
       return UPLEFT;
-   case DWNRGHT:
+   case DWNRGHT: //6
       Move(hWnd, DWN, NULL);
       Move(hWnd, RGHT, NULL);
       return DWNRGHT;
-   case DWNLFT:
+   case DWNLFT: //7
       Move(hWnd, DWN, NULL);
       Move(hWnd, LFT, NULL);
       return DWNLFT;
-
-   case FWRD:
+   case FWRD: //8
       this->boost(true);
       return FWRD;
    default:
@@ -134,33 +157,136 @@ EDir AIPlayer::Move(HWND hWnd, int dir, bool *outbound)
 
 void AIPlayer::Seek(D3DXVECTOR3 enemyPos) {
 
-	float x = getPositionX();
-	float z = getPositionZ();
-	float y = getPositionY();
-	float xDif = enemyPos.x - getPositionX();
-    float yDif = enemyPos.y - getPositionY();
-    float zDif = enemyPos.z - getPositionZ();
-
+   float x = getPositionVector().x;//getPositionX();
+	float z = getPositionVector().z;
+	float y = getPositionVector().y;
+	float xDif = enemyPos.x - x;
+   float yDif = enemyPos.y - y;
+   float zDif = enemyPos.z - z;
+  
 	float dist = sqrt(xDif*xDif + yDif*yDif + zDif*zDif);
-	bool offset = dist >= 2;
-
-	if((enemyPos.x > x) && (offset)) {
-		this->bankLeft(0.03f);
+	bool offset = true; //dist >= 1;
+   D3DXVECTOR3 d = enemyPos - getPositionVector();
+   d.x = d.x / dist;
+   d.y = d.y / dist;
+   d.z = d.z / dist;
+   //this->up(true);
+   /*
+	//if((enemyPos.x < x) && (offset)) {
+   if((d.x < getDirectionVector().x) && (offset)) {
+		this->left(true);//this->bankLeft(0.03f);
+      //this->right(false);
 		//directXClass::SetError(TEXT("SEEK: Moving [left] | from %f | to %f"), x, enemyPos.x);  
-	} else if((enemyPos.x < x) && (offset)){
-		this->bankRight(0.03f);
+	} else if((d.x > getDirectionVector().x) && (offset)){
+		this->right(true); //this->bankRight(0.03f);
+      //this->left(false);
 		//directXClass::SetError(TEXT("SEEK: Moving [right] | from %f | to %f"), x, enemyPos.x);  
 	}
+   */
+   if(abs(d.y - getDirectionVector().y) < 0.1f)
+   {
+	
+      if((d.y > getDirectionVector().y) && (offset)) {
+		   this->down(true);//this->bankDown(0.02f);
+         //this->up(false);
+		   //directXClass::SetError(TEXT("SEEK: Moving [down] | from %f | to %f"), z, enemyPos.z);  
+	   } else if(d.y < getDirectionVector().y && (offset)){
+		   this->up(true);	//this->bankUp(0.02f);	
+		   //this->down(false);
+         //directXClass::SetError(TEXT("SEEK: Moving [up] | from %f | to %f"), z, enemyPos.z);  
+	   }   
+      else
+      {
+         down(false);
+         up(false);
+      }
+   }
 
-	if((enemyPos.z > z) && (offset)) {
-		this->bankDown(0.02f);
+   //if(abs(d.x - getDirectionVector().x) > 0.1f)
+   {
+	   if((-d.x < getDirectionVector().x) && (offset)) {
+		   this->left(true);//this->bankDown(0.02f);
+         //this->up(false);
+		   //directXClass::SetError(TEXT("SEEK: Moving [down] | from %f | to %f"), z, enemyPos.z);  
+	   } else if(-d.x > getDirectionVector().x && (offset)){
+		   this->right(true);	//this->bankUp(0.02f);	
+		   //this->down(false);
+         //directXClass::SetError(TEXT("SEEK: Moving [up] | from %f | to %f"), z, enemyPos.z);  
+	   }
+   }
+   /*else
+   {
+      left(false);
+      right(false);
+   }*/
+   /*
+   if(abs(d.z - getDirectionVector().z) > 0.1f)
+   {
+	   if((d.z < getDirectionVector().z) && (offset)) {
+		   this->right(true);//this->bankDown(0.02f);
+         //this->up(false);
+		   //directXClass::SetError(TEXT("SEEK: Moving [down] | from %f | to %f"), z, enemyPos.z);  
+	   } else if(d.z > getDirectionVector().z && (offset)){
+		   this->left(true);	//this->bankUp(0.02f);	
+		   //this->down(false);
+         //directXClass::SetError(TEXT("SEEK: Moving [up] | from %f | to %f"), z, enemyPos.z);  
+	   }
+   }
+   else
+   {
+      left(false);
+      right(false);
+   }*/
+   /*
+	if((d.z < getDirectionVector().z) && (offset)) {
+		this->down(true);//this->bankDown(0.02f);
+      //this->up(false);
 		//directXClass::SetError(TEXT("SEEK: Moving [down] | from %f | to %f"), z, enemyPos.z);  
-	} else if((enemyPos.z < z) && (offset)){
-		this->bankUp(0.02f);	
-		//directXClass::SetError(TEXT("SEEK: Moving [up] | from %f | to %f"), z, enemyPos.z);  
+	} else if(d.y > getDirectionVector().y && (offset)){
+		this->up(true);	//this->bankUp(0.02f);	
+		//this->down(false);
+      //directXClass::SetError(TEXT("SEEK: Moving [up] | from %f | to %f"), z, enemyPos.z);  
+	}*/
+}
+
+
+void AIPlayer::SeekIra(D3DXVECTOR3 enemyPos) {
+
+   float x = getPositionVector().x;//getPositionX();
+	float z = getPositionVector().z;
+	float y = getPositionVector().y;
+	float xDif = enemyPos.x - x;
+   float yDif = enemyPos.y - y;
+   float zDif = enemyPos.z - z;
+
+   
+
+	float dist = sqrt(xDif*xDif + yDif*yDif + zDif*zDif);
+	bool offset = true; //dist >= 1;
+   //this->up(true);
+   
+	if((enemyPos.x < x) && (offset)) {
+		this->left(true);//this->bankLeft(0.03f);
+      //this->right(false);
+		//directXClass::SetError(TEXT("SEEK: Moving [left] | from %f | to %f"), x, enemyPos.x);  
+	} else if((enemyPos.x > x) && (offset)){
+		this->right(true); //this->bankRight(0.03f);
+      //this->left(false);
+		//directXClass::SetError(TEXT("SEEK: Moving [right] | from %f | to %f"), x, enemyPos.x);  
+	}
+   
+	if((enemyPos.y > y) && (offset)) {
+		this->down(true);//this->bankDown(0.02f);
+      //this->up(false);
+		//directXClass::SetError(TEXT("SEEK: Moving [down] | from %f | to %f"), z, enemyPos.z);  
+	} else if((enemyPos.y < y) && (offset)){
+		this->up(true);	//this->bankUp(0.02f);	
+		//this->down(false);
+      //directXClass::SetError(TEXT("SEEK: Moving [up] | from %f | to %f"), z, enemyPos.z);  
 	}
 
 }
+
 
 // Initializes AI. Function usually called in constructor.
 void AIPlayer::IniAI()
