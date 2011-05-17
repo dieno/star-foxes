@@ -167,9 +167,34 @@ void AIPlayer::Seek(D3DXVECTOR3 enemyPos) {
 	float dist = sqrt(xDif*xDif + yDif*yDif + zDif*zDif);
 	bool offset = true; //dist >= 1;
    D3DXVECTOR3 d = enemyPos - getPositionVector();
-   d.x = d.x / dist;
+   d.x = -d.x / dist;
    d.y = d.y / dist;
    d.z = d.z / dist;
+
+   //float angle = acos(getDirectionVector().z * d.z + getDirectionVector().x * d.x);
+   float angle = atan2(getDirectionVector().z, getDirectionVector().x) - atan2(d.z, d.x);
+   float off = 0.2;
+   if(angle > off)
+   {
+      left(true);
+      //right(true);
+   }
+   else if (angle < -off)
+   {
+      right(true);
+   }
+   else
+   {
+      right(false);
+      left(false);
+   }
+
+
+   /*double myangle = atan2(z, x);
+   double enangle = atan2(d.z, d.x);
+   double angle = myangle - enangle;*/
+
+
    //this->up(true);
    /*
 	//if((enemyPos.x < x) && (offset)) {
@@ -183,6 +208,7 @@ void AIPlayer::Seek(D3DXVECTOR3 enemyPos) {
 		//directXClass::SetError(TEXT("SEEK: Moving [right] | from %f | to %f"), x, enemyPos.x);  
 	}
    */
+   
    if(abs(d.y - getDirectionVector().y) < 0.1f)
    {
 	
@@ -202,23 +228,23 @@ void AIPlayer::Seek(D3DXVECTOR3 enemyPos) {
       }
    }
 
-   //if(abs(d.x - getDirectionVector().x) > 0.1f)
+   /*if(abs(d.x - getDirectionVector().x) > 0.1f)
    {
-	   if((-d.x < getDirectionVector().x) && (offset)) {
+	   if((d.x < getDirectionVector().x) && (offset)) {
 		   this->left(true);//this->bankDown(0.02f);
          //this->up(false);
 		   //directXClass::SetError(TEXT("SEEK: Moving [down] | from %f | to %f"), z, enemyPos.z);  
-	   } else if(-d.x > getDirectionVector().x && (offset)){
+	   } else if(d.x > getDirectionVector().x && (offset)){
 		   this->right(true);	//this->bankUp(0.02f);	
 		   //this->down(false);
          //directXClass::SetError(TEXT("SEEK: Moving [up] | from %f | to %f"), z, enemyPos.z);  
 	   }
    }
-   /*else
-   {
-      left(false);
-      right(false);
-   }*/
+   else
+   {*/
+   //   left(false);
+     // right(false);
+   
    /*
    if(abs(d.z - getDirectionVector().z) > 0.1f)
    {
