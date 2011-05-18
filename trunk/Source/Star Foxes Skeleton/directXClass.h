@@ -18,6 +18,7 @@
 #include "gamestate.h"
 #include "heavyShipClass.h"
 #include "standardShipClass.h"
+#include "lightShipClass.h"
 //#include "Networking/GameChat.h"
 //using namespace std;
 
@@ -136,6 +137,18 @@ private:
 	D3DMATERIAL9*           g_pMeshMaterials2; // Materials for our mesh
 	LPDIRECT3DTEXTURE9*     g_pMeshTextures2; // Textures for our mesh
 	DWORD                   g_dwNumMaterials2;   // Number of mesh materials
+	LPD3DXMESH              g_pMeshHeavy; // Our mesh object in sysmem
+	D3DMATERIAL9*           g_pMeshMaterialsHeavy; // Materials for our mesh
+	LPDIRECT3DTEXTURE9*     g_pMeshTexturesHeavy; // Textures for our mesh
+	DWORD                   g_dwNumMaterialsHeavy;   // Number of mesh materials
+	LPD3DXMESH              g_pMeshLight; // Our mesh object in sysmem
+	D3DMATERIAL9*           g_pMeshMaterialsLight; // Materials for our mesh
+	LPDIRECT3DTEXTURE9*     g_pMeshTexturesLight; // Textures for our mesh
+	DWORD                   g_dwNumMaterialsLight;   // Number of mesh materials
+	LPD3DXMESH              g_pMeshLaser; // Our mesh object in sysmem
+	D3DMATERIAL9*           g_pMeshMaterialsLaser; // Materials for our mesh
+	LPDIRECT3DTEXTURE9*     g_pMeshTexturesLaser; // Textures for our mesh
+	DWORD                   g_dwNumMaterialsLaser;   // Number of mesh materials
 	float rotationAboutYMesh1;
 	float rotationAboutXMesh1;
 	float rotationAboutYMesh2;
