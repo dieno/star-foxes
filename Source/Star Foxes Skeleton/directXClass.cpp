@@ -263,7 +263,7 @@ int directXClass::GameInit(){
 	InitGeometry();
 	LoadAlphabet(TEXT("Alphabet vSmall.bmp"), 8, 16);
 	InitTiming();
-	dummyAI = HeavyShipClass(g_pMesh, g_pMeshMaterials, g_pMeshTextures, g_dwNumMaterials, g_pDevice);
+	dummyAI = LightShipClass(g_pMeshLight, g_pMeshMaterialsLight, g_pMeshTexturesLight, g_dwNumMaterialsLight, g_pDevice);
 	player1 = HumanPlayerClass(dummyAI, "Human",0, 1);
 	mainTerrain = Terrain(g_pMesh2, g_pMeshMaterials2, g_pMeshTextures2, g_dwNumMaterials2, g_pDevice);
 	mainTerrain.SetMtrlColor(D3DXCOLOR(0.0f, 0.1f, 0.0f, 0.0f), D3DXCOLOR(0.0f, 0.1f, 0.0f, 0.0f), D3DXCOLOR(0, 0.1f, 0.0f, 0.0f));
@@ -1129,6 +1129,130 @@ HRESULT directXClass::InitGeometry()
                 if( FAILED( D3DXCreateTextureFromFile( g_pDevice, 
                                                     strTexture, 
                                                     &g_pMeshTextures2[i] ) ) )
+                {
+                    MessageBox(NULL, TEXT("Could not find texture map"), TEXT("Meshes.exe"), MB_OK);
+                }
+            }
+        }
+    }
+
+   // Done with the material buffer
+    pD3DXMtrlBuffer->Release();
+
+	if( FAILED( D3DXLoadMeshFromX( TEXT("big_airwing.x"), D3DXMESH_SYSTEMMEM, 
+                                   g_pDevice, NULL, 
+                                   &pD3DXMtrlBuffer, NULL, &g_dwNumMaterialsHeavy, 
+                                   &g_pMeshHeavy ) ) )
+    {
+        // If model is not in current folder, try parent folder
+        if( FAILED( D3DXLoadMeshFromX( TEXT("..\\big_airwing.x"), D3DXMESH_SYSTEMMEM, 
+                                    g_pDevice, NULL, 
+                                    &pD3DXMtrlBuffer, NULL, &g_dwNumMaterialsHeavy, 
+                                    &g_pMeshHeavy ) ) )
+        {
+            MessageBox(NULL, TEXT("Could not find big_airwing.x"), TEXT("Meshes.exe"), MB_OK);
+            return E_FAIL;
+        }
+    }
+
+    // We need to extract the material properties and texture names from the 
+    // pD3DXMtrlBuffer
+    D3DXMATERIAL* d3dxMaterialsHeavy = (D3DXMATERIAL*)pD3DXMtrlBuffer->GetBufferPointer();
+    g_pMeshMaterialsHeavy = new D3DMATERIAL9[g_dwNumMaterialsHeavy];
+    g_pMeshTexturesHeavy  = new LPDIRECT3DTEXTURE9[g_dwNumMaterialsHeavy];
+
+    for( DWORD i=0; i<g_dwNumMaterialsHeavy; i++ )
+    {
+        // Copy the material
+        g_pMeshMaterialsHeavy[i] = d3dxMaterialsHeavy[i].MatD3D;
+
+        // Set the ambient color for the material (D3DX does not do this)
+        g_pMeshMaterialsHeavy[i].Ambient = g_pMeshMaterialsHeavy[i].Diffuse;
+
+        g_pMeshTexturesHeavy[i] = NULL;
+        if( d3dxMaterialsHeavy[i].pTextureFilename != NULL && 
+            lstrlen((LPCWSTR)d3dxMaterialsHeavy[i].pTextureFilename) > 0 )
+        {
+            // Create the texture
+			int len = lstrlen((LPCWSTR)d3dxMaterialsHeavy[i].pTextureFilename);
+			wchar_t *wText = new wchar_t[len];
+			::MultiByteToWideChar(  CP_ACP, NULL,d3dxMaterialsHeavy[i].pTextureFilename, -1, wText,len );
+            if( FAILED( D3DXCreateTextureFromFile( g_pDevice, 
+                                                wText, 
+                                                &g_pMeshTexturesHeavy[i] ) ) )
+            {
+                // If texture is not in current folder, try parent folder
+                const TCHAR* strPrefix = TEXT("..\\");
+                const int lenPrefix = lstrlen( strPrefix );
+                TCHAR strTexture[MAX_PATH];
+                lstrcpyn( strTexture, strPrefix, MAX_PATH );
+                lstrcpyn( strTexture + lenPrefix, wText, MAX_PATH - lenPrefix );
+                // If texture is not in current folder, try parent folder
+                if( FAILED( D3DXCreateTextureFromFile( g_pDevice, 
+                                                    strTexture, 
+                                                    &g_pMeshTexturesHeavy[i] ) ) )
+                {
+                    MessageBox(NULL, TEXT("Could not find texture map"), TEXT("Meshes.exe"), MB_OK);
+                }
+            }
+        }
+    }
+
+   // Done with the material buffer
+    pD3DXMtrlBuffer->Release();
+
+	if( FAILED( D3DXLoadMeshFromX( TEXT("small_airwing.x"), D3DXMESH_SYSTEMMEM, 
+                                   g_pDevice, NULL, 
+                                   &pD3DXMtrlBuffer, NULL, &g_dwNumMaterialsLight, 
+                                   &g_pMeshLight ) ) )
+    {
+        // If model is not in current folder, try parent folder
+        if( FAILED( D3DXLoadMeshFromX( TEXT("..\\small_airwing.x"), D3DXMESH_SYSTEMMEM, 
+                                    g_pDevice, NULL, 
+                                    &pD3DXMtrlBuffer, NULL, &g_dwNumMaterialsLight, 
+                                    &g_pMeshLight ) ) )
+        {
+            MessageBox(NULL, TEXT("Could not find small_airwing.x"), TEXT("Meshes.exe"), MB_OK);
+            return E_FAIL;
+        }
+    }
+
+    // We need to extract the material properties and texture names from the 
+    // pD3DXMtrlBuffer
+    D3DXMATERIAL* d3dxMaterialsLight = (D3DXMATERIAL*)pD3DXMtrlBuffer->GetBufferPointer();
+    g_pMeshMaterialsLight = new D3DMATERIAL9[g_dwNumMaterialsLight];
+    g_pMeshTexturesLight  = new LPDIRECT3DTEXTURE9[g_dwNumMaterialsLight];
+
+    for( DWORD i=0; i<g_dwNumMaterialsLight; i++ )
+    {
+        // Copy the material
+        g_pMeshMaterialsLight[i] = d3dxMaterialsHeavy[i].MatD3D;
+
+        // Set the ambient color for the material (D3DX does not do this)
+        g_pMeshMaterialsLight[i].Ambient = g_pMeshMaterialsHeavy[i].Diffuse;
+
+        g_pMeshTexturesLight[i] = NULL;
+        if( d3dxMaterialsLight[i].pTextureFilename != NULL && 
+            lstrlen((LPCWSTR)d3dxMaterialsLight[i].pTextureFilename) > 0 )
+        {
+            // Create the texture
+			int len = lstrlen((LPCWSTR)d3dxMaterialsLight[i].pTextureFilename);
+			wchar_t *wText = new wchar_t[len];
+			::MultiByteToWideChar(  CP_ACP, NULL,d3dxMaterialsLight[i].pTextureFilename, -1, wText,len );
+            if( FAILED( D3DXCreateTextureFromFile( g_pDevice, 
+                                                wText, 
+                                                &g_pMeshTexturesLight[i] ) ) )
+            {
+                // If texture is not in current folder, try parent folder
+                const TCHAR* strPrefix = TEXT("..\\");
+                const int lenPrefix = lstrlen( strPrefix );
+                TCHAR strTexture[MAX_PATH];
+                lstrcpyn( strTexture, strPrefix, MAX_PATH );
+                lstrcpyn( strTexture + lenPrefix, wText, MAX_PATH - lenPrefix );
+                // If texture is not in current folder, try parent folder
+                if( FAILED( D3DXCreateTextureFromFile( g_pDevice, 
+                                                    strTexture, 
+                                                    &g_pMeshTexturesLight[i] ) ) )
                 {
                     MessageBox(NULL, TEXT("Could not find texture map"), TEXT("Meshes.exe"), MB_OK);
                 }
