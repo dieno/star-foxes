@@ -26,7 +26,7 @@ void AIPlayer::Update(HWND hWnd, D3DXVECTOR3 pos)
 {
    //srand((unsigned)time(0));
 	//Seek(pos);
-   Move(hWnd, FWRD, NULL);
+   //Move(hWnd, FWRD, NULL);
    switch(_behave)
    {
    case FLEE:
@@ -155,6 +155,30 @@ EDir AIPlayer::Move(HWND hWnd, int dir, bool *outbound)
    }
 }
 
+void AIPlayer::Rotate2DvectorXZ(D3DXVECTOR3* pV2, float angle)
+{
+	// use local variables to find transformed components
+	float Vx1 = cosf(angle)*pV2->x - sinf(angle)*pV2->z;
+	float Vy1 = sinf(angle)*pV2->x + cosf(angle)*pV2->z;
+	// store results thru the pointer
+	pV2->x = Vx1;
+	pV2->z = Vy1;
+
+	return;
+}
+
+void AIPlayer::Rotate2DvectorYZ(D3DXVECTOR3* pV2, float angle)
+{
+	// use local variables to find transformed components
+	float Vx1 = cosf(angle)*pV2->z - sinf(angle)*pV2->y;
+	float Vy1 = sinf(angle)*pV2->z + cosf(angle)*pV2->y;
+	// store results thru the pointer
+	pV2->z = Vx1;
+	pV2->y = Vy1;
+
+	return;
+}
+
 void AIPlayer::Seek(D3DXVECTOR3 enemyPos) {
 
    float x = getPositionVector().x;//getPositionX();
@@ -165,21 +189,61 @@ void AIPlayer::Seek(D3DXVECTOR3 enemyPos) {
    float zDif = enemyPos.z - z;
   
 	float dist = sqrt(xDif*xDif + yDif*yDif + zDif*zDif);
-	bool offset = true; //dist >= 1;
-   D3DXVECTOR3 d = enemyPos - getPositionVector();
+   D3DXVECTOR3 d = enemyPos - getPositionVector();   
    d.x = -d.x / dist;
    d.y = d.y / dist;
    d.z = d.z / dist;
 
-   //float angle = acos(getDirectionVector().z * d.z + getDirectionVector().x * d.x);
-   float angle = atan2(getDirectionVector().z, getDirectionVector().x) - atan2(d.z, d.x);
-   float off = 0.2;
-   if(angle > off)
+   float angle = atan2(getDirectionVector().z, getDirectionVector().x);
+   Rotate2DvectorXZ(&d, -angle);
+   float off = 0.2f;
+   
+   float angle2 = atan2(0, 1.0f) - atan2(d.z, d.x);
+   if(angle2 > off)
+   {
+      left(true);
+   }
+   else if(angle2 < -off)
+   {
+      right(true);
+   }
+   else
+   {
+      left(false);
+      right(false);
+   }
+
+
+   /*
+   if(abs(angle) > off)
+   {
+      if(my.x > d.x)
+      {
+         if(d.z < 0)
+            left(true);
+         else
+            right(true);
+      }
+      else
+      {
+         if(d.z < 0)
+            right(true);
+         else
+            left(true);
+      }
+   }
+   else
+   {
+      right(false);
+      left(false);
+   }*/
+
+   /*if(angle > off && abs(angle))
    {
       left(true);
       //right(true);
    }
-   else if (angle < -off)
+   else if (angle < -off && angle > D3DX_PI)
    {
       right(true);
    }
@@ -188,7 +252,7 @@ void AIPlayer::Seek(D3DXVECTOR3 enemyPos) {
       right(false);
       left(false);
    }
-
+   */
 
    /*double myangle = atan2(z, x);
    double enangle = atan2(d.z, d.x);
@@ -208,7 +272,7 @@ void AIPlayer::Seek(D3DXVECTOR3 enemyPos) {
 		//directXClass::SetError(TEXT("SEEK: Moving [right] | from %f | to %f"), x, enemyPos.x);  
 	}
    */
-   
+   /*
    if(abs(d.y - getDirectionVector().y) < 0.1f)
    {
 	
@@ -227,7 +291,7 @@ void AIPlayer::Seek(D3DXVECTOR3 enemyPos) {
          up(false);
       }
    }
-
+   */
    /*if(abs(d.x - getDirectionVector().x) > 0.1f)
    {
 	   if((d.x < getDirectionVector().x) && (offset)) {
