@@ -307,7 +307,6 @@ private:
 	float translateZMesh1;
 	LPDIRECT3DDEVICE9 g_pDevice;
 	static float damagePerShot;
-
 	// NEW STUFF
 
 	// ship's location & orientation

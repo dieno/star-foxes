@@ -15,11 +15,11 @@ public:
 		int lives,
 		MainShipClass playerShip):playerName_(playerName), teamNum_(teamNum), lives_(lives), playerShip_(playerShip),
 		rotationZ(0.0f), rotationX(0.0f), positionX(0.0f), currentSpeed(1.0f), vRotation(0.0f,0.0f,0.0f), vPosition(0.0f,0.0f,20.0f), afterboosterActive_(false),
-		isAlive(true), boosterTimer(10){}
+		isAlive(true), boosterTimer(10), hadCollision(false){}
 
 	MainPlayerClass():playerName_(),teamNum_(),lives_(),playerShip_(),
 		rotationZ(0.0f), rotationX(0.0f), positionX(0.0f), currentSpeed(1.0f), vRotation(0.0f,0.0f,0.0f), vPosition(0.0f,0.0f,20.0f), afterboosterActive_(false),
-		isAlive(true), boosterTimer(10){}
+		isAlive(true), boosterTimer(10), hadCollision(false){}
 
 	void left(bool active) {playerShip_.bankLeft(active);}
 	void right(bool active) {playerShip_.bankRight(active);}
@@ -91,22 +91,32 @@ public:
 
    float getPositionX()
    {
-      return vPosition.x;
+	   return playerShip_.getPositionVector().x;
    }
 
    float getPositionY()
    {
-      return vPosition.y;
+      return playerShip_.getPositionVector().y;
    }
 
    float getPositionZ()
    {
-      return vPosition.z;
+      return playerShip_.getPositionVector().z;
+   }
+
+   bool gethadCollision()
+   {
+	   return hadCollision;
+   }
+
+   void sethadCollision(bool _hadCollision)
+   {
+	   hadCollision = _hadCollision;
    }
 
    D3DXVECTOR3 getPosition()
    {
-      return vPosition;
+	   return playerShip_.getPositionVector();
    }
 
    D3DXVECTOR3 getRotation()
@@ -141,6 +151,7 @@ private:
 	bool isAlive;
 	int boosterTimer;
 	float currentSpeed;
+	bool hadCollision;
 };
 
 
