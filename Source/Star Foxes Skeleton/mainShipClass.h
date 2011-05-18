@@ -121,6 +121,11 @@ public:
 
 	D3DXMATRIX getWorldMatrix() {return mWorld_;}
 
+	void setWorldMatrix(D3DXMATRIX newWorld_)
+	{
+		mWorld_ = newWorld_;
+	}
+
 	D3DXVECTOR3 getPositionVector() {return vPosition_;}
 
 	D3DXVECTOR3 getRotationVector() {return vRotation_;}
@@ -137,6 +142,12 @@ public:
 		//return vUp_;
 	}
 
+	D3DXVECTOR3 getRightVector() 
+	{
+		return D3DXVECTOR3(vRight_.x, vRight_.y, vRight_.z);
+		//return vUp_;
+	}
+
 	void setPositionVector(D3DXVECTOR3 vPos)
 	{
 		vPosition_ = vPos; 
@@ -145,6 +156,18 @@ public:
 	void setRotationVector(D3DXVECTOR3 vRot)
 	{
 		vRotation_ = vRot; 
+	}
+
+	void setUpVector(D3DXVECTOR3 newUpVector) {
+		vUp_ = newUpVector;
+	}
+
+	void setRightVector(D3DXVECTOR3 newRightVector) {
+		vRight_ = newRightVector;
+	}
+
+	void setDirectionVector(D3DXVECTOR3 newDirectionVector) {
+		vDirection_ = newDirectionVector;
 	}
 
 	// OLD STUFF
@@ -218,6 +241,10 @@ public:
 	void setg_pDevice(LPDIRECT3DDEVICE9 newg_pDevice) {
 		g_pDevice = newg_pDevice;
 	}
+	
+	LPDIRECT3DDEVICE9 getg_pDevice() {
+		return g_pDevice;
+	}
 
 	float getRotationAboutY() {
 		return rotationAboutYMesh1;
@@ -252,6 +279,16 @@ public:
       vPosition_.x = x;
       vPosition_.y = y;
       vPosition_.z = z;
+   }
+
+   MESHSTRUCT getMeshData()
+   {
+	   MESHSTRUCT meshData;
+	   meshData.g_dwNumMaterials = g_dwNumMaterials;
+	   meshData.g_pMesh = g_pMesh;
+	   meshData.g_pMeshMaterials = g_pMeshMaterials;
+	   meshData.g_pMeshTextures = g_pMeshTextures;
+	   return meshData;
    }
 
 private:

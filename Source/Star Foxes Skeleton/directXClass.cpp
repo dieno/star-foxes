@@ -263,16 +263,15 @@ int directXClass::GameInit(){
 	InitGeometry();
 	LoadAlphabet(TEXT("Alphabet vSmall.bmp"), 8, 16);
 	InitTiming();
-	MainShipClass dummyAI = MainShipClass(g_pMesh, g_pMeshMaterials, g_pMeshTextures, g_dwNumMaterials, g_pDevice);
-	dummyAI.setTranslateZ(-3);
-	dummyAI.setRotationAboutY(D3DX_PI);
-	player1 = HumanPlayerClass(g_pMesh, g_pMeshMaterials, g_pMeshTextures, g_dwNumMaterials, g_pDevice, "Human",0, 1);
+	dummyAI = HeavyShipClass(g_pMesh, g_pMeshMaterials, g_pMeshTextures, g_dwNumMaterials, g_pDevice);
+	player1 = HumanPlayerClass(dummyAI, "Human",0, 1);
 	mainTerrain = Terrain(g_pMesh2, g_pMeshMaterials2, g_pMeshTextures2, g_dwNumMaterials2, g_pDevice);
 	mainTerrain.setTranslateY(-2);
 	mainTerrain.SetMtrlColor(D3DXCOLOR(0.0f, 0.1f, 0.0f, 0.0f), D3DXCOLOR(0.0f, 0.1f, 0.0f, 0.0f), D3DXCOLOR(0, 0.1f, 0.0f, 0.0f));
 
    static D3DMATERIAL9* mat1 = new D3DMATERIAL9;
-   static AIPlayer ai1 = AIPlayer(g_pMesh, mat1, g_pMeshTextures, 1, g_pDevice, "AI",0, 1);
+   dummyAI2 = StandardShipClass(g_pMesh, mat1, g_pMeshTextures, 1, g_pDevice);
+   static AIPlayer ai1 = AIPlayer(dummyAI2, "AI",0, 1);
    //ai1.GetShip()->setTranslation(10, 10, 10);   
    ai1.GetShip()->SetPosition(0, 10, 50);
    ai1.GetShip()->SetRotation(D3DX_PI, 0, 0);
@@ -281,32 +280,32 @@ int directXClass::GameInit(){
    //ai1.SetRotation(0, D3DX_PI, 0);
    ai1.SetBehaviour(SEEK);
    ai1.SetBounds(ai1.getPosition());   
-   ai1.GetShip()->SetMtrlColor(D3DXCOLOR(0, 255.0f, 0, 255.0f), D3DXCOLOR(0, 255.0f, 0, 255.0f), D3DXCOLOR(0, 255.0f, 0, 255.0f));
+   //ai1.GetShip()->SetMtrlColor(D3DXCOLOR(0, 255.0f, 0, 255.0f), D3DXCOLOR(0, 255.0f, 0, 255.0f), D3DXCOLOR(0, 255.0f, 0, 255.0f));
    
    //ai1.updatePosition(1);
 
-   static D3DMATERIAL9* mat2 = new D3DMATERIAL9;
-   static AIPlayer ai2 = AIPlayer(g_pMesh, mat2, g_pMeshTextures, 1, g_pDevice, "AI",0, 1);
-   ai2.GetShip()->setTranslation(100, 100, -5);
-   //ai2.GetShip()->setRotation(0, 3.1f, 0);
-   ai2.SetBounds(ai2.getPosition());
-   ai2.GetShip()->SetMtrlColor(D3DXCOLOR(0, 255.0f, 0, 255.0f), D3DXCOLOR(0, 255.0f, 0, 255.0f), D3DXCOLOR(0, 255.0f, 0, 255.0f));
+   //static D3DMATERIAL9* mat2 = new D3DMATERIAL9;
+   //static AIPlayer ai2 = AIPlayer(g_pMesh, mat2, g_pMeshTextures, 1, g_pDevice, "AI",0, 1);
+   //ai2.GetShip()->setTranslation(100, 100, -5);
+   ////ai2.GetShip()->setRotation(0, 3.1f, 0);
+   //ai2.SetBounds(ai2.getPosition());
+   ////ai2.GetShip()->SetMtrlColor(D3DXCOLOR(0, 255.0f, 0, 255.0f), D3DXCOLOR(0, 255.0f, 0, 255.0f), D3DXCOLOR(0, 255.0f, 0, 255.0f));
 
-   static D3DMATERIAL9* mat3 = new D3DMATERIAL9;
-   static AIPlayer ai3 = AIPlayer(g_pMesh, mat3, g_pMeshTextures, 1, g_pDevice, "AI",0, 1);
-   //ai3.GetShip()->setTranslation(100, 100, -5);
-   //ai3.GetShip()->setRotation(0, 3.1f, 0);
-   ai3.SetBounds(ai3.getPosition());
-   ai3.SetBehaviour(FLEE);
-   ai3.GetShip()->SetMtrlColor(D3DXCOLOR(0, 0, 255.0f, 255.0f), D3DXCOLOR(0, 0, 255.0f, 255.0f), D3DXCOLOR(0, 0, 255.0f, 255.0f));
+   //static D3DMATERIAL9* mat3 = new D3DMATERIAL9;
+   //static AIPlayer ai3 = AIPlayer(g_pMesh, mat3, g_pMeshTextures, 1, g_pDevice, "AI",0, 1);
+   ////ai3.GetShip()->setTranslation(100, 100, -5);
+   ////ai3.GetShip()->setRotation(0, 3.1f, 0);
+   //ai3.SetBounds(ai3.getPosition());
+   //ai3.SetBehaviour(FLEE);
+   ////ai3.GetShip()->SetMtrlColor(D3DXCOLOR(0, 0, 255.0f, 255.0f), D3DXCOLOR(0, 0, 255.0f, 255.0f), D3DXCOLOR(0, 0, 255.0f, 255.0f));
 
-   static D3DMATERIAL9* mat4 = new D3DMATERIAL9;
-   static AIPlayer ai4 = AIPlayer(g_pMesh, mat4, g_pMeshTextures, 1, g_pDevice, "AI",0, 1);
-   //ai4.GetShip()->setTranslation(10, 10, 10);
-   //ai4.GetShip()->SetRotation(0, 1.0f, 0);
-   ai4.SetBounds(ai4.getPosition());
-   ai4.SetBehaviour(SEEK);
-   ai4.GetShip()->SetMtrlColor(D3DXCOLOR(255.0f, 0, 0, 255.0f), D3DXCOLOR(255.0f, 0, 0, 255.0f), D3DXCOLOR(255.0f, 0, 0, 255.0f));   
+   //static D3DMATERIAL9* mat4 = new D3DMATERIAL9;
+   //static AIPlayer ai4 = AIPlayer(g_pMesh, mat4, g_pMeshTextures, 1, g_pDevice, "AI",0, 1);
+   ////ai4.GetShip()->setTranslation(10, 10, 10);
+   ////ai4.GetShip()->SetRotation(0, 1.0f, 0);
+   //ai4.SetBounds(ai4.getPosition());
+   //ai4.SetBehaviour(SEEK);
+   //ai4.GetShip()->SetMtrlColor(D3DXCOLOR(255.0f, 0, 0, 255.0f), D3DXCOLOR(255.0f, 0, 0, 255.0f), D3DXCOLOR(255.0f, 0, 0, 255.0f));   
    
 
    //static AIPlayer aiplayer = AIPlayer(g_pMesh, g_pMeshMaterials, g_pMeshTextures, g_dwNumMaterials, g_pDevice, "Human",0, 1);
@@ -325,7 +324,10 @@ int directXClass::GameInit(){
 
 	input.init_keyboard(g_hWndMain);
 	setupCubes();
-
+	MainPlayerClass *allPlayers[2];
+	allPlayers[0] = &player1;
+	allPlayers[1] = &ai1;
+	_gamestate.updateGameState(g_hWndMain, allPlayers, 2);
 	updateCameraTarget();
 	camera.reset();
 
