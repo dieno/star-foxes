@@ -15,6 +15,9 @@
 #include "Networking\GameChat.h"
 #include "Networking\MsgTranslator.h"
 #include "Camera.h"
+#include "gamestate.h"
+#include "heavyShipClass.h"
+#include "standardShipClass.h"
 //#include "Networking/GameChat.h"
 //using namespace std;
 
@@ -54,7 +57,6 @@ public:
 	translateXMesh1(0),
 	translateYMesh2(0),
 	player1(),
-	player2(),
 	currGameState(),
 	input(),
 	camera(),
@@ -95,6 +97,7 @@ public:
 	VOID Cleanup();
 	HRESULT InitGeometry();
 	static D3DXMATRIX Translate(const float dx, const float dy, const float dz);
+	GameState _gamestate;
 private:
 	void drawLine(float startX, float startY, float endX, float endY, LPDIRECT3DSURFACE9 pBackSurf);
 	void inputCommands();
@@ -145,7 +148,6 @@ private:
 	float translateYMesh2;
 	float translateXMesh2;
 	MainPlayerClass player1;
-	MainPlayerClass player2;
    std::list<AIPlayer*> _aiPlayer;
 	GameState* currGameState;
    //AIPlayer _aiplayer1;
@@ -169,6 +171,8 @@ private:
 	static float lastTime;
 	D3DLIGHT9 dirLight;
 	bool dirLightEnabled;
+	MainShipClass dummyAI;
+	MainShipClass dummyAI2;
     //MsgTranslator _msgt;
 };
 #endif

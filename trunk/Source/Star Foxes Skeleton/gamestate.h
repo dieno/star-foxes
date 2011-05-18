@@ -7,22 +7,26 @@
 //Holds on gamestate information relevant to AI - player locations, player health, special events (bombs), etc
 class GameState 
 {
-	private:
-		MainPlayerClass *players;
-		HWND hWnd_;
+private:
+	MainPlayerClass *players[8];
+	HWND hWnd_;
+	int numberOfPlayers;
 
-	public:
-		GameState();
-		~GameState();
+public:
 
 	//Take in relevant game variables and update them within this object.
-	void updateGameState(HWND hWnd, MainPlayerClass *enemy);
+	void updateGameState(HWND hWnd, MainPlayerClass *enemy[], int numberOfPlayers);
 
 	//Returns player at specified index.
 	MainPlayerClass getPlayer(int idx);
 
 	//Returns hWnd
 	HWND getHWND();
-}
+
+	//getsNumberOfPlayers
+	int getNumberOfPlayers() {
+		return numberOfPlayers;
+	}
+};
 
 #endif
