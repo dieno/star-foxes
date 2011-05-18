@@ -119,8 +119,13 @@ public:
 		return rotationAboutZMesh1;
 	}
 
+	void setupBuildings();
+	D3DXVECTOR3 *buildinglocations[256];
+	D3DXVECTOR3 *buildingscales[256];
+
 private:
 	void setupWorld();
+	void setupBuilding(D3DXVECTOR3 _translate, D3DXVECTOR3 _scale, int index);
 	LPD3DXMESH              g_pMesh; // Our mesh object in sysmem
 	D3DMATERIAL9*           g_pMeshMaterials; // Materials for our mesh
 	LPDIRECT3DTEXTURE9*     g_pMeshTextures; // Textures for our mesh
@@ -132,6 +137,8 @@ private:
 	float translateXMesh1;
 	float translateZMesh1;
 	LPDIRECT3DDEVICE9 g_pDevice;
+	ID3DXMesh *buildingmesh[256];
+	
 };
 
 #endif

@@ -266,8 +266,8 @@ int directXClass::GameInit(){
 	dummyAI = HeavyShipClass(g_pMesh, g_pMeshMaterials, g_pMeshTextures, g_dwNumMaterials, g_pDevice);
 	player1 = HumanPlayerClass(dummyAI, "Human",0, 1);
 	mainTerrain = Terrain(g_pMesh2, g_pMeshMaterials2, g_pMeshTextures2, g_dwNumMaterials2, g_pDevice);
-	mainTerrain.setTranslateY(-2);
 	mainTerrain.SetMtrlColor(D3DXCOLOR(0.0f, 0.1f, 0.0f, 0.0f), D3DXCOLOR(0.0f, 0.1f, 0.0f, 0.0f), D3DXCOLOR(0, 0.1f, 0.0f, 0.0f));
+	mainTerrain.setupBuildings();
 
    static D3DMATERIAL9* mat1 = new D3DMATERIAL9;
    dummyAI2 = StandardShipClass(g_pMesh, mat1, g_pMeshTextures, 1, g_pDevice);
@@ -437,6 +437,27 @@ int directXClass::GameLoop(float timeDelta) {
 			//player1.updatePosition();
 
 			player1.updatePosition(timeDelta);
+
+			// if player1 is within the collision box
+			if(player1.getPosition().x < (mainTerrain.buildinglocations[0]->x + mainTerrain.buildingscales[0]->x)
+				&& player1.getPosition().x > (mainTerrain.buildinglocations[0]->x - mainTerrain.buildingscales[0]->x)
+				&& player1.getPosition().y < (mainTerrain.buildinglocations[0]->y + mainTerrain.buildingscales[0]->y)
+				&& player1.getPosition().y > (mainTerrain.buildinglocations[0]->y - mainTerrain.buildingscales[0]->y)
+				&& player1.getPosition().z < (mainTerrain.buildinglocations[0]->z + mainTerrain.buildingscales[0]->z)
+				&& player1.getPosition().z > (mainTerrain.buildinglocations[0]->z - mainTerrain.buildingscales[0]->z))
+			{
+				// if they have not already taken damage from the collision, take damage
+				if(player1.gethadCollision() == false)
+				{
+					player1.sethadCollision(true);
+					player1.takeHit(10);
+				}
+			}
+			else
+			{
+				// when the player leaves the collision box, enable them to take collision damage
+				player1.sethadCollision(false);
+			}
 
 			updateCameraTarget();
 			camera.Update(timeDelta);//reset();

@@ -4,7 +4,6 @@
 void Terrain::renderSelf() {
 	// Setup the world, view, and projection matrices
 	setupWorld();
-
 	// Meshes are divided into subsets, one for each material. Render them in
 	// a loop
 	for( DWORD i=0; i<g_dwNumMaterials; i++ )
@@ -15,6 +14,10 @@ void Terrain::renderSelf() {
         
 		// Draw the mesh subset
 		g_pMesh->DrawSubset( i );
+	}
+	for(int i = 0; i < 1; i++)
+	{
+		setupBuilding(*buildinglocations[i],*buildingscales[i],i);
 	}
 }
 
@@ -40,4 +43,34 @@ void Terrain::setupWorld() {
     g_pDevice->SetTransform( D3DTS_WORLD, &(translate2 * rotationZ 
 											* rotationY * rotationX 
 											* translate3 * (scale * translate)));
+}
+
+void Terrain::setupBuildings()
+{
+	for(int i = 0; i < 1; i++)
+	{
+		D3DXCreateBox(g_pDevice, 1, 1, 1, &buildingmesh[i], NULL);
+		buildinglocations[i] = new D3DXVECTOR3();
+		buildinglocations[i]->x = 0;
+		buildinglocations[i]->y = 0;
+		buildinglocations[i]->z = 10;
+		buildingscales[i] = new D3DXVECTOR3();
+		buildingscales[i]->x = 5;
+		buildingscales[i]->y = 5;
+		buildingscales[i]->z = 5;
+	}
+}
+
+void Terrain::setupBuilding(D3DXVECTOR3 _translate, D3DXVECTOR3 _scale, int index)
+{
+	D3DXMATRIX translate = directXClass::Translate(_translate.x, _translate.y, _translate.z);
+	D3DXMATRIX scale = directXClass::Translate(0,0,0);
+	scale(0,0) = _scale.x;
+	scale(1,1) = _scale.y;
+	scale(2,2) = _scale.z;
+	g_pDevice->SetTransform(D3DTS_WORLD, &(scale * translate));
+    D3DMATERIAL9* mat = new D3DMATERIAL9();
+    mat->Ambient= D3DXCOLOR(0.5f, 0.5f, 0.5f, 255.0f);
+    g_pDevice->SetMaterial(mat);
+	buildingmesh[index]->DrawSubset(0);
 }
