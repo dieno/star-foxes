@@ -46,6 +46,8 @@ private:
    
 public:
    PMovement _mv;
+   void Rotate2DvectorYZ(D3DXVECTOR3* pV2, float angle);
+   void Rotate2DvectorXZ(D3DXVECTOR3* pV2, float angle);
    void Evaluate();
    void Seek(D3DXVECTOR3 enemyPos);
    void SeekIra(D3DXVECTOR3 enemyPos);
