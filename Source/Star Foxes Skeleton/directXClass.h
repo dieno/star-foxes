@@ -3,6 +3,7 @@
 
 #include "directXHeader.h"
 #include "gamecore.h"
+#include "gamestate.h"
 
 #include "mainPlayerClass.h"
 #include "humanPlayerClass.h"
@@ -54,6 +55,7 @@ public:
 	translateYMesh2(0),
 	player1(),
 	player2(),
+	currGameState(),
 	input(),
 	camera(),
 	singlePlayerSurface(0),
@@ -145,6 +147,7 @@ private:
 	MainPlayerClass player1;
 	MainPlayerClass player2;
    std::list<AIPlayer*> _aiPlayer;
+	GameState* currGameState;
    //AIPlayer _aiplayer1;
 	Input input;
 	ID3DXMesh *cubemesh[256];
