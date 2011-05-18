@@ -1229,7 +1229,7 @@ HRESULT directXClass::InitGeometry()
         g_pMeshMaterialsLight[i] = d3dxMaterialsHeavy[i].MatD3D;
 
         // Set the ambient color for the material (D3DX does not do this)
-        g_pMeshMaterialsLight[i].Ambient = g_pMeshMaterialsHeavy[i].Diffuse;
+        g_pMeshMaterialsLight[i].Ambient = g_pMeshMaterialsLight[i].Diffuse;
 
         g_pMeshTexturesLight[i] = NULL;
         if( d3dxMaterialsLight[i].pTextureFilename != NULL && 
@@ -1253,6 +1253,68 @@ HRESULT directXClass::InitGeometry()
                 if( FAILED( D3DXCreateTextureFromFile( g_pDevice, 
                                                     strTexture, 
                                                     &g_pMeshTexturesLight[i] ) ) )
+                {
+                    MessageBox(NULL, TEXT("Could not find texture map"), TEXT("Meshes.exe"), MB_OK);
+                }
+            }
+        }
+    }
+
+   // Done with the material buffer
+    pD3DXMtrlBuffer->Release();
+
+	if( FAILED( D3DXLoadMeshFromX( TEXT("laser.x"), D3DXMESH_SYSTEMMEM, 
+                                   g_pDevice, NULL, 
+                                   &pD3DXMtrlBuffer, NULL, &g_dwNumMaterialsLaser, 
+                                   &g_pMeshLaser ) ) )
+    {
+        // If model is not in current folder, try parent folder
+        if( FAILED( D3DXLoadMeshFromX( TEXT("..\\Laser.x"), D3DXMESH_SYSTEMMEM, 
+                                    g_pDevice, NULL, 
+                                    &pD3DXMtrlBuffer, NULL, &g_dwNumMaterialsLaser, 
+                                    &g_pMeshLaser ) ) )
+        {
+            MessageBox(NULL, TEXT("Could not find Laser.x"), TEXT("Meshes.exe"), MB_OK);
+            return E_FAIL;
+        }
+    }
+
+    // We need to extract the material properties and texture names from the 
+    // pD3DXMtrlBuffer
+    D3DXMATERIAL* d3dxMaterialsLaser = (D3DXMATERIAL*)pD3DXMtrlBuffer->GetBufferPointer();
+    g_pMeshMaterialsLaser = new D3DMATERIAL9[g_dwNumMaterialsLaser];
+    g_pMeshTexturesLaser  = new LPDIRECT3DTEXTURE9[g_dwNumMaterialsLaser];
+
+    for( DWORD i=0; i<g_dwNumMaterialsLight; i++ )
+    {
+        // Copy the material
+        g_pMeshMaterialsLaser[i] = d3dxMaterialsHeavy[i].MatD3D;
+
+        // Set the ambient color for the material (D3DX does not do this)
+        g_pMeshMaterialsLaser[i].Ambient = g_pMeshMaterialsLaser[i].Diffuse;
+
+        g_pMeshTexturesLaser[i] = NULL;
+        if( d3dxMaterialsLaser[i].pTextureFilename != NULL && 
+            lstrlen((LPCWSTR)d3dxMaterialsLaser[i].pTextureFilename) > 0 )
+        {
+            // Create the texture
+			int len = lstrlen((LPCWSTR)d3dxMaterialsLaser[i].pTextureFilename);
+			wchar_t *wText = new wchar_t[len];
+			::MultiByteToWideChar(  CP_ACP, NULL,d3dxMaterialsLaser[i].pTextureFilename, -1, wText,len );
+            if( FAILED( D3DXCreateTextureFromFile( g_pDevice, 
+                                                wText, 
+                                                &g_pMeshTexturesLaser[i] ) ) )
+            {
+                // If texture is not in current folder, try parent folder
+                const TCHAR* strPrefix = TEXT("..\\");
+                const int lenPrefix = lstrlen( strPrefix );
+                TCHAR strTexture[MAX_PATH];
+                lstrcpyn( strTexture, strPrefix, MAX_PATH );
+                lstrcpyn( strTexture + lenPrefix, wText, MAX_PATH - lenPrefix );
+                // If texture is not in current folder, try parent folder
+                if( FAILED( D3DXCreateTextureFromFile( g_pDevice, 
+                                                    strTexture, 
+                                                    &g_pMeshTexturesLaser[i] ) ) )
                 {
                     MessageBox(NULL, TEXT("Could not find texture map"), TEXT("Meshes.exe"), MB_OK);
                 }
