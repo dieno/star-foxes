@@ -46,6 +46,7 @@ private:
    
 public:
    PMovement _mv;
+   void Try(void *(AIPlayer::*));
    void Rotate2DvectorYZ(D3DXVECTOR3* pV2, float angle);
    void Rotate2DvectorXZ(D3DXVECTOR3* pV2, float angle);
    void Evaluate();
