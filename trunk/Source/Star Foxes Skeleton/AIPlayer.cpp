@@ -26,7 +26,7 @@ void AIPlayer::Update(HWND hWnd, D3DXVECTOR3 pos)
 {
    //srand((unsigned)time(0));
 	//Seek(pos);
-   //Move(hWnd, FWRD, NULL);
+   Move(hWnd, FWRD, NULL);
    switch(_behave)
    {
    case FLEE:
@@ -180,163 +180,76 @@ void AIPlayer::Rotate2DvectorYZ(D3DXVECTOR3* pV2, float angle)
 }
 
 void AIPlayer::Seek(D3DXVECTOR3 enemyPos) {
-
    float x = getPositionVector().x;//getPositionX();
 	float z = getPositionVector().z;
 	float y = getPositionVector().y;
 	float xDif = enemyPos.x - x;
    float yDif = enemyPos.y - y;
    float zDif = enemyPos.z - z;
+   //int doit =  rand() % 1;
   
 	float dist = sqrt(xDif*xDif + yDif*yDif + zDif*zDif);
-   D3DXVECTOR3 d = enemyPos - getPositionVector();   
+   D3DXVECTOR3 d = enemyPos - getPositionVector();
    d.x = -d.x / dist;
    d.y = d.y / dist;
    d.z = d.z / dist;
-
-   float angle = atan2(getDirectionVector().z, getDirectionVector().x);
-   Rotate2DvectorXZ(&d, -angle);
+   D3DXVECTOR3 d2 = d;
    float off = 0.2f;
+   float angle, angle2;
+   // Calculating horizontal rotation
+
+      //down(false); up(false);
    
-   float angle2 = atan2(0, 1.0f) - atan2(d.z, d.x);
-   if(angle2 > off)
-   {
-      left(true);
-   }
-   else if(angle2 < -off)
-   {
-      right(true);
-   }
-   else
-   {
-      left(false);
-      right(false);
-   }
-
-
-   /*
-   if(abs(angle) > off)
-   {
-      if(my.x > d.x)
-      {
-         if(d.z < 0)
+   //if((int)dist % 10 == 0) {   
+   
+      //up(false); down(false);
+      angle = atan2(getDirectionVector().z, getDirectionVector().x);
+      Rotate2DvectorXZ(&d, -angle);
+      
+      angle2 = atan2(0, 1.0f) - atan2(d.z, d.x);
+      if(angle2 > off)
+         if(getUpVector().y > 0)
             left(true);
          else
             right(true);
-      }
-      else
-      {
-         if(d.z < 0)
+      else if(angle2 < -off)
+         if(getUpVector().y > 0)
             right(true);
-         else
+         else 
             left(true);
-      }
-   }
-   else
-   {
-      right(false);
-      left(false);
-   }*/
-
-   /*if(angle > off && abs(angle))
-   {
-      left(true);
-      //right(true);
-   }
-   else if (angle < -off && angle > D3DX_PI)
-   {
-      right(true);
-   }
-   else
-   {
-      right(false);
-      left(false);
-   }
-   */
-
-   /*double myangle = atan2(z, x);
-   double enangle = atan2(d.z, d.x);
-   double angle = myangle - enangle;*/
-
-
-   //this->up(true);
-   /*
-	//if((enemyPos.x < x) && (offset)) {
-   if((d.x < getDirectionVector().x) && (offset)) {
-		this->left(true);//this->bankLeft(0.03f);
-      //this->right(false);
-		//directXClass::SetError(TEXT("SEEK: Moving [left] | from %f | to %f"), x, enemyPos.x);  
-	} else if((d.x > getDirectionVector().x) && (offset)){
-		this->right(true); //this->bankRight(0.03f);
-      //this->left(false);
-		//directXClass::SetError(TEXT("SEEK: Moving [right] | from %f | to %f"), x, enemyPos.x);  
-	}
-   */
-   /*
-   if(abs(d.y - getDirectionVector().y) < 0.1f)
-   {
-	
-      if((d.y > getDirectionVector().y) && (offset)) {
-		   this->down(true);//this->bankDown(0.02f);
-         //this->up(false);
-		   //directXClass::SetError(TEXT("SEEK: Moving [down] | from %f | to %f"), z, enemyPos.z);  
-	   } else if(d.y < getDirectionVector().y && (offset)){
-		   this->up(true);	//this->bankUp(0.02f);	
-		   //this->down(false);
-         //directXClass::SetError(TEXT("SEEK: Moving [up] | from %f | to %f"), z, enemyPos.z);  
-	   }   
       else
       {
-         down(false);
-         up(false);
+         left(false);
+         right(false);
       }
-   }
-   */
-   /*if(abs(d.x - getDirectionVector().x) > 0.1f)
-   {
-	   if((d.x < getDirectionVector().x) && (offset)) {
-		   this->left(true);//this->bankDown(0.02f);
-         //this->up(false);
-		   //directXClass::SetError(TEXT("SEEK: Moving [down] | from %f | to %f"), z, enemyPos.z);  
-	   } else if(d.x > getDirectionVector().x && (offset)){
-		   this->right(true);	//this->bankUp(0.02f);	
-		   //this->down(false);
-         //directXClass::SetError(TEXT("SEEK: Moving [up] | from %f | to %f"), z, enemyPos.z);  
-	   }
-   }
+   
+   /*}
    else
    {*/
-   //   left(false);
-     // right(false);
+      //calculating vertical rotation
+      //left(false); right(false);
+      //left(false); right(false);
+      
+         d2.z = d2.z;
+         d2.y = -d2.y;
+         angle = atan2(getDirectionVector().y, getDirectionVector().z);
+         Rotate2DvectorYZ(&d2, angle);
    
-   /*
-   if(abs(d.z - getDirectionVector().z) > 0.1f)
-   {
-	   if((d.z < getDirectionVector().z) && (offset)) {
-		   this->right(true);//this->bankDown(0.02f);
-         //this->up(false);
-		   //directXClass::SetError(TEXT("SEEK: Moving [down] | from %f | to %f"), z, enemyPos.z);  
-	   } else if(d.z > getDirectionVector().z && (offset)){
-		   this->left(true);	//this->bankUp(0.02f);	
-		   //this->down(false);
-         //directXClass::SetError(TEXT("SEEK: Moving [up] | from %f | to %f"), z, enemyPos.z);  
-	   }
-   }
-   else
-   {
-      left(false);
-      right(false);
-   }*/
-   /*
-	if((d.z < getDirectionVector().z) && (offset)) {
-		this->down(true);//this->bankDown(0.02f);
-      //this->up(false);
-		//directXClass::SetError(TEXT("SEEK: Moving [down] | from %f | to %f"), z, enemyPos.z);  
-	} else if(d.y > getDirectionVector().y && (offset)){
-		this->up(true);	//this->bankUp(0.02f);	
-		//this->down(false);
-      //directXClass::SetError(TEXT("SEEK: Moving [up] | from %f | to %f"), z, enemyPos.z);  
-	}*/
+         angle2 = atan2(0, 1.0f) - atan2(d2.y, d2.z);
+         if(angle2 > off)
+         {
+            up(true);
+         }
+         else if(angle2 < -off)
+         {
+            down(true);
+         }
+         else
+         {
+            up(false);
+            down(false);
+         }      
+   //}
 }
 
 
