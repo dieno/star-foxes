@@ -24,25 +24,50 @@ void AIPlayer::SetBounds(D3DXVECTOR3 pos)
 // TODO: Behaviour evaluator to evaluate what behaviour to activate.
 void AIPlayer::Update(HWND hWnd, D3DXVECTOR3 pos)
 {
-   //srand((unsigned)time(0));
-	//Seek(pos);
-   Move(hWnd, FWRD, NULL);
-   switch(_behave)
+   Move(hWnd, FWRD, NULL); // AI has constant forward movement
+   //static int height;
+   /*switch(_behave)
    {
    case FLEE:
       Flee(hWnd, pos);
       break;
    case SEEK:
 	  Seek(pos);
-     //Flee(hWnd, pos);
-     //Wander(hWnd);
 	  break;
    default:
       Wander(hWnd);
       break;
+   }*/
+   if(getPositionVector().y < 10) 
+   { //Straightens ship if it gets to close to the ground.
+      Straighten();
+         //down(true);
    }
+   else
+   {
+      //down(false);
+      //Flee(hWnd, pos);
+      //Wander(hWnd);
+      Seek(pos);
+   }
+   //Wander(hWnd);
 }
-
+/*
+bool AIPlayer::GainHeight(int* count)
+{
+   if(Straighten())
+   {
+      if(count > 0)
+      {
+         up(true);
+         (*count)--;
+      }
+      else
+         return true;
+   }
+   return false;
+}
+*/
 // AI Behaviour: makes AI wander around randomly.
 void AIPlayer::Wander(HWND hWnd)
 {   
@@ -54,10 +79,17 @@ void AIPlayer::Wander(HWND hWnd)
       this->up(false);
       this->right(false);
       this->left(false);
-      _mv->count = std::rand() % 50;
-      _mv->dir =  std::rand() % 2 + 2;//9;
-   }
-
+      _mv->count = std::rand() % 20;
+      _mv->dir =  std::rand() % 12;
+      if(_mv->dir > 8)
+         _mv->dir = 8;
+      if(_mv->dir == FWRD )
+         _mv->count *= 5;
+   }   
+   /*if(getPositionVector().y < 10) 
+   { //Straightens ship if it gets to close to the ground.
+      Straighten();
+   }*/
    Move(hWnd, _mv->dir, NULL);
    _mv->count--;
 }
@@ -66,27 +98,51 @@ void AIPlayer::Wander(HWND hWnd)
 // param pos: the location in screen to flee from.
 void AIPlayer::Flee(HWND hWnd, D3DXVECTOR3 pos)
 {
-   float x = pos.x - getPositionVector().x;
-   float y = pos.y - getPositionVector().y;
-   float z = pos.z - getPositionVector().z;
-   float dist = sqrt(x*x + y*y + z*z);
+   // getting vector from this ship position to enemy position.
+   D3DXVECTOR3 vpos = D3DXVECTOR3(pos.x - getPositionVector().x,
+      pos.y - getPositionVector().y,
+      pos.z - getPositionVector().z);
+   float dist = sqrt(vpos.x*vpos.x + vpos.y*vpos.y + vpos.z*vpos.z);
 
-   static bool fleeing = false;
+   //creating univector for vpos.
+   vpos.x /= -dist;
+   vpos.y /= dist;
+   vpos.z /= dist;
 
-   if(dist <= 1 && _mv->count <=0)
+   D3DXVECTOR3 vdir = getDirectionVector();
+   float halfPi = 2.5f; // I know is not half pi. Radius to flee from.
+   float angle = atan2(vdir.z, vdir.x);
+   Rotate2DvectorXZ(&vpos, -angle);
+   float angle2 = atan2(vpos.z, vpos.x) - atan2(0, 1.0f);
+
+   //static bool fleeing = false;
+
+   if(abs(angle2) < halfPi)
    {
-      up(false);
-      down(false);
-      left(false);
-      right(false);
-      _mv->dir = std::rand() % 9;
-      _mv->count = 10;
+      if(angle2 > 0)
+         left(true);
+      else
+         right(true);
    }
-
-   if(_mv->count > 0)
+   else
    {
-      Move(hWnd, _mv->dir, &fleeing);
-      _mv->count--;
+      right(false);
+      left(false);
+      if(_mv->count <= 0)
+      {
+         _mv->dir = std::rand() % 6;
+         _mv->count = std::rand() % 5 + 5;
+         if(_mv->dir > 2)
+         {
+            _mv->dir = DIR_NONE;
+            _mv->count *= 10;
+         }
+      }
+      else
+      {
+         Move(hWnd, _mv->dir, NULL);
+         _mv->count--;
+      }
    }
 }
 
@@ -151,6 +207,10 @@ EDir AIPlayer::Move(HWND hWnd, int dir, bool *outbound)
       this->boost(true);
       return FWRD;
    default:
+      left(false);
+      right(false);
+      up(false);
+      down(false);
       return DIR_NONE;
    }
 }
@@ -186,70 +246,52 @@ void AIPlayer::Seek(D3DXVECTOR3 enemyPos) {
 	float xDif = enemyPos.x - x;
    float yDif = enemyPos.y - y;
    float zDif = enemyPos.z - z;
-   //int doit =  rand() % 1;
   
 	float dist = sqrt(xDif*xDif + yDif*yDif + zDif*zDif);
    D3DXVECTOR3 d = enemyPos - getPositionVector();
-   d.x = -d.x / dist;
-   d.y = d.y / dist;
-   d.z = d.z / dist;
+   d.x /= -dist; // for some reason.. need to do this reflection first
+   d.y /= dist; // Setting univector from this ship to enemy position.
+   d.z /= dist;
    D3DXVECTOR3 d2 = d;
    float off = 0.2f;
    float angle, angle2;
    // Calculating horizontal rotation
-
-      //down(false); up(false);
-   
-   //if((int)dist % 10 == 0) {   
-   
-      //up(false); down(false);
-      angle = atan2(getDirectionVector().z, getDirectionVector().x);
-      Rotate2DvectorXZ(&d, -angle);
+   angle = atan2(getDirectionVector().z, getDirectionVector().x);
+   Rotate2DvectorXZ(&d, -angle);
       
-      angle2 = atan2(0, 1.0f) - atan2(d.z, d.x);
-      if(angle2 > off)
-         if(getUpVector().y > 0)
-            left(true);
-         else
-            right(true);
-      else if(angle2 < -off)
-         if(getUpVector().y > 0)
-            right(true);
-         else 
-            left(true);
+   angle2 = atan2(0, 1.0f) - atan2(d.z, d.x);
+   if(angle2 > off)
+      if(getUpVector().y > 0)
+         left(true);
       else
-      {
-         left(false);
-         right(false);
-      }
-   
-   /*}
+         right(true);
+   else if(angle2 < -off)
+      if(getUpVector().y > 0)
+         right(true);
+      else 
+         left(true);
    else
-   {*/
-      //calculating vertical rotation
-      //left(false); right(false);
-      //left(false); right(false);
-      
-         d2.z = d2.z;
-         d2.y = -d2.y;
-         angle = atan2(getDirectionVector().y, getDirectionVector().z);
-         Rotate2DvectorYZ(&d2, angle);
+   {
+      left(false);
+      right(false);
+   }
    
-         angle2 = atan2(0, 1.0f) - atan2(d2.y, d2.z);
-         if(angle2 > off)
-         {
-            up(true);
-         }
-         else if(angle2 < -off)
-         {
-            down(true);
-         }
-         else
-         {
-            up(false);
-            down(false);
-         }      
-   //}
+   //calculating vertical rotation
+   d2.z = d2.z;
+   d2.y = -d2.y;
+   angle = atan2(getDirectionVector().y, getDirectionVector().z);
+   Rotate2DvectorYZ(&d2, angle);
+   
+   angle2 = atan2(0, 1.0f) - atan2(d2.y, d2.z);
+   if(angle2 > off)
+      up(true);
+   else if(angle2 < -off)
+      down(true);
+   else
+   {
+      up(false);
+      down(false);
+   }
 }
 
 
@@ -261,8 +303,6 @@ void AIPlayer::SeekIra(D3DXVECTOR3 enemyPos) {
 	float xDif = enemyPos.x - x;
    float yDif = enemyPos.y - y;
    float zDif = enemyPos.z - z;
-
-   
 
 	float dist = sqrt(xDif*xDif + yDif*yDif + zDif*zDif);
 	bool offset = true; //dist >= 1;
@@ -290,11 +330,32 @@ void AIPlayer::SeekIra(D3DXVECTOR3 enemyPos) {
 
 }
 
+bool AIPlayer::Straighten()
+{
+   float off = 0.2f;
+   if(getDirectionVector().y > 0.4f || getDirectionVector().y < off)
+   {
+      if(getUpVector().y > 0)
+         Move(NULL, UP, NULL);
+      else
+         Move(NULL, DWN, NULL);
+      return false;
+   }
+   else
+   {
+      up(false);
+      down(false);
+      left(false);
+      right(false);
+      return true;
+   }
+}
 
 // Initializes AI. Function usually called in constructor.
 void AIPlayer::IniAI()
 {
    //_mv = (PMovement) malloc (sizeof(PMovement));
+   srand(timeGetTime());
    _mv = (Movement*) malloc (sizeof(Movement));
    _mv->dir = -1;
 }
