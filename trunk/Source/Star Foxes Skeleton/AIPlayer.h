@@ -37,16 +37,24 @@ typedef struct Movement
    float bottom; // bottom bound
    float left; // left bound
    float right; // right bound
+   float front; // z positive bound
+   float back; // z negative bound
+
+   float straightUpLow;
+   float straightUpHi;
+   float straightDownLow;
+   float straightDownHi;
 }*PMovement;
 
 class AIPlayer: public MainPlayerClass
 {
 private:
    EBehaviour _behave;
-   
+   bool KeepInBounds(HWND hWnd);
 public:
    PMovement _mv;
-   bool Straighten();
+   bool StraightenUp();
+   bool StraightenDown();
    void Rotate2DvectorYZ(D3DXVECTOR3* pV2, float angle);
    void Rotate2DvectorXZ(D3DXVECTOR3* pV2, float angle);
    void Evaluate();
