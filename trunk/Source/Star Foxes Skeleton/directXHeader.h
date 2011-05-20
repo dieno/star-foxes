@@ -11,6 +11,7 @@
 #include <Windows.h>
 #include <list>
 #include <string>
+#include <sstream>
 
 #pragma comment (lib, "dinput8.lib")
 #pragma comment (lib, "dxguid.lib")

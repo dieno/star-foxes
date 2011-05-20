@@ -75,7 +75,7 @@ public:
 		LPDIRECT3DTEXTURE9* meshTex, 
 		DWORD meshNumMat, 
 		LPDIRECT3DDEVICE9 newg_pDevice, 
-		std::string playerName, 
+		std::wstring playerName, 
 		int teamNum, 
 		int lives)
 	: MainPlayerClass(playerName, teamNum, lives, MainShipClass(mesh, meshMat, meshTex, meshNumMat, newg_pDevice)) {
@@ -85,7 +85,7 @@ public:
 	AIPlayer(
 		PMESHSTRUCT meshStruct,
 		LPDIRECT3DDEVICE9 newg_pDevice, 
-		std::string playerName, 
+		std::wstring playerName, 
 		int teamNum, 
 		int lives)
 	: MainPlayerClass(playerName, teamNum, lives, MainShipClass(meshStruct, newg_pDevice)) {
@@ -93,7 +93,7 @@ public:
    }
 	
 	AIPlayer(MainShipClass shiptype, 
-		std::string playerName, 
+		std::wstring playerName, 
 		int teamNum, 
 		int lives)
 	: MainPlayerClass(playerName, teamNum, lives, shiptype) {
