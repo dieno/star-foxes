@@ -3,8 +3,10 @@
 
 #include "directXHeader.h"
 #include "gamecore.h"
+#include "projectile.h"
 
 #define Y_AXIS_INVERTED false
+#define SHOOT_SPEED 0.5f
 
 class MainShipClass {
 public:
@@ -25,9 +27,6 @@ public:
 		vPosition_(0.0f,0.0f,0.0f),
 		vScale_(1.0f,1.0f,1.0f),
 		vRotation_(0.0f,0.0f,0.0f),
-		/*vDirection_(0.0f,0.0f,1.0f),
-		vUp_(0.0f,1.0f,0.0f),
-		vRight_(1.0f,0.0f,0.0f),*/
 		vVelocity_(0.0f,0.0f,0.0f),
 		mWorld_(),
 		RotationRate_(1.5f),
@@ -35,6 +34,7 @@ public:
 		MaxForce_(24000.0f),
 		Drag_(0.97f),
 		thrustAmount_(0.0f){
+		projectileList(),
          IniVectors();
       }
 
@@ -55,9 +55,6 @@ public:
 		vPosition_(0.0f,0.0f,0.0f),
 		vScale_(1.0f,1.0f,1.0f),
 		vRotation_(0.0f,0.0f,0.0f),
-		/*vDirection_(0.0f,0.0f,1.0f),
-		vUp_(0.0f,1.0f,0.0f),
-		vRight_(1.0f,0.0f,0.0f),*/
 		vVelocity_(0.0f,0.0f,0.0f),
 		mWorld_(),
 		RotationRate_(1.5f),
@@ -65,6 +62,7 @@ public:
 		MaxForce_(24000.0f),
 		Drag_(0.97f),
 		thrustAmount_(0.0f){
+		projectileList(),
          IniVectors();
       }
 
@@ -85,9 +83,6 @@ public:
 		vPosition_(0.0f,0.0f,0.0f),
 		vScale_(1.0f,1.0f,1.0f),
 		vRotation_(0.0f,0.0f,0.0f),
-		/*vDirection_(0.0f,0.0f,1.0f),
-		vUp_(0.0f,1.0f,0.0f),
-		vRight_(1.0f,0.0f,0.0f),*/
 		vVelocity_(0.0f,0.0f,0.0f),
 		mWorld_(),
 		RotationRate_(1.5f),
@@ -95,19 +90,16 @@ public:
 		MaxForce_(24000.0f),
 		Drag_(0.97f),
 		thrustAmount_(0.0f){
+		projectileList(),
          IniVectors();
       }
 
-	//NEW STUFF
    void IniVectors()
    {
       vRight_	   = D3DXVECTOR3(1.0f,0.0f,0.0f);
       vUp_		   = D3DXVECTOR3(0.0f,1.0f,0.0f);
       vDirection_ = D3DXVECTOR3(0.0f,0.0f,1.0f);
    }
-	// draws the ship to the world
-	void Draw();	
-
 	// updates the ship's location + orientation
 	void Update(float timeDelta);
 
@@ -116,6 +108,7 @@ public:
 	void bankUp(bool active);
 	void bankDown(bool active);
 	void boost(bool active);
+	void shoot(float timeDelta);
 
 	// getters + setters:
 
@@ -130,17 +123,9 @@ public:
 
 	D3DXVECTOR3 getRotationVector() {return vRotation_;}
 
-	D3DXVECTOR3 getDirectionVector() 
-	{
-		return D3DXVECTOR3(-vDirection_.x,vDirection_.y,vDirection_.z);
-		//return vDirection_;
-	}
+	D3DXVECTOR3 getDirectionVector() { return vDirection_; }
 
-	D3DXVECTOR3 getUpVector() 
-	{
-		return D3DXVECTOR3(vUp_.x, vUp_.y, vUp_.z);
-		//return vUp_;
-	}
+	D3DXVECTOR3 getUpVector() { return vUp_; }
 
 	D3DXVECTOR3 getRightVector() 
 	{
@@ -274,6 +259,8 @@ public:
 		return damagePerShot;
 	}
 
+	void loadProjectile(LPD3DXMESH mesh, D3DMATERIAL9* meshMat, LPDIRECT3DTEXTURE9* meshTex, DWORD meshNumMat);
+	void Draw();
    void SetPosition(float x, float y, float z)
    {
       vPosition_.x = x;
@@ -299,6 +286,10 @@ private:
 	D3DMATERIAL9*           g_pMeshMaterials; // Materials for our mesh
 	LPDIRECT3DTEXTURE9*     g_pMeshTextures; // Textures for our mesh
 	DWORD                   g_dwNumMaterials;   // Number of mesh materials
+	LPD3DXMESH              g_pMesh2; // Our mesh object in sysmem
+	D3DMATERIAL9*           g_pMeshMaterials2; // Materials for our mesh
+	LPDIRECT3DTEXTURE9*     g_pMeshTextures2; // Textures for our mesh
+	DWORD                   g_dwNumMaterials2;   // Number of mesh materials
 	float rotationAboutYMesh1;
 	float rotationAboutXMesh1;
 	float rotationAboutZMesh1;
@@ -307,7 +298,8 @@ private:
 	float translateZMesh1;
 	LPDIRECT3DDEVICE9 g_pDevice;
 	static float damagePerShot;
-	// NEW STUFF
+	std::list<Projectile> projectileList;
+	float timeToShoot;
 
 	// ship's location & orientation
 	D3DXVECTOR3 vPosition_;
@@ -347,9 +339,15 @@ private:
 	// updates the world transform matrix
 	void updateWorldMatrix();
 
+	void updateRotation(D3DXVECTOR3 *vRotation);
+
 	void pitch(float angle);
 	void yaw(float angle);
 	void roll(float angle);
+
+	void updateProjectiles(float timeDelta);
+	void drawProjectiles();
+
 };
 
 #endif
