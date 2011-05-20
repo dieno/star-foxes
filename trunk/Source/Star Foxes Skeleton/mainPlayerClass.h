@@ -15,11 +15,11 @@ public:
 		int lives,
 		MainShipClass playerShip):playerName_(playerName), teamNum_(teamNum), lives_(lives), playerShip_(playerShip),
 		rotationZ(0.0f), rotationX(0.0f), positionX(0.0f), currentSpeed(1.0f), vRotation(0.0f,0.0f,0.0f), vPosition(0.0f,0.0f,20.0f), afterboosterActive_(false),
-		isAlive(true), boosterTimer(10), hadCollision(false){}
+		isAlive(true), boosterTimer(10), hadCollision(false), hasShot(false){}
 
 	MainPlayerClass():playerName_(),teamNum_(),lives_(),playerShip_(),
 		rotationZ(0.0f), rotationX(0.0f), positionX(0.0f), currentSpeed(1.0f), vRotation(0.0f,0.0f,0.0f), vPosition(0.0f,0.0f,20.0f), afterboosterActive_(false),
-		isAlive(true), boosterTimer(10), hadCollision(false){}
+		isAlive(true), boosterTimer(10), hadCollision(false), hasShot(false){}
 
 	void left(bool active) {playerShip_.bankLeft(active);}
 	void right(bool active) {playerShip_.bankRight(active);}
@@ -114,6 +114,16 @@ public:
 	   hadCollision = _hadCollision;
    }
 
+   bool gethasShot()
+   {
+	   return hasShot;
+   }
+
+   void sethasShot(bool _hasShot)
+   {
+	   hasShot = _hasShot;
+   }
+
    D3DXVECTOR3 getPosition()
    {
 	   return playerShip_.getPositionVector();
@@ -123,9 +133,10 @@ public:
    {
       return vRotation;
    }
-	//ship takes a hit, damage taken is the damage caused by hit
-	//returns bool true if still alive, false if dead
-	bool takeHit(int damageTaken);
+   
+   //ship takes a hit, damage taken is the damage caused by hit
+   //returns bool true if still alive, false if dead
+   bool takeHit(int damageTaken);
 
    void SetRotation(float x, float y, float z) ;
 
@@ -152,6 +163,7 @@ private:
 	int boosterTimer;
 	float currentSpeed;
 	bool hadCollision;
+	bool hasShot;
 };
 
 

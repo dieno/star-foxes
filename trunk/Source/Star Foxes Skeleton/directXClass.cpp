@@ -461,15 +461,6 @@ int directXClass::GameLoop(float timeDelta) {
 
 			updateCameraTarget();
 			camera.Update(timeDelta);//reset();
-
-			if(input.get_keystate(DIK_M))
-			{
-				player1.takeHit(5);
-			}
-			if(input.get_keystate(DIK_N))
-			{
-				player1.takeHit(-5);
-			}
 			UpdateHUD();
 
 			//directXClass::SetError(TEXT("p1: %f"), player1.getPositionZ());
@@ -1488,6 +1479,16 @@ void directXClass::inputCommands()
 	{
 		player1.up(false);
 		player1.down(false);
+	}
+
+	if(input.get_keystate(DIK_M) && !player1.gethasShot())
+	{
+		player1.sethasShot(true);
+	}
+
+	if(!input.get_keystate(DIK_M))
+	{
+		player1.sethasShot(false);
 	}
 
 	if(input.get_keystate(DIK_L))
