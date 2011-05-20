@@ -33,8 +33,8 @@ public:
 		Mass_(1.0f),
 		MaxForce_(24000.0f),
 		Drag_(0.97f),
-		thrustAmount_(0.0f){
-		projectileList(),
+		thrustAmount_(0.0f),
+		projectileList(){
          IniVectors();
       }
 
@@ -61,8 +61,8 @@ public:
 		Mass_(1.0f),
 		MaxForce_(24000.0f),
 		Drag_(0.97f),
-		thrustAmount_(0.0f){
-		projectileList(),
+		thrustAmount_(0.0f),
+		projectileList(){
          IniVectors();
       }
 
@@ -89,8 +89,8 @@ public:
 		Mass_(1.0f),
 		MaxForce_(24000.0f),
 		Drag_(0.97f),
-		thrustAmount_(0.0f){
-		projectileList(),
+		thrustAmount_(0.0f),
+		projectileList(){
          IniVectors();
       }
 
