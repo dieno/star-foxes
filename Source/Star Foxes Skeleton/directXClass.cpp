@@ -14,6 +14,7 @@ bool directXClass::startMouseMove = false;
 float directXClass::lastTime = 0.0f;
 int directXClass::currentX = 0;
 int directXClass::currentY = 0;
+bool directXClass::waiting = true;
 
 //deals with revaildating the window, and the basic window stuff
 long CALLBACK directXClass::WndProc(HWND hWnd, UINT uMessage, WPARAM wParam, LPARAM lParam){
@@ -24,6 +25,24 @@ long CALLBACK directXClass::WndProc(HWND hWnd, UINT uMessage, WPARAM wParam, LPA
 		}
 	case WM_CREATE:
 		{
+			program->hwndDialog = CreateDialog (((LPCREATESTRUCT) lParam)->hInstance, MAKEINTRESOURCE(IDD_DIALOG1), 
+                                  g_hWndMain, startDialog) ;
+			SendMessage(program->hwndDialog, WM_COMMAND, MAKELPARAM(IDC_RADIO1,IDC_RADIO1), MAKELPARAM(IDC_RADIO1,IDC_RADIO1));
+			SendMessage(program->hwndDialog, WM_COMMAND, MAKELPARAM(IDC_RADIO4,IDC_RADIO4), MAKELPARAM(IDC_RADIO4,IDC_RADIO4));
+			SendMessage(program->hwndDialog, WM_COMMAND, MAKELPARAM(IDC_RADIO8,IDC_RADIO8), MAKELPARAM(IDC_RADIO8,IDC_RADIO8));
+			SendMessage(program->hwndDialog, WM_COMMAND, MAKELPARAM(IDC_RADIO10,IDC_RADIO10), MAKELPARAM(IDC_RADIO10,IDC_RADIO10));
+			SendMessage(program->hwndDialog, WM_COMMAND, MAKELPARAM(IDC_RADIO15,IDC_RADIO15), MAKELPARAM(IDC_RADIO15,IDC_RADIO15));
+			SendMessage(program->hwndDialog, WM_COMMAND, MAKELPARAM(IDC_RADIO16,IDC_RADIO16), MAKELPARAM(IDC_RADIO16,IDC_RADIO16));
+			SendMessage(program->hwndDialog, WM_COMMAND, MAKELPARAM(IDC_RADIO21,IDC_RADIO21), MAKELPARAM(IDC_RADIO21,IDC_RADIO21));
+			SendMessage(program->hwndDialog, WM_COMMAND, MAKELPARAM(IDC_RADIO22,IDC_RADIO22), MAKELPARAM(IDC_RADIO22,IDC_RADIO22));
+			SendMessage(program->hwndDialog, WM_COMMAND, MAKELPARAM(IDC_RADIO27,IDC_RADIO27), MAKELPARAM(IDC_RADIO27,IDC_RADIO27));
+			SendMessage(program->hwndDialog, WM_COMMAND, MAKELPARAM(IDC_RADIO28,IDC_RADIO28), MAKELPARAM(IDC_RADIO28,IDC_RADIO28));
+			SendMessage(program->hwndDialog, WM_COMMAND, MAKELPARAM(IDC_RADIO33,IDC_RADIO33), MAKELPARAM(IDC_RADIO33,IDC_RADIO33));
+			SendMessage(program->hwndDialog, WM_COMMAND, MAKELPARAM(IDC_RADIO34,IDC_RADIO34), MAKELPARAM(IDC_RADIO34,IDC_RADIO34));
+			SendMessage(program->hwndDialog, WM_COMMAND, MAKELPARAM(IDC_RADIO39,IDC_RADIO39), MAKELPARAM(IDC_RADIO39,IDC_RADIO39));
+			SendMessage(program->hwndDialog, WM_COMMAND, MAKELPARAM(IDC_RADIO40,IDC_RADIO40), MAKELPARAM(IDC_RADIO40,IDC_RADIO40));
+			SendMessage(program->hwndDialog, WM_COMMAND, MAKELPARAM(IDC_RADIO45,IDC_RADIO45), MAKELPARAM(IDC_RADIO45,IDC_RADIO45));
+			SendMessage(program->hwndDialog, WM_COMMAND, MAKELPARAM(IDC_RADIO46,IDC_RADIO46), MAKELPARAM(IDC_RADIO46,IDC_RADIO46));
 			return 0;
 		}
 	case WM_MOUSEMOVE:
@@ -263,8 +282,9 @@ int directXClass::GameInit(){
 	InitGeometry();
 	LoadAlphabet(TEXT("Alphabet vSmall.bmp"), 8, 16);
 	InitTiming();
+	std::wstring name = (WCHAR*)"Human";
 	dummyAI = LightShipClass(g_pMeshLight, g_pMeshMaterialsLight, g_pMeshTexturesLight, g_dwNumMaterialsLight, g_pDevice);
-	player1 = HumanPlayerClass(dummyAI, "Human",0, 1);
+	player1 = HumanPlayerClass(dummyAI, name, 0, 1);
 	player1.initProjectiles(g_pMeshLaser, g_pMeshMaterialsLaser, g_pMeshTexturesLaser, g_dwNumMaterialsLaser);
 
 	mainTerrain = Terrain(g_pMesh2, g_pMeshMaterials2, g_pMeshTextures2, g_dwNumMaterials2, g_pDevice);
@@ -273,7 +293,7 @@ int directXClass::GameInit(){
 
    static D3DMATERIAL9* mat1 = new D3DMATERIAL9;
    dummyAI2 = StandardShipClass(g_pMesh, mat1, g_pMeshTextures, 1, g_pDevice);
-   static AIPlayer ai1 = AIPlayer(dummyAI2, "AI",0, 1);
+   static AIPlayer ai1 = AIPlayer(dummyAI2, name, 0, 1);
    //ai1.GetShip()->setTranslation(10, 10, 10);   
    ai1.GetShip()->SetPosition(0, 10, 50);
    ai1.GetShip()->SetRotation(D3DX_PI, 0, 0);
@@ -383,7 +403,7 @@ int directXClass::GameLoop(float timeDelta) {
 			// If enter is pressed the program enters a singleplayer game
 			if (input.get_keystate(DIK_RETURN))
 			{
-				menuSelect = 2;
+				ShowWindow(hwndDialog, SW_SHOW) ;
 			}
 			RenderMainMenu();
 		break;
@@ -1596,4 +1616,524 @@ void directXClass::setupLights()
 	{
 		g_pDevice->LightEnable(0, FALSE);
 	}
+}
+
+BOOL CALLBACK directXClass::startDialog (HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam){
+	static int player1ShipClass; //0 = standard 1 = light 2 = heavy
+	static int player1TypeAIClosedHuman; //0 = Human 1 = AI 2 = closed
+	static int player2ShipClass; //0 = standard 1 = light 2 = heavy
+	static int player2TypeAIClosedHuman; //0 = Human 1 = AI 2 = closed
+	static int player3ShipClass; //0 = standard 1 = light 2 = heavy
+	static int player3TypeAIClosedHuman; //0 = Human 1 = AI 2 = closed
+	static int player4ShipClass; //0 = standard 1 = light 2 = heavy
+	static int player4TypeAIClosedHuman; //0 = Human 1 = AI 2 = closed
+	static int player5ShipClass; //0 = standard 1 = light 2 = heavy
+	static int player5TypeAIClosedHuman; //0 = Human 1 = AI 2 = closed
+	static int player6ShipClass; //0 = standard 1 = light 2 = heavy
+	static int player6TypeAIClosedHuman; //0 = Human 1 = AI 2 = closed
+	static int player7ShipClass; //0 = standard 1 = light 2 = heavy
+	static int player7TypeAIClosedHuman; //0 = Human 1 = AI 2 = closed
+	static int player8ShipClass; //0 = standard 1 = light 2 = heavy
+	static int player8TypeAIClosedHuman; //0 = Human 1 = AI 2 = closed
+	static MainPlayerClass player1;
+	static MainPlayerClass player2;
+	static MainPlayerClass player3;
+	static MainPlayerClass player4;
+	static MainPlayerClass player5;
+	static MainPlayerClass player6;
+	static MainPlayerClass player7;
+	static MainPlayerClass player8;
+	static WCHAR wszBuff[256] = {0};
+	static WCHAR wszBuff2[1] = {0};
+	static WCHAR wszBuff3[2] = {0};
+	switch(msg){
+		case WM_CREATE:
+			return TRUE;
+		case WM_CLOSE:
+			ShowWindow(hwnd,SW_HIDE);
+			return TRUE;
+		case WM_COMMAND:
+			switch(LOWORD(wParam)) {
+				case IDOK:
+					if (player1TypeAIClosedHuman == 0) {
+						if (player1ShipClass == 0) {
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO3), WM_GETTEXT, 256, (LPARAM)wszBuff);
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO2), WM_GETTEXT, 256, (LPARAM)wszBuff3);
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO1), WM_GETTEXT, 256, (LPARAM)wszBuff2);
+							player1 = HumanPlayerClass(
+								StandardShipClass(program->g_pMesh, program->g_pMeshMaterials, program->g_pMeshTextures,
+								program->g_dwNumMaterials, g_pDevice),
+								std::wstring(wszBuff, 256), _wtoi(wszBuff2), _wtoi(wszBuff3));
+							program->currentPlayers[0] = &player1;
+						}
+						if (player1ShipClass == 1) {
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO3), WM_GETTEXT, 256, (LPARAM)wszBuff);
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO2), WM_GETTEXT, 256, (LPARAM)wszBuff3);
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO1), WM_GETTEXT, 256, (LPARAM)wszBuff2);
+							player1 = HumanPlayerClass(
+								LightShipClass(program->g_pMeshLight, program->g_pMeshMaterialsLight, program->g_pMeshTexturesLight,
+								program->g_dwNumMaterialsLight, g_pDevice),
+								std::wstring(wszBuff, 256), _wtoi(wszBuff2), _wtoi(wszBuff3));
+							program->currentPlayers[0] = &player1;
+						}
+						if (player1ShipClass == 2) {
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO3), WM_GETTEXT, 256, (LPARAM)wszBuff);
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO2), WM_GETTEXT, 256, (LPARAM)wszBuff3);
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO1), WM_GETTEXT, 256, (LPARAM)wszBuff2);
+							player1 = HumanPlayerClass(
+								HeavyShipClass(program->g_pMeshHeavy, program->g_pMeshMaterialsHeavy, program->g_pMeshTexturesHeavy,
+								program->g_dwNumMaterialsHeavy, g_pDevice),
+								std::wstring(wszBuff, 256), _wtoi(wszBuff2), _wtoi(wszBuff3));
+							program->currentPlayers[0] = &player1;
+						}
+					}
+					if (player2TypeAIClosedHuman == 1) {
+						if (player2ShipClass == 0) {
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO6), WM_GETTEXT, 256, (LPARAM)wszBuff);
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO5), WM_GETTEXT, 256, (LPARAM)wszBuff3);
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO4), WM_GETTEXT, 256, (LPARAM)wszBuff2);
+							player2 = AIPlayer(
+								StandardShipClass(program->g_pMesh, program->g_pMeshMaterials, program->g_pMeshTextures,
+								program->g_dwNumMaterials, g_pDevice),
+								std::wstring(wszBuff, 256), _wtoi(wszBuff2), _wtoi(wszBuff3));
+							program->currentPlayers[1] = &player2;
+						}
+						if (player2ShipClass == 1) {
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO6), WM_GETTEXT, 256, (LPARAM)wszBuff);
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO5), WM_GETTEXT, 256, (LPARAM)wszBuff3);
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO4), WM_GETTEXT, 256, (LPARAM)wszBuff2);
+							player2 = AIPlayer(
+								LightShipClass(program->g_pMeshLight, program->g_pMeshMaterialsLight, program->g_pMeshTexturesLight,
+								program->g_dwNumMaterialsLight, g_pDevice),
+								std::wstring(wszBuff, 256), _wtoi(wszBuff2), _wtoi(wszBuff3));
+							program->currentPlayers[1] = &player2;
+						}
+						if (player2ShipClass == 2) {
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO6), WM_GETTEXT, 256, (LPARAM)wszBuff);
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO5), WM_GETTEXT, 256, (LPARAM)wszBuff3);
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO4), WM_GETTEXT, 256, (LPARAM)wszBuff2);
+							player2 = AIPlayer(
+								HeavyShipClass(program->g_pMeshHeavy, program->g_pMeshMaterialsHeavy, program->g_pMeshTexturesHeavy,
+								program->g_dwNumMaterialsHeavy, g_pDevice),
+								std::wstring(wszBuff, 256), _wtoi(wszBuff2), _wtoi(wszBuff3));
+							program->currentPlayers[1] = &player2;
+						}
+					}
+					if (player2TypeAIClosedHuman == 2) {
+						program->currentPlayers[1] = NULL;
+					}
+					if (player3TypeAIClosedHuman == 1) {
+						if (player3ShipClass == 0) {
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO9), WM_GETTEXT, 256, (LPARAM)wszBuff);
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO8), WM_GETTEXT, 256, (LPARAM)wszBuff3);
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO7), WM_GETTEXT, 256, (LPARAM)wszBuff2);
+							player3 = AIPlayer(
+								StandardShipClass(program->g_pMesh, program->g_pMeshMaterials, program->g_pMeshTextures,
+								program->g_dwNumMaterials, g_pDevice),
+								std::wstring(wszBuff, 256), _wtoi(wszBuff2), _wtoi(wszBuff3));
+							program->currentPlayers[2] = &player3;
+						}
+						if (player3ShipClass == 1) {
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO9), WM_GETTEXT, 256, (LPARAM)wszBuff);
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO8), WM_GETTEXT, 256, (LPARAM)wszBuff3);
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO7), WM_GETTEXT, 256, (LPARAM)wszBuff2);
+							player3 = AIPlayer(
+								LightShipClass(program->g_pMeshLight, program->g_pMeshMaterialsLight, program->g_pMeshTexturesLight,
+								program->g_dwNumMaterialsLight, g_pDevice),
+								std::wstring(wszBuff, 256), _wtoi(wszBuff2), _wtoi(wszBuff3));
+							program->currentPlayers[2] = &player3;
+						}
+						if (player3ShipClass == 2) {
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO9), WM_GETTEXT, 256, (LPARAM)wszBuff);
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO8), WM_GETTEXT, 256, (LPARAM)wszBuff3);
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO7), WM_GETTEXT, 256, (LPARAM)wszBuff2);
+							player3 = AIPlayer(
+								HeavyShipClass(program->g_pMeshHeavy, program->g_pMeshMaterialsHeavy, program->g_pMeshTexturesHeavy,
+								program->g_dwNumMaterialsHeavy, g_pDevice),
+								std::wstring(wszBuff, 256), _wtoi(wszBuff2), _wtoi(wszBuff3));
+							program->currentPlayers[2] = &player3;
+						}
+					}
+					if (player3TypeAIClosedHuman == 2) {
+						program->currentPlayers[2] = NULL;
+					}
+					if (player4TypeAIClosedHuman == 1) {
+						if (player4ShipClass == 0) {
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO12), WM_GETTEXT, 256, (LPARAM)wszBuff);
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO11), WM_GETTEXT, 256, (LPARAM)wszBuff3);
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO10), WM_GETTEXT, 256, (LPARAM)wszBuff2);
+							player4 = AIPlayer(
+								StandardShipClass(program->g_pMesh, program->g_pMeshMaterials, program->g_pMeshTextures,
+								program->g_dwNumMaterials, g_pDevice),
+								std::wstring(wszBuff, 256), _wtoi(wszBuff2), _wtoi(wszBuff3));
+							program->currentPlayers[3] = &player4;
+						}
+						if (player3ShipClass == 1) {
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO12), WM_GETTEXT, 256, (LPARAM)wszBuff);
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO11), WM_GETTEXT, 256, (LPARAM)wszBuff3);
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO10), WM_GETTEXT, 256, (LPARAM)wszBuff2);
+							player4 = AIPlayer(
+								LightShipClass(program->g_pMeshLight, program->g_pMeshMaterialsLight, program->g_pMeshTexturesLight,
+								program->g_dwNumMaterialsLight, g_pDevice),
+								std::wstring(wszBuff, 256), _wtoi(wszBuff2), _wtoi(wszBuff3));
+							program->currentPlayers[3] = &player4;
+						}
+						if (player4ShipClass == 2) {
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO12), WM_GETTEXT, 256, (LPARAM)wszBuff);
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO11), WM_GETTEXT, 256, (LPARAM)wszBuff3);
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO10), WM_GETTEXT, 256, (LPARAM)wszBuff2);
+							player4 = AIPlayer(
+								HeavyShipClass(program->g_pMeshHeavy, program->g_pMeshMaterialsHeavy, program->g_pMeshTexturesHeavy,
+								program->g_dwNumMaterialsHeavy, g_pDevice),
+								std::wstring(wszBuff, 256), _wtoi(wszBuff2), _wtoi(wszBuff3));
+							program->currentPlayers[3] = &player4;
+						}
+					}
+					if (player4TypeAIClosedHuman == 2) {
+						program->currentPlayers[3] = NULL;
+					}
+					if (player5TypeAIClosedHuman == 1) {
+						if (player5ShipClass == 0) {
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO15), WM_GETTEXT, 256, (LPARAM)wszBuff);
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO14), WM_GETTEXT, 256, (LPARAM)wszBuff3);
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO13), WM_GETTEXT, 256, (LPARAM)wszBuff2);
+							player5 = AIPlayer(
+								StandardShipClass(program->g_pMesh, program->g_pMeshMaterials, program->g_pMeshTextures,
+								program->g_dwNumMaterials, g_pDevice),
+								std::wstring(wszBuff, 256), _wtoi(wszBuff2), _wtoi(wszBuff3));
+							program->currentPlayers[4] = &player5;
+						}
+						if (player5ShipClass == 1) {
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO15), WM_GETTEXT, 256, (LPARAM)wszBuff);
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO14), WM_GETTEXT, 256, (LPARAM)wszBuff3);
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO13), WM_GETTEXT, 256, (LPARAM)wszBuff2);
+							player5 = AIPlayer(
+								LightShipClass(program->g_pMeshLight, program->g_pMeshMaterialsLight, program->g_pMeshTexturesLight,
+								program->g_dwNumMaterialsLight, g_pDevice),
+								std::wstring(wszBuff, 256), _wtoi(wszBuff2), _wtoi(wszBuff3));
+							program->currentPlayers[4] = &player5;
+						}
+						if (player5ShipClass == 2) {
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO15), WM_GETTEXT, 256, (LPARAM)wszBuff);
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO14), WM_GETTEXT, 256, (LPARAM)wszBuff3);
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO13), WM_GETTEXT, 256, (LPARAM)wszBuff2);
+							player5 = AIPlayer(
+								HeavyShipClass(program->g_pMeshHeavy, program->g_pMeshMaterialsHeavy, program->g_pMeshTexturesHeavy,
+								program->g_dwNumMaterialsHeavy, g_pDevice),
+								std::wstring(wszBuff, 256), _wtoi(wszBuff2), _wtoi(wszBuff3));
+							program->currentPlayers[4] = &player5;
+						}
+					}
+					if (player5TypeAIClosedHuman == 2) {
+						program->currentPlayers[4] = NULL;
+					}
+					if (player6TypeAIClosedHuman == 1) {
+						if (player6ShipClass == 0) {
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO18), WM_GETTEXT, 256, (LPARAM)wszBuff);
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO17), WM_GETTEXT, 256, (LPARAM)wszBuff3);
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO16), WM_GETTEXT, 256, (LPARAM)wszBuff2);
+							player6 = AIPlayer(
+								StandardShipClass(program->g_pMesh, program->g_pMeshMaterials, program->g_pMeshTextures,
+								program->g_dwNumMaterials, g_pDevice),
+								std::wstring(wszBuff, 256), _wtoi(wszBuff2), _wtoi(wszBuff3));
+							program->currentPlayers[5] = &player6;
+						}
+						if (player6ShipClass == 1) {
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO18), WM_GETTEXT, 256, (LPARAM)wszBuff);
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO17), WM_GETTEXT, 256, (LPARAM)wszBuff3);
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO16), WM_GETTEXT, 256, (LPARAM)wszBuff2);
+							player3 = AIPlayer(
+								LightShipClass(program->g_pMeshLight, program->g_pMeshMaterialsLight, program->g_pMeshTexturesLight,
+								program->g_dwNumMaterialsLight, g_pDevice),
+								std::wstring(wszBuff, 256), _wtoi(wszBuff2), _wtoi(wszBuff3));
+							program->currentPlayers[5] = &player6;
+						}
+						if (player6ShipClass == 2) {
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO18), WM_GETTEXT, 256, (LPARAM)wszBuff);
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO17), WM_GETTEXT, 256, (LPARAM)wszBuff3);
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO16), WM_GETTEXT, 256, (LPARAM)wszBuff2);
+							player6 = AIPlayer(
+								HeavyShipClass(program->g_pMeshHeavy, program->g_pMeshMaterialsHeavy, program->g_pMeshTexturesHeavy,
+								program->g_dwNumMaterialsHeavy, g_pDevice),
+								std::wstring(wszBuff, 256), _wtoi(wszBuff2), _wtoi(wszBuff3));
+							program->currentPlayers[5] = &player6;
+						}
+					}
+					if (player6TypeAIClosedHuman == 2) {
+						program->currentPlayers[5] = NULL;
+					}
+					if (player7TypeAIClosedHuman == 1) {
+						if (player7ShipClass == 0) {
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO21), WM_GETTEXT, 256, (LPARAM)wszBuff);
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO20), WM_GETTEXT, 256, (LPARAM)wszBuff3);
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO19), WM_GETTEXT, 256, (LPARAM)wszBuff2);
+							player7 = AIPlayer(
+								StandardShipClass(program->g_pMesh, program->g_pMeshMaterials, program->g_pMeshTextures,
+								program->g_dwNumMaterials, g_pDevice),
+								std::wstring(wszBuff, 256), _wtoi(wszBuff2), _wtoi(wszBuff3));
+							program->currentPlayers[6] = &player7;
+						}
+						if (player7ShipClass == 1) {
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO21), WM_GETTEXT, 256, (LPARAM)wszBuff);
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO20), WM_GETTEXT, 256, (LPARAM)wszBuff3);
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO19), WM_GETTEXT, 256, (LPARAM)wszBuff2);
+							player7 = AIPlayer(
+								LightShipClass(program->g_pMeshLight, program->g_pMeshMaterialsLight, program->g_pMeshTexturesLight,
+								program->g_dwNumMaterialsLight, g_pDevice),
+								std::wstring(wszBuff, 256), _wtoi(wszBuff2), _wtoi(wszBuff3));
+							program->currentPlayers[6] = &player7;
+						}
+						if (player7ShipClass == 2) {
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO21), WM_GETTEXT, 256, (LPARAM)wszBuff);
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO20), WM_GETTEXT, 256, (LPARAM)wszBuff3);
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO19), WM_GETTEXT, 256, (LPARAM)wszBuff2);
+							player7 = AIPlayer(
+								HeavyShipClass(program->g_pMeshHeavy, program->g_pMeshMaterialsHeavy, program->g_pMeshTexturesHeavy,
+								program->g_dwNumMaterialsHeavy, g_pDevice),
+								std::wstring(wszBuff, 256), _wtoi(wszBuff2), _wtoi(wszBuff3));
+							program->currentPlayers[6] = &player7;
+						}
+					}
+					if (player7TypeAIClosedHuman == 2) {
+						program->currentPlayers[6] = NULL;
+					}
+					if (player8TypeAIClosedHuman == 1) {
+						if (player8ShipClass == 0) {
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO24), WM_GETTEXT, 256, (LPARAM)wszBuff);
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO23), WM_GETTEXT, 256, (LPARAM)wszBuff3);
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO22), WM_GETTEXT, 256, (LPARAM)wszBuff2);
+							player8 = AIPlayer(
+								StandardShipClass(program->g_pMesh, program->g_pMeshMaterials, program->g_pMeshTextures,
+								program->g_dwNumMaterials, g_pDevice),
+								std::wstring(wszBuff, 256), _wtoi(wszBuff2), _wtoi(wszBuff3));
+							program->currentPlayers[7] = &player8;
+						}
+						if (player8ShipClass == 1) {
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO24), WM_GETTEXT, 256, (LPARAM)wszBuff);
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO23), WM_GETTEXT, 256, (LPARAM)wszBuff3);
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO22), WM_GETTEXT, 256, (LPARAM)wszBuff2);
+							player8 = AIPlayer(
+								LightShipClass(program->g_pMeshLight, program->g_pMeshMaterialsLight, program->g_pMeshTexturesLight,
+								program->g_dwNumMaterialsLight, g_pDevice),
+								std::wstring(wszBuff, 256), _wtoi(wszBuff2), _wtoi(wszBuff3));
+							program->currentPlayers[7] = &player8;
+						}
+						if (player8ShipClass == 2) {
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO24), WM_GETTEXT, 256, (LPARAM)wszBuff);
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO23), WM_GETTEXT, 256, (LPARAM)wszBuff3);
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO22), WM_GETTEXT, 256, (LPARAM)wszBuff2);
+							player8 = AIPlayer(
+								HeavyShipClass(program->g_pMeshHeavy, program->g_pMeshMaterialsHeavy, program->g_pMeshTexturesHeavy,
+								program->g_dwNumMaterialsHeavy, g_pDevice),
+								std::wstring(wszBuff, 256), _wtoi(wszBuff2), _wtoi(wszBuff3));
+							program->currentPlayers[7] = &player8;
+						}
+					}
+					if (player8TypeAIClosedHuman == 2) {
+						program->currentPlayers[7] = NULL;
+					}
+					program->_gamestate.updateGameState(program->g_hWndMain, program->currentPlayers, 8);
+					program->menuSelect = 2;
+					ShowWindow(hwnd,SW_HIDE);
+					return TRUE;
+				case IDCANCEL:
+					ShowWindow(hwnd,SW_HIDE);
+					return TRUE;
+				case IDC_RADIO1:
+					SendMessage(GetDlgItem(hwnd,IDC_RADIO1), BM_CLICK, NULL, NULL);
+					player1TypeAIClosedHuman = 0;
+					return TRUE;
+				case IDC_RADIO2:
+					SendMessage(GetDlgItem(hwnd,IDC_RADIO2), BM_CLICK, NULL, NULL);
+					player1TypeAIClosedHuman = 1;
+					return TRUE;
+				case IDC_RADIO3:
+					SendMessage(GetDlgItem(hwnd,IDC_RADIO3), BM_CLICK, NULL, NULL);
+					player1TypeAIClosedHuman = 2;
+					return TRUE;
+				case IDC_RADIO4:
+					SendMessage(GetDlgItem(hwnd,IDC_RADIO4), BM_CLICK, NULL, NULL);
+					player1ShipClass = 0;
+					return TRUE;
+				case IDC_RADIO5:
+					SendMessage(GetDlgItem(hwnd,IDC_RADIO5), BM_CLICK, NULL, NULL);
+					player1ShipClass = 1;
+					return TRUE;
+				case IDC_RADIO6:
+					SendMessage(GetDlgItem(hwnd,IDC_RADIO6), BM_CLICK, NULL, NULL);
+					player1ShipClass = 2;
+					return TRUE;
+				case IDC_RADIO7:
+					SendMessage(GetDlgItem(hwnd,IDC_RADIO7), BM_CLICK, NULL, NULL);
+					player2TypeAIClosedHuman = 0;
+					return TRUE;
+				case IDC_RADIO8:
+					SendMessage(GetDlgItem(hwnd,IDC_RADIO8), BM_CLICK, NULL, NULL);
+					player2TypeAIClosedHuman = 1;
+					return TRUE;
+				case IDC_RADIO9:
+					SendMessage(GetDlgItem(hwnd,IDC_RADIO9), BM_CLICK, NULL, NULL);
+					player2TypeAIClosedHuman = 2;
+					return TRUE;
+				case IDC_RADIO10:
+					SendMessage(GetDlgItem(hwnd,IDC_RADIO10), BM_CLICK, NULL, NULL);
+					player2ShipClass = 0;
+					return TRUE;
+				case IDC_RADIO11:
+					SendMessage(GetDlgItem(hwnd,IDC_RADIO11), BM_CLICK, NULL, NULL);
+					player2ShipClass = 1;
+					return TRUE;
+				case IDC_RADIO12:
+					SendMessage(GetDlgItem(hwnd,IDC_RADIO12), BM_CLICK, NULL, NULL);
+					player2ShipClass = 2;
+					return TRUE;
+				case IDC_RADIO13:
+					SendMessage(GetDlgItem(hwnd,IDC_RADIO13), BM_CLICK, NULL, NULL);
+					player3TypeAIClosedHuman = 0;
+					return TRUE;
+				case IDC_RADIO14:
+					SendMessage(GetDlgItem(hwnd,IDC_RADIO14), BM_CLICK, NULL, NULL);
+					player3TypeAIClosedHuman = 1;
+					return TRUE;
+				case IDC_RADIO15:
+					SendMessage(GetDlgItem(hwnd,IDC_RADIO15), BM_CLICK, NULL, NULL);
+					player3TypeAIClosedHuman = 2;
+					return TRUE;
+				case IDC_RADIO16:
+					SendMessage(GetDlgItem(hwnd,IDC_RADIO16), BM_CLICK, NULL, NULL);
+					player3ShipClass = 0;
+					return TRUE;
+				/*case IDC_RADI017:
+					SendMessage(GetDlgItem(hwnd,IDC_RADIO17), BM_CLICK, NULL, NULL);
+					player3ShipClass = 1;
+					return TRUE;*/
+				case IDC_RADIO18:
+					SendMessage(GetDlgItem(hwnd,IDC_RADIO18), BM_CLICK, NULL, NULL);
+					player3ShipClass = 2;
+					return TRUE;
+				case IDC_RADIO19:
+					SendMessage(GetDlgItem(hwnd,IDC_RADIO19), BM_CLICK, NULL, NULL);
+					player4TypeAIClosedHuman = 0;
+					return TRUE;
+				case IDC_RADIO20:
+					SendMessage(GetDlgItem(hwnd,IDC_RADIO20), BM_CLICK, NULL, NULL);
+					player4TypeAIClosedHuman = 1;
+					return TRUE;
+				case IDC_RADIO21:
+					SendMessage(GetDlgItem(hwnd,IDC_RADIO21), BM_CLICK, NULL, NULL);
+					player4TypeAIClosedHuman = 2;
+					return TRUE;
+				case IDC_RADIO22:
+					SendMessage(GetDlgItem(hwnd,IDC_RADIO22), BM_CLICK, NULL, NULL);
+					player4ShipClass = 0;
+					return TRUE;
+				case IDC_RADIO23:
+					SendMessage(GetDlgItem(hwnd,IDC_RADIO23), BM_CLICK, NULL, NULL);
+					player4ShipClass = 1;
+					return TRUE;
+				case IDC_RADIO24:
+					SendMessage(GetDlgItem(hwnd,IDC_RADIO24), BM_CLICK, NULL, NULL);
+					player4ShipClass = 2;
+					return TRUE;
+				case IDC_RADIO25:
+					SendMessage(GetDlgItem(hwnd,IDC_RADIO25), BM_CLICK, NULL, NULL);
+					player5TypeAIClosedHuman = 0;
+					return TRUE;
+				case IDC_RADIO26:
+					SendMessage(GetDlgItem(hwnd,IDC_RADIO26), BM_CLICK, NULL, NULL);
+					player5TypeAIClosedHuman = 1;
+					return TRUE;
+				case IDC_RADIO27:
+					SendMessage(GetDlgItem(hwnd,IDC_RADIO27), BM_CLICK, NULL, NULL);
+					player5TypeAIClosedHuman = 2;
+					return TRUE;
+				case IDC_RADIO28:
+					SendMessage(GetDlgItem(hwnd,IDC_RADIO28), BM_CLICK, NULL, NULL);
+					player5ShipClass = 0;
+					return TRUE;
+				case IDC_RADIO29:
+					SendMessage(GetDlgItem(hwnd,IDC_RADIO29), BM_CLICK, NULL, NULL);
+					player5ShipClass = 1;
+					return TRUE;
+				case IDC_RADIO30:
+					SendMessage(GetDlgItem(hwnd,IDC_RADIO30), BM_CLICK, NULL, NULL);
+					player5ShipClass = 2;
+					return TRUE;
+				case IDC_RADIO31:
+					SendMessage(GetDlgItem(hwnd,IDC_RADIO31), BM_CLICK, NULL, NULL);
+					player6TypeAIClosedHuman = 0;
+					return TRUE;
+				case IDC_RADIO32:
+					SendMessage(GetDlgItem(hwnd,IDC_RADIO32), BM_CLICK, NULL, NULL);
+					player6TypeAIClosedHuman = 1;
+					return TRUE;
+				case IDC_RADIO33:
+					SendMessage(GetDlgItem(hwnd,IDC_RADIO33), BM_CLICK, NULL, NULL);
+					player6TypeAIClosedHuman = 2;
+					return TRUE;
+				case IDC_RADIO34:
+					SendMessage(GetDlgItem(hwnd,IDC_RADIO34), BM_CLICK, NULL, NULL);
+					player6ShipClass = 0;
+					return TRUE;
+				case IDC_RADIO35:
+					SendMessage(GetDlgItem(hwnd,IDC_RADIO35), BM_CLICK, NULL, NULL);
+					player6ShipClass = 1;
+					return TRUE;
+				case IDC_RADIO36:
+					SendMessage(GetDlgItem(hwnd,IDC_RADIO36), BM_CLICK, NULL, NULL);
+					player6ShipClass = 2;
+					return TRUE;
+				case IDC_RADIO37:
+					SendMessage(GetDlgItem(hwnd,IDC_RADIO37), BM_CLICK, NULL, NULL);
+					player7TypeAIClosedHuman = 0;
+					return TRUE;
+				case IDC_RADIO38:
+					SendMessage(GetDlgItem(hwnd,IDC_RADIO38), BM_CLICK, NULL, NULL);
+					player7TypeAIClosedHuman = 1;
+					return TRUE;
+				case IDC_RADIO39:
+					SendMessage(GetDlgItem(hwnd,IDC_RADIO39), BM_CLICK, NULL, NULL);
+					player7TypeAIClosedHuman = 2;
+					return TRUE;
+				case IDC_RADIO40:
+					SendMessage(GetDlgItem(hwnd,IDC_RADIO40), BM_CLICK, NULL, NULL);
+					player7ShipClass = 0;
+					return TRUE;
+				case IDC_RADIO41:
+					SendMessage(GetDlgItem(hwnd,IDC_RADIO41), BM_CLICK, NULL, NULL);
+					player7ShipClass = 1;
+					return TRUE;
+				case IDC_RADIO42:
+					SendMessage(GetDlgItem(hwnd,IDC_RADIO42), BM_CLICK, NULL, NULL);
+					player7ShipClass = 2;
+					return TRUE;
+				case IDC_RADIO43:
+					SendMessage(GetDlgItem(hwnd,IDC_RADIO43), BM_CLICK, NULL, NULL);
+					player8TypeAIClosedHuman = 0;
+					return TRUE;
+				case IDC_RADIO44:
+					SendMessage(GetDlgItem(hwnd,IDC_RADIO44), BM_CLICK, NULL, NULL);
+					player8TypeAIClosedHuman = 1;
+					return TRUE;
+				case IDC_RADIO45:
+					SendMessage(GetDlgItem(hwnd,IDC_RADIO45), BM_CLICK, NULL, NULL);
+					player8TypeAIClosedHuman = 2;
+					return TRUE;
+				case IDC_RADIO46:
+					SendMessage(GetDlgItem(hwnd,IDC_RADIO46), BM_CLICK, NULL, NULL);
+					player8ShipClass = 0;
+					return TRUE;
+				case IDC_RADIO47:
+					SendMessage(GetDlgItem(hwnd,IDC_RADIO47), BM_CLICK, NULL, NULL);
+					player8ShipClass = 1;
+					return TRUE;
+				case IDC_RADIO48:
+					SendMessage(GetDlgItem(hwnd,IDC_RADIO48), BM_CLICK, NULL, NULL);
+					player8ShipClass = 2;
+					return TRUE;
+			}
+		default:
+			return FALSE;
+	}
+	return FALSE;
 }

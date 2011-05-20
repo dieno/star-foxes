@@ -10,7 +10,7 @@
 class MainPlayerClass {
 public:
 	MainPlayerClass (
-		std::string playerName, 
+		std::wstring playerName, 
 		int teamNum, 
 		int lives,
 		MainShipClass playerShip):playerName_(playerName), teamNum_(teamNum), lives_(lives), playerShip_(playerShip),
@@ -39,7 +39,7 @@ public:
 	D3DXVECTOR3 getUpVector() {return playerShip_.getUpVector();}
 
 	MainShipClass* GetShip();
-	std::string getPlayerName() {
+	std::wstring getPlayerName() {
 		return playerName_;
 	}
 
@@ -148,7 +148,7 @@ public:
 
 private:
 	//Player's  name (Bob, Bill, Bojangles, etc)
-	std::string playerName_;
+	std::wstring playerName_;
 
 	//Player's team (1-4)
 	int teamNum_;

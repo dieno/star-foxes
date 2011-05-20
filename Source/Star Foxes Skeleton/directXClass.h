@@ -20,6 +20,7 @@
 #include "heavyShipClass.h"
 #include "standardShipClass.h"
 #include "lightShipClass.h"
+#include "resource.h"
 //#include "Networking/GameChat.h"
 //using namespace std;
 
@@ -112,6 +113,7 @@ public:
 	HRESULT InitGeometry();
 	static D3DXMATRIX Translate(const float dx, const float dy, const float dz);
 	GameState _gamestate;
+	static BOOL CALLBACK startDialog(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 private:
 	void drawLine(float startX, float startY, float endX, float endY, LPDIRECT3DSURFACE9 pBackSurf);
 	void inputCommands(float timeDelta);
@@ -199,6 +201,9 @@ private:
 	bool dirLightEnabled;
 	MainShipClass dummyAI;
 	MainShipClass dummyAI2;
+	HWND hwndDialog;
+	static bool waiting;
+	MainPlayerClass *currentPlayers[8];
     //MsgTranslator _msgt;
 };
 #endif
