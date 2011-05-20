@@ -28,7 +28,7 @@ void Camera::UpdateWorldPositions()
 	D3DXVECTOR3 vRight;
 	D3DXVec3Cross(&vRight, &vUp_, &vChaseDirection_);
 
-	transform(0, 0) = vRight.x; transform(0, 1) = vUp_.x; transform(0, 2) = -vChaseDirection_.x; //transform(0, 3) = 0.0f;
+	transform(0, 0) = vRight.x; transform(0, 1) = vUp_.x; transform(0, 2) = vChaseDirection_.x; //transform(0, 3) = 0.0f;
 	transform(1, 0) = vRight.y; transform(1, 1) = vUp_.y; transform(1, 2) = vChaseDirection_.y;// transform(1, 3) = 0.0f;
 	transform(2, 0) = vRight.z; transform(2, 1) = vUp_.z; transform(2, 2) = vChaseDirection_.z; //transform(2, 3) = 0.0f;
 	//transform(3, 0) = 0.0f;     transform(3, 1) = 0.0f;   transform(3, 2) = 0.0f;       transform(3, 3) = 1.0f;

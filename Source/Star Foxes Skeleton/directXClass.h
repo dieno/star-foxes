@@ -15,6 +15,7 @@
 #include "Networking\GameChat.h"
 #include "Networking\MsgTranslator.h"
 #include "Camera.h"
+#include "projectile.h"
 #include "gamestate.h"
 #include "heavyShipClass.h"
 #include "standardShipClass.h"
@@ -47,6 +48,18 @@ public:
 	g_pMeshMaterials2(NULL),
 	g_pMeshTextures2(NULL),
 	g_dwNumMaterials2(0L),
+	g_pMeshHeavy(NULL),
+	g_pMeshMaterialsHeavy(NULL),
+	g_pMeshTexturesHeavy(NULL),
+	g_dwNumMaterialsHeavy(0L), 
+	g_pMeshLight(NULL), 
+	g_pMeshMaterialsLight(NULL),
+	g_pMeshTexturesLight(NULL),
+	g_dwNumMaterialsLight(0L), 
+	g_pMeshLaser(NULL),
+	g_pMeshMaterialsLaser(NULL),
+	g_pMeshTexturesLaser(NULL), 
+	g_dwNumMaterialsLaser(0L),  
 	rotationAboutYMesh1(0),
 	rotationAboutXMesh1(0),
 	rotationAboutYMesh2(0),
@@ -101,7 +114,7 @@ public:
 	GameState _gamestate;
 private:
 	void drawLine(float startX, float startY, float endX, float endY, LPDIRECT3DSURFACE9 pBackSurf);
-	void inputCommands();
+	void inputCommands(float timeDelta);
 	void setupCubes();
 	void cleanupCubes();
 	void drawCubes();

@@ -26,6 +26,9 @@ public:
 	void up(bool active) {playerShip_.bankUp(active);}
 	void down(bool active) {playerShip_.bankDown(active);}
 	void boost(bool active) {playerShip_.boost(active);}
+	void shoot(float timeDelta) {playerShip_.shoot(timeDelta);}
+
+	void Update(float timeDelta);
 
 	void updatePosition(float timeDelta); //put movement in here!
 
@@ -35,7 +38,7 @@ public:
 	D3DXVECTOR3 getDirectionVector() {return playerShip_.getDirectionVector();}
 	D3DXVECTOR3 getUpVector() {return playerShip_.getUpVector();}
 
-    MainShipClass* GetShip();
+	MainShipClass* GetShip();
 	std::string getPlayerName() {
 		return playerName_;
 	}
@@ -49,7 +52,7 @@ public:
 	}
 
 	virtual void drawSelf() {
-		playerShip_.renderSelf();
+		playerShip_.Draw();
 	}
 
 	void bankLeft(float value);
@@ -129,14 +132,17 @@ public:
 	   return playerShip_.getPositionVector();
    }
 
-   D3DXVECTOR3 getRotation()
-   {
-      return vRotation;
-   }
+	D3DXVECTOR3 getRotation()
+	{
+		return vRotation;
+	}
+
    
    //ship takes a hit, damage taken is the damage caused by hit
    //returns bool true if still alive, false if dead
    bool takeHit(int damageTaken);
+
+	void initProjectiles(LPD3DXMESH mesh, D3DMATERIAL9* meshMat, LPDIRECT3DTEXTURE9* meshTex, DWORD meshNumMat);
 
    void SetRotation(float x, float y, float z) ;
 

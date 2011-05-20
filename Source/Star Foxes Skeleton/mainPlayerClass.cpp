@@ -2,16 +2,20 @@
 #include "directXClass.h"
 
 
+void MainPlayerClass::Update(float timeDelta)
+{
+	playerShip_.Update(timeDelta);
+}
 
 MainShipClass* MainPlayerClass::GetShip()
 {
    return &playerShip_;
 }
 
-void MainPlayerClass::updatePosition(float timeDelta)
+/*void MainPlayerClass::updatePosition(float timeDelta)
 {
 	playerShip_.Update(timeDelta);
-	/*D3DXVECTOR3 vMovement(0.0f, 0.0f, 0.0f);
+	D3DXVECTOR3 vMovement(0.0f, 0.0f, 0.0f);
 
 	if(isAlive)
 	{
@@ -25,8 +29,8 @@ void MainPlayerClass::updatePosition(float timeDelta)
 		playerShip_.setTranslateY(vMovement.z);
 		//shiptype.setTranslateY(vMovement.y);
 		//shiptype.setTranslateZ(vPosition.z);
-	}*/
-}
+	}
+}*/
 
 void MainPlayerClass::updateRotation(D3DXVECTOR3* vRotation)
 {
@@ -123,4 +127,9 @@ bool MainPlayerClass::takeHit(int damageTaken) {
 		isAlive = false;
 	}
 	return isAlive;
+}
+
+void MainPlayerClass::initProjectiles(LPD3DXMESH mesh, D3DMATERIAL9* meshMat, LPDIRECT3DTEXTURE9* meshTex, DWORD meshNumMat)
+{
+	playerShip_.loadProjectile(mesh, meshMat, meshTex, meshNumMat);
 }

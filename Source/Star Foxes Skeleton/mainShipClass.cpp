@@ -1,5 +1,4 @@
 #include "mainShipClass.h"
-#include "directXClass.h"
 
 float MainShipClass::afterburnerSpeed_ =  5.0f;
 float MainShipClass::damagePerShot =  1.0f;
@@ -8,6 +7,12 @@ D3DXVECTOR3 MainShipClass::vRight_	   = D3DXVECTOR3(1.0f,0.0f,0.0f);
 D3DXVECTOR3 MainShipClass::vUp_		   = D3DXVECTOR3(0.0f,1.0f,0.0f);
 D3DXVECTOR3 MainShipClass::vDirection_ = D3DXVECTOR3(0.0f,0.0f,1.0f);
 */
+void MainShipClass::Draw()
+{
+	renderSelf();
+	drawProjectiles();
+}
+
 void MainShipClass::renderSelf() {
 	// Setup the world, view, and projection matrices
 	setupWorld();
@@ -36,6 +41,10 @@ void MainShipClass::Update(float timeDelta)
 
 	yaw(vRotationAmount.x);
 	pitch(vRotationAmount.y);
+	
+	//directXClass::SetError(TEXT("vRot: x: %f, y: %f, z: %f"),vRotationAmount.x,vRotationAmount.y,vRotationAmount.z);
+
+	//updateRotation(&vRotationAmount);
 
 	D3DXVECTOR3 force = vDirection_ * thrustAmount_ * MaxForce_;
 
@@ -46,6 +55,59 @@ void MainShipClass::Update(float timeDelta)
 	vVelocity_ *= Drag_;
 	
 	vPosition_ += vVelocity_ * timeDelta;
+
+	updateProjectiles(timeDelta);
+}
+
+void MainShipClass::updateRotation(D3DXVECTOR3 *vRotation)
+{
+	if((*vRotation).z != 0.0f)
+	{
+		if((*vRotation).z < 0.0f)
+		{
+			(*vRotation).z += 0.01f;
+
+			if((*vRotation).z >= 0.01f)
+				(*vRotation).z = 0.0f;
+		}
+		else
+		{
+			(*vRotation).z -= 0.01f;
+
+			if((*vRotation).z <= 0.01f)
+				(*vRotation).z = 0.0f;
+		}
+
+		if((*vRotation).z > D3DX_PI)
+			(*vRotation).z = -D3DX_PI;
+		
+		if((*vRotation).z < -D3DX_PI)
+			(*vRotation).z = D3DX_PI;
+	}
+
+	if((*vRotation).x != 0.0f)
+	{
+		if((*vRotation).x < 0.0f)
+		{
+			(*vRotation).x += 0.01f;
+
+			if((*vRotation).x >= 0.01f)
+				(*vRotation).x = 0.0f;
+		}
+		else
+		{
+			(*vRotation).x -= 0.01f;
+
+			if((*vRotation).x <= 0.01f)
+				(*vRotation).x = 0.0f;
+		}
+
+		if((*vRotation).x > D3DX_PI)
+			(*vRotation).x = -D3DX_PI;
+		
+		if((*vRotation).x < -D3DX_PI)
+			(*vRotation).x = D3DX_PI;
+	}
 }
 
 void MainShipClass::pitch(float angle)
@@ -58,13 +120,6 @@ void MainShipClass::pitch(float angle)
 
 	D3DXVec3TransformCoord(&vUp_, &vUp_, &T);
 	D3DXVec3TransformCoord(&vDirection_, &vDirection_, &T);
-
-	/*D3DXMATRIX T;
-	D3DXMatrixRotationAxis(&T, &vRight_, angle);
-
-	// rotate _up and _look around _right vector
-	D3DXVec3TransformCoord(&vUp_, &vUp_, &T);
-	D3DXVec3TransformCoord(&vDirection_, &vDirection_, &T);*/
 }
 
 void MainShipClass::yaw(float angle)
@@ -77,14 +132,6 @@ void MainShipClass::yaw(float angle)
 
 	D3DXVec3TransformCoord(&vRight_, &vRight_, &T);
 	D3DXVec3TransformCoord(&vDirection_, &vDirection_, &T);
-	/*D3DXMATRIX T;
-
-	// rotate around own up vector 
-	D3DXMatrixRotationAxis(&T, &vUp_, angle);
-
-	// rotate _right and _look around _up or y-axis
-	D3DXVec3TransformCoord(&vRight_, &vRight_, &T);
-	D3DXVec3TransformCoord(&vDirection_, &vDirection_, &T);*/
 }
 
 void MainShipClass::roll(float angle)
@@ -97,13 +144,6 @@ void MainShipClass::roll(float angle)
 
 	D3DXVec3TransformCoord(&vRight_, &vRight_, &T);
 	D3DXVec3TransformCoord(&vUp_, &vUp_, &T);
-
-	/*D3DXMATRIX T;
-	D3DXMatrixRotationAxis(&T, &vDirection_, angle);
-
-	// rotate _up and _right around _look vector
-	D3DXVec3TransformCoord(&vRight_, &vRight_, &T);
-	D3DXVec3TransformCoord(&vUp_, &vUp_, &T);*/
 }
 
 void MainShipClass::updateWorldMatrix()
@@ -121,7 +161,7 @@ void MainShipClass::updateWorldMatrix()
 
 	D3DXMATRIX mScale;
 	D3DXMatrixIdentity(&mScale);
-	D3DXMatrixScaling(&mScale, 1.0f,1.0f,1.0f);
+	D3DXMatrixScaling(&mScale, vScale_.x, vScale_.y, vScale_.z);
 
 	D3DXMATRIX mRotate;
 	D3DXMatrixIdentity(&mRotate);
@@ -166,7 +206,7 @@ void MainShipClass::bankRight(bool active)
 	if(active)
 	{
 		vRotation_.x = 1.0f;
-      directXClass::SetError(TEXT("up: X: %f, Y: %f, Z: %f dir: X: %f, Y: %f, Z: %f right: X: %f, Y: %f, Z: %f"), vUp_.x, vUp_.y, vUp_.z, vDirection_.x, vDirection_.y, vDirection_.z, vRight_.x, vRight_.y, vRight_.z);
+      //directXClass::SetError(TEXT("up: X: %f, Y: %f, Z: %f dir: X: %f, Y: %f, Z: %f right: X: %f, Y: %f, Z: %f"), vUp_.x, vUp_.y, vUp_.z, vDirection_.x, vDirection_.y, vDirection_.z, vRight_.x, vRight_.y, vRight_.z);
 	}
 	else
 	{
@@ -179,7 +219,7 @@ void MainShipClass::bankLeft(bool active)
 	if(active)
 	{
 		vRotation_.x = -1.0f;
-      directXClass::SetError(TEXT("up: X: %f, Y: %f, Z: %f dir: X: %f, Y: %f, Z: %f right: X: %f, Y: %f, Z: %f"), vUp_.x, vUp_.y, vUp_.z, vDirection_.x, vDirection_.y, vDirection_.z, vRight_.x, vRight_.y, vRight_.z);
+      //directXClass::SetError(TEXT("up: X: %f, Y: %f, Z: %f dir: X: %f, Y: %f, Z: %f right: X: %f, Y: %f, Z: %f"), vUp_.x, vUp_.y, vUp_.z, vDirection_.x, vDirection_.y, vDirection_.z, vRight_.x, vRight_.y, vRight_.z);
 	}
 	else
 	{
@@ -195,7 +235,7 @@ void MainShipClass::bankUp(bool active)
 			vRotation_.y = -1.0f;
 		else
 			vRotation_.y = 1.0f;
-      directXClass::SetError(TEXT("up: X: %f, Y: %f, Z: %f dir: X: %f, Y: %f, Z: %f right: X: %f, Y: %f, Z: %f"), vUp_.x, vUp_.y, vUp_.z, vDirection_.x, vDirection_.y, vDirection_.z, vRight_.x, vRight_.y, vRight_.z);
+     // directXClass::SetError(TEXT("up: X: %f, Y: %f, Z: %f dir: X: %f, Y: %f, Z: %f right: X: %f, Y: %f, Z: %f"), vUp_.x, vUp_.y, vUp_.z, vDirection_.x, vDirection_.y, vDirection_.z, vRight_.x, vRight_.y, vRight_.z);
 	}
 	else
 	{
@@ -212,7 +252,7 @@ void MainShipClass::bankDown(bool active)
 			vRotation_.y = 1.0f;
 		else
 			vRotation_.y = -1.0f;
-      directXClass::SetError(TEXT("up: X: %f, Y: %f, Z: %f dir: X: %f, Y: %f, Z: %f right: X: %f, Y: %f, Z: %f"), vUp_.x, vUp_.y, vUp_.z, vDirection_.x, vDirection_.y, vDirection_.z, vRight_.x, vRight_.y, vRight_.z);
+      //directXClass::SetError(TEXT("up: X: %f, Y: %f, Z: %f dir: X: %f, Y: %f, Z: %f right: X: %f, Y: %f, Z: %f"), vUp_.x, vUp_.y, vUp_.z, vDirection_.x, vDirection_.y, vDirection_.z, vRight_.x, vRight_.y, vRight_.z);
 	}
 	else
 	{
@@ -225,7 +265,7 @@ void MainShipClass::boost(bool active)
 	if(active)
 	{
 		thrustAmount_ = 0.001f;
-      directXClass::SetError(TEXT("up: X: %f, Y: %f, Z: %f dir: X: %f, Y: %f, Z: %f right: X: %f, Y: %f, Z: %f"), vUp_.x, vUp_.y, vUp_.z, vDirection_.x, vDirection_.y, vDirection_.z, vRight_.x, vRight_.y, vRight_.z);
+      //directXClass::SetError(TEXT("up: X: %f, Y: %f, Z: %f dir: X: %f, Y: %f, Z: %f right: X: %f, Y: %f, Z: %f"), vUp_.x, vUp_.y, vUp_.z, vDirection_.x, vDirection_.y, vDirection_.z, vRight_.x, vRight_.y, vRight_.z);
 	}
 	else
 	{
@@ -233,6 +273,53 @@ void MainShipClass::boost(bool active)
 	}   
 }
 
+void MainShipClass::loadProjectile(LPD3DXMESH mesh, D3DMATERIAL9* meshMat, LPDIRECT3DTEXTURE9* meshTex, DWORD meshNumMat)
+{
+	g_pMesh2 = mesh; 
+	g_pMeshMaterials2 = meshMat; 
+	g_pMeshTextures2 = meshTex; 
+	g_dwNumMaterials2 = meshNumMat; 
+}
+
+void MainShipClass::shoot(float timeDelta)
+{
+	if(timeToShoot <= 0.0f)
+	{
+		updateWorldMatrix();
+		Projectile newProjectile(g_pDevice, g_pMesh2, g_pMeshMaterials2, g_pMeshTextures2, g_dwNumMaterials2, vDirection_, mWorld_);
+		projectileList.push_back(newProjectile);
+		timeToShoot = SHOOT_SPEED;
+	}
+}
+
+void MainShipClass::updateProjectiles(float timeDelta)
+{
+	timeToShoot -= timeDelta;
+
+	std::list<Projectile>::iterator it = projectileList.begin();
+
+	while(it != projectileList.end())
+	{
+		(*it).Update(timeDelta);
+
+		if((*it).getTimeToLive() < 0.0f)
+		{
+			it = projectileList.erase(it);
+		}
+		else
+		{
+			++it;
+		}
+	}
+}
+
+void MainShipClass::drawProjectiles()
+{
+	for(std::list<Projectile>::iterator it = projectileList.begin(); it != projectileList.end(); ++it)
+	{
+		(*it).Draw();
+	}
+}
 
 /*void MainShipClass::setupWorld() {
 	D3DXMATRIXA16 rotationY;

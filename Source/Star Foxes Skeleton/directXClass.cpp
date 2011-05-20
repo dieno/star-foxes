@@ -265,6 +265,8 @@ int directXClass::GameInit(){
 	InitTiming();
 	dummyAI = LightShipClass(g_pMeshLight, g_pMeshMaterialsLight, g_pMeshTexturesLight, g_dwNumMaterialsLight, g_pDevice);
 	player1 = HumanPlayerClass(dummyAI, "Human",0, 1);
+	player1.initProjectiles(g_pMeshLaser, g_pMeshMaterialsLaser, g_pMeshTexturesLaser, g_dwNumMaterialsLaser);
+
 	mainTerrain = Terrain(g_pMesh2, g_pMeshMaterials2, g_pMeshTextures2, g_dwNumMaterials2, g_pDevice);
 	mainTerrain.SetMtrlColor(D3DXCOLOR(0.0f, 0.1f, 0.0f, 0.0f), D3DXCOLOR(0.0f, 0.1f, 0.0f, 0.0f), D3DXCOLOR(0, 0.1f, 0.0f, 0.0f));
 	mainTerrain.setupBuildings();
@@ -327,7 +329,7 @@ int directXClass::GameInit(){
 	MainPlayerClass *allPlayers[2];
 	allPlayers[0] = &player1;
 	allPlayers[1] = &ai1;
-	_gamestate.updateGameState(g_hWndMain, allPlayers, 2);
+	//_gamestate.updateGameState(g_hWndMain, allPlayers, 2);
 	updateCameraTarget();
 	camera.reset();
 
@@ -432,12 +434,14 @@ int directXClass::GameLoop(float timeDelta) {
 
 		// In Singleplayer game
 		case 2:
-			inputCommands();
-			//player1.updateRotation();
-			//player1.updatePosition();
+			inputCommands(timeDelta);
 
-			player1.updatePosition(timeDelta);
+			player1.Update(timeDelta);
 
+			updateCameraTarget();
+			camera.Update(timeDelta);
+
+			if(input.get_keystate(DIK_M))
 			// if player1 is within the collision box
 			if(player1.getPosition().x < (mainTerrain.buildinglocations[0]->x + mainTerrain.buildingscales[0]->x)
 				&& player1.getPosition().x > (mainTerrain.buildinglocations[0]->x - mainTerrain.buildingscales[0]->x)
@@ -470,7 +474,7 @@ int directXClass::GameLoop(float timeDelta) {
 				//(*ci)->bankLeft(0.01f);
 				//MessageBoxA(g_hWndMain, "hi", "hilo", 0);
 				(*ci)->Update(g_hWndMain, player1.getPositionVector());
-            (*ci)->updatePosition(timeDelta);
+            //(*ci)->updatePosition(timeDelta);
 				//(*ci)->bankUp(0.04f);
 				// (*ci)->updateRotation();
 				//(*ci)->updatePosition();
@@ -485,9 +489,9 @@ int directXClass::GameLoop(float timeDelta) {
 		// In Multiplayer game, currently the same as single player as there
 		// is currently no difference
 		case 3:
-			inputCommands();
+			inputCommands(timeDelta);
 
-			player1.updatePosition(timeDelta);
+			//player1.updatePosition(timeDelta);
 
 			updateCameraTarget();
 			camera.reset();//Update(timeDelta);
@@ -578,6 +582,7 @@ int directXClass::Render(){
 
 		mainTerrain.renderSelf();	
 		player1.drawSelf();
+
 		//player2.drawSelf();
 		//SetupMatrices(true);
 
@@ -1065,9 +1070,6 @@ HRESULT directXClass::InitGeometry()
         }
     }
 
-    // Done with the material buffer
-    pD3DXMtrlBuffer->Release();
-
     if( FAILED( D3DXLoadMeshFromX( TEXT("terrain.x"), D3DXMESH_SYSTEMMEM, 
                                    g_pDevice, NULL, 
                                    &pD3DXMtrlBuffer, NULL, &g_dwNumMaterials2, 
@@ -1126,9 +1128,6 @@ HRESULT directXClass::InitGeometry()
             }
         }
     }
-
-   // Done with the material buffer
-    pD3DXMtrlBuffer->Release();
 
 	if( FAILED( D3DXLoadMeshFromX( TEXT("big_airwing.x"), D3DXMESH_SYSTEMMEM, 
                                    g_pDevice, NULL, 
@@ -1446,7 +1445,7 @@ D3DXMATRIX directXClass::Translate(const float dx, const float dy, const float d
     return ret;
 }    // End of Translate
 
-void directXClass::inputCommands()
+void directXClass::inputCommands(float timeDelta)
 {
 	if(input.get_keystate(DIK_A))
 	{
@@ -1506,6 +1505,11 @@ void directXClass::inputCommands()
 	else
 	{
 		player1.boost(false);
+	}
+
+	if(input.get_keystate(DIK_F))
+	{
+		player1.shoot(timeDelta);
 	}
 }
 
