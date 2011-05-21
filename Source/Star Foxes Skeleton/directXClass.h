@@ -72,7 +72,6 @@ public:
 	translateXMesh1(0),
 	translateYMesh2(0),
 	player1(),
-	currGameState(),
 	input(),
 	camera(),
 	singlePlayerSurface(0),
@@ -176,9 +175,8 @@ private:
 	float translateYMesh2;
 	float translateXMesh2;
 	MainPlayerClass player1;
-   std::list<AIPlayer*> _aiPlayer;
-	GameState* currGameState;
-   //AIPlayer _aiplayer1;
+    std::list<AIPlayer*> _aiPlayer;
+    //AIPlayer _aiplayer1;
 	Input input;
 	ID3DXMesh *cubemesh[256];
 	static int currentX;

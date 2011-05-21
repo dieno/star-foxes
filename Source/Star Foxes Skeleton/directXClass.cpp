@@ -283,61 +283,61 @@ int directXClass::GameInit(){
 	LoadAlphabet(TEXT("Alphabet vSmall.bmp"), 8, 16);
 	InitTiming();
 	std::wstring name = (WCHAR*)"Human";
-	dummyAI = LightShipClass(g_pMeshLight, g_pMeshMaterialsLight, g_pMeshTexturesLight, g_dwNumMaterialsLight, g_pDevice);
+	/*dummyAI = LightShipClass(g_pMeshLight, g_pMeshMaterialsLight, g_pMeshTexturesLight, g_dwNumMaterialsLight, g_pDevice);
 	player1 = HumanPlayerClass(dummyAI, name, 0, 1);
-	player1.initProjectiles(g_pMeshLaser, g_pMeshMaterialsLaser, g_pMeshTexturesLaser, g_dwNumMaterialsLaser);
+	player1.initProjectiles(g_pMeshLaser, g_pMeshMaterialsLaser, g_pMeshTexturesLaser, g_dwNumMaterialsLaser);*/
 
 	mainTerrain = Terrain(g_pMesh2, g_pMeshMaterials2, g_pMeshTextures2, g_dwNumMaterials2, g_pDevice);
 	mainTerrain.SetMtrlColor(D3DXCOLOR(0.0f, 0.1f, 0.0f, 0.0f), D3DXCOLOR(0.0f, 0.1f, 0.0f, 0.0f), D3DXCOLOR(0, 0.1f, 0.0f, 0.0f));
 	mainTerrain.setupBuildings();
 
-   static D3DMATERIAL9* mat1 = new D3DMATERIAL9;
-   dummyAI2 = StandardShipClass(g_pMesh, mat1, g_pMeshTextures, 1, g_pDevice);
-   static AIPlayer ai1 = AIPlayer(dummyAI2, name, 0, 1);
-   //ai1.GetShip()->setTranslation(10, 10, 10);   
-   ai1.GetShip()->SetPosition(0, 10, 50);
-   ai1.GetShip()->SetRotation(D3DX_PI, 0, 0);
-   ai1.GetShip()->Update(2);
-   ai1.GetShip()->SetRotation(0, 0, 0);
-   //ai1.SetRotation(0, D3DX_PI, 0);
-   ai1.SetBehaviour(SEEK);
-   ai1.SetBounds(ai1.getPosition());   
-   //ai1.GetShip()->SetMtrlColor(D3DXCOLOR(0, 255.0f, 0, 255.0f), D3DXCOLOR(0, 255.0f, 0, 255.0f), D3DXCOLOR(0, 255.0f, 0, 255.0f));
+	static D3DMATERIAL9* mat1 = new D3DMATERIAL9;
+	dummyAI2 = StandardShipClass(g_pMesh, mat1, g_pMeshTextures, 1, g_pDevice);
+	static AIPlayer ai1 = AIPlayer(dummyAI2, name, 0, 1);
+	//ai1.GetShip()->setTranslation(10, 10, 10);   
+	ai1.GetShip()->SetPosition(0, 10, 50);
+	ai1.GetShip()->SetRotation(D3DX_PI, 0, 0);
+	ai1.GetShip()->Update(2);
+	ai1.GetShip()->SetRotation(0, 0, 0);
+	//ai1.SetRotation(0, D3DX_PI, 0);
+	ai1.SetBehaviour(SEEK);
+	ai1.SetBounds(ai1.getPosition());   
+	//ai1.GetShip()->SetMtrlColor(D3DXCOLOR(0, 255.0f, 0, 255.0f), D3DXCOLOR(0, 255.0f, 0, 255.0f), D3DXCOLOR(0, 255.0f, 0, 255.0f));
    
-   //ai1.updatePosition(1);
+	//ai1.updatePosition(1);
 
-   //static D3DMATERIAL9* mat2 = new D3DMATERIAL9;
-   //static AIPlayer ai2 = AIPlayer(g_pMesh, mat2, g_pMeshTextures, 1, g_pDevice, "AI",0, 1);
-   //ai2.GetShip()->setTranslation(100, 100, -5);
-   ////ai2.GetShip()->setRotation(0, 3.1f, 0);
-   //ai2.SetBounds(ai2.getPosition());
-   ////ai2.GetShip()->SetMtrlColor(D3DXCOLOR(0, 255.0f, 0, 255.0f), D3DXCOLOR(0, 255.0f, 0, 255.0f), D3DXCOLOR(0, 255.0f, 0, 255.0f));
+	//static D3DMATERIAL9* mat2 = new D3DMATERIAL9;
+	//static AIPlayer ai2 = AIPlayer(g_pMesh, mat2, g_pMeshTextures, 1, g_pDevice, "AI",0, 1);
+	//ai2.GetShip()->setTranslation(100, 100, -5);
+	////ai2.GetShip()->setRotation(0, 3.1f, 0);
+	//ai2.SetBounds(ai2.getPosition());
+	////ai2.GetShip()->SetMtrlColor(D3DXCOLOR(0, 255.0f, 0, 255.0f), D3DXCOLOR(0, 255.0f, 0, 255.0f), D3DXCOLOR(0, 255.0f, 0, 255.0f));
 
-   //static D3DMATERIAL9* mat3 = new D3DMATERIAL9;
-   //static AIPlayer ai3 = AIPlayer(g_pMesh, mat3, g_pMeshTextures, 1, g_pDevice, "AI",0, 1);
-   ////ai3.GetShip()->setTranslation(100, 100, -5);
-   ////ai3.GetShip()->setRotation(0, 3.1f, 0);
-   //ai3.SetBounds(ai3.getPosition());
-   //ai3.SetBehaviour(FLEE);
-   ////ai3.GetShip()->SetMtrlColor(D3DXCOLOR(0, 0, 255.0f, 255.0f), D3DXCOLOR(0, 0, 255.0f, 255.0f), D3DXCOLOR(0, 0, 255.0f, 255.0f));
+	//static D3DMATERIAL9* mat3 = new D3DMATERIAL9;
+	//static AIPlayer ai3 = AIPlayer(g_pMesh, mat3, g_pMeshTextures, 1, g_pDevice, "AI",0, 1);
+	////ai3.GetShip()->setTranslation(100, 100, -5);
+	////ai3.GetShip()->setRotation(0, 3.1f, 0);
+	//ai3.SetBounds(ai3.getPosition());
+	//ai3.SetBehaviour(FLEE);
+	////ai3.GetShip()->SetMtrlColor(D3DXCOLOR(0, 0, 255.0f, 255.0f), D3DXCOLOR(0, 0, 255.0f, 255.0f), D3DXCOLOR(0, 0, 255.0f, 255.0f));
 
-   //static D3DMATERIAL9* mat4 = new D3DMATERIAL9;
-   //static AIPlayer ai4 = AIPlayer(g_pMesh, mat4, g_pMeshTextures, 1, g_pDevice, "AI",0, 1);
-   ////ai4.GetShip()->setTranslation(10, 10, 10);
-   ////ai4.GetShip()->SetRotation(0, 1.0f, 0);
-   //ai4.SetBounds(ai4.getPosition());
-   //ai4.SetBehaviour(SEEK);
-   //ai4.GetShip()->SetMtrlColor(D3DXCOLOR(255.0f, 0, 0, 255.0f), D3DXCOLOR(255.0f, 0, 0, 255.0f), D3DXCOLOR(255.0f, 0, 0, 255.0f));   
+	//static D3DMATERIAL9* mat4 = new D3DMATERIAL9;
+	//static AIPlayer ai4 = AIPlayer(g_pMesh, mat4, g_pMeshTextures, 1, g_pDevice, "AI",0, 1);
+	////ai4.GetShip()->setTranslation(10, 10, 10);
+	////ai4.GetShip()->SetRotation(0, 1.0f, 0);
+	//ai4.SetBounds(ai4.getPosition());
+	//ai4.SetBehaviour(SEEK);
+	//ai4.GetShip()->SetMtrlColor(D3DXCOLOR(255.0f, 0, 0, 255.0f), D3DXCOLOR(255.0f, 0, 0, 255.0f), D3DXCOLOR(255.0f, 0, 0, 255.0f));   
    
 
-   //static AIPlayer aiplayer = AIPlayer(g_pMesh, g_pMeshMaterials, g_pMeshTextures, g_dwNumMaterials, g_pDevice, "Human",0, 1);
+	//static AIPlayer aiplayer = AIPlayer(g_pMesh, g_pMeshMaterials, g_pMeshTextures, g_dwNumMaterials, g_pDevice, "Human",0, 1);
    
-   _aiPlayer.push_back(&ai1);
-   /*_aiPlayer.push_back(&ai2);
-   _aiPlayer.push_back(&ai3);
-   _aiPlayer.push_back(&ai4);*/
+	_aiPlayer.push_back(&ai1);
+	/*_aiPlayer.push_back(&ai2);
+	_aiPlayer.push_back(&ai3);
+	_aiPlayer.push_back(&ai4);*/
    
-   //player2 = MainPlayerClass("Dummy",0, 1, dummyAI);
+	//player2 = MainPlayerClass("Dummy",0, 1, dummyAI);
    
 	if(FAILED(r)){//FAILED is a macro that returns false if return value is a failure - safer than using value itself
 		SetError(TEXT("Initialization of the device failed"));
@@ -346,12 +346,10 @@ int directXClass::GameInit(){
 
 	input.init_keyboard(g_hWndMain);
 	setupCubes();
-	MainPlayerClass *allPlayers[2];
+	/*MainPlayerClass *allPlayers[2];
 	allPlayers[0] = &player1;
-	allPlayers[1] = &ai1;
+	allPlayers[1] = &ai1;*/
 	//_gamestate.updateGameState(g_hWndMain, allPlayers, 2);
-	updateCameraTarget();
-	camera.reset();
 
 	return S_OK;
 }
@@ -602,7 +600,11 @@ int directXClass::Render(){
 
 		mainTerrain.renderSelf();	
 		player1.drawSelf();
-
+		for (int i = 1; i < 8; i++) {
+			if (currentPlayers[i] != NULL) {
+				currentPlayers[i]->drawSelf();
+			}
+		}
 		//player2.drawSelf();
 		//SetupMatrices(true);
 
@@ -1471,16 +1473,22 @@ void directXClass::inputCommands(float timeDelta)
 	{
 		player1.right(false);
 		player1.left(true);
+		currentPlayers[0]->right(false);
+		currentPlayers[0]->left(true);
 	}
 	else if(input.get_keystate(DIK_D))
 	{
 		player1.left(false);
 		player1.right(true);
+		(*currentPlayers[0]).right(true);
+		(*currentPlayers[0]).left(false);
 	}
 	else
 	{
 		player1.right(false);
 		player1.left(false);
+		currentPlayers[0]->right(false);
+		currentPlayers[0]->left(false);
 	}
 
 	
@@ -1488,26 +1496,32 @@ void directXClass::inputCommands(float timeDelta)
 	{
 		player1.up(false);
 		player1.down(true);
+		currentPlayers[0]->up(false);
+		currentPlayers[0]->down(true);
 	}
 	else if(input.get_keystate(DIK_S))
 	{
 		player1.down(false);
 		player1.up(true);
+		currentPlayers[0]->up(true);
+		currentPlayers[0]->down(false);
 	}
 	else
 	{
 		player1.up(false);
 		player1.down(false);
+		currentPlayers[0]->up(false);
+		currentPlayers[0]->down(false);
 	}
 
 	if(input.get_keystate(DIK_M) && !player1.gethasShot())
 	{
-		player1.sethasShot(true);
+		/*player1.sethasShot(true);*/
 	}
 
 	if(!input.get_keystate(DIK_M))
 	{
-		player1.sethasShot(false);
+		/*player1.sethasShot(false);*/
 	}
 
 	if(input.get_keystate(DIK_L))
@@ -1521,15 +1535,18 @@ void directXClass::inputCommands(float timeDelta)
 	if(input.get_keystate(DIK_SPACE))
 	{
 		player1.boost(true);
+		currentPlayers[0]->boost(true);
 	}
 	else
 	{
 		player1.boost(false);
+		currentPlayers[0]->boost(false);
 	}
 
 	if(input.get_keystate(DIK_F))
 	{
 		player1.shoot(timeDelta);
+		currentPlayers[0]->shoot(timeDelta);
 	}
 }
 
@@ -1932,8 +1949,17 @@ BOOL CALLBACK directXClass::startDialog (HWND hwnd, UINT msg, WPARAM wParam, LPA
 					if (player8TypeAIClosedHuman == 2) {
 						program->currentPlayers[7] = NULL;
 					}
+					for (int i = 0; i < 8; i++)
+					{
+						if (program->currentPlayers[i] != NULL) {
+							program->currentPlayers[i]->initProjectiles(program->g_pMeshLaser, program->g_pMeshMaterialsLaser, program->g_pMeshTexturesLaser, program->g_dwNumMaterialsLaser);
+						}
+					}
+					program->player1 = *program->currentPlayers[0];
 					program->_gamestate.updateGameState(program->g_hWndMain, program->currentPlayers, 8);
 					program->menuSelect = 2;
+					program->updateCameraTarget();
+					program->camera.reset();
 					ShowWindow(hwnd,SW_HIDE);
 					return TRUE;
 				case IDCANCEL:
