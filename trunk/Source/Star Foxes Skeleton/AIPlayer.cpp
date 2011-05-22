@@ -32,9 +32,9 @@ void AIPlayer::SetBounds(D3DXVECTOR3 pos)
 
 // Heart of the AI. Updates AI behaviour.
 // TODO: Behaviour evaluator to evaluate what behaviour to activate.
-void AIPlayer::Update(HWND hWnd, D3DXVECTOR3 pos)
+void AIPlayer::Update(HWND hWnd, D3DXVECTOR3 pos, float timeDelta)
 {
-   Move(hWnd, FWRD, NULL); // AI has constant forward movement
+   //Move(hWnd, FWRD, NULL); // AI has constant forward movement
    //static int height;
    /*switch(_behave)
    {
@@ -55,6 +55,8 @@ void AIPlayer::Update(HWND hWnd, D3DXVECTOR3 pos)
       //Wander(hWnd);
       Seek(pos);
    }
+   MainPlayerClass::Update(timeDelta);
+   //Update(
    //Wander(hWnd);
 }
 
@@ -62,8 +64,21 @@ void AIPlayer::Update(HWND hWnd, D3DXVECTOR3 pos)
 // If it's not inside the bounds, it makes the ship seek the inside of the bound area.
 bool AIPlayer::KeepInBounds(HWND hWnd)
 {
+   
+   // If going outside xz-horizontal bound, make it seek the middle of map.
+   if(getPositionVector().x > _mv->right ||
+      getPositionVector().x < _mv->left ||
+      getPositionVector().z > _mv->front ||
+      getPositionVector().z < _mv->back)
+   {
+      //Move(hWnd, DIR_NONE, NULL);
+      Seek(D3DXVECTOR3(1, 30, 1));
+      return false;
+   }
+   
+
    // If it's out of y-bottom bound, straighten up.
-   if(getPositionVector().y < _mv->bottom)
+   /*if(getPositionVector().y < _mv->bottom)
    {   
       StraightenUp();
       return false;
@@ -74,17 +89,7 @@ bool AIPlayer::KeepInBounds(HWND hWnd)
    {
       StraightenDown();
       return false;
-   }
-   
-   // If going outside xz-horizontal bound, make it seek the middle of map.
-   if(getPositionVector().x > _mv->right ||
-      getPositionVector().x < _mv->left ||
-      getPositionVector().z > _mv->front ||
-      getPositionVector().z < _mv->back)
-   {
-      Seek(D3DXVECTOR3(0, 0, 0));
-      return false;
-   }
+   }*/
    
    return true;
 }
@@ -219,7 +224,7 @@ void AIPlayer::Seek(D3DXVECTOR3 enemyPos) {
   
 	float dist = sqrt(xDif*xDif + yDif*yDif + zDif*zDif);
    D3DXVECTOR3 d = enemyPos - getPositionVector();
-   d.x /= -dist; // for some reason.. need to do this reflection first
+   d.x /= dist; // for some reason.. need to do this reflection first
    d.y /= dist; // Setting univector from this ship to enemy position.
    d.z /= dist;
    D3DXVECTOR3 d2 = d;
@@ -229,7 +234,7 @@ void AIPlayer::Seek(D3DXVECTOR3 enemyPos) {
    angle = atan2(getDirectionVector().z, getDirectionVector().x);
    Rotate2DvectorXZ(&d, -angle);
       
-   angle2 = atan2(0, 1.0f) - atan2(d.z, d.x);
+   angle2 = atan2(d.z, d.x) - atan2(0, 1.0f);
    if(angle2 > off)
       if(getUpVector().y > 0) // Check up vector to see if ship is upside down
          left(true);
@@ -247,7 +252,7 @@ void AIPlayer::Seek(D3DXVECTOR3 enemyPos) {
    }
    
    //calculating vertical rotation
-   d2.z = d2.z;
+   /*d2.z = d2.z;
    d2.y = -d2.y;
    angle = atan2(getDirectionVector().y, getDirectionVector().z);
    Rotate2DvectorYZ(&d2, angle);
@@ -261,7 +266,7 @@ void AIPlayer::Seek(D3DXVECTOR3 enemyPos) {
    {
       up(false);
       down(false);
-   }
+   }*/
 }
 
 // Rotates the X and Z of the vector to the given angle.
@@ -329,6 +334,7 @@ void AIPlayer::SeekIra(D3DXVECTOR3 enemyPos) {
 bool AIPlayer::StraightenUp()
 {
    float off = 0.2f;
+   Move(NULL, DIR_NONE, NULL);
    if(getDirectionVector().y > 0.4f || getDirectionVector().y < off)
    {
       if(getUpVector().y > 0)
@@ -339,10 +345,11 @@ bool AIPlayer::StraightenUp()
    }
    else
    {
-      up(false);
+      /*up(false);
       down(false);
       left(false);
-      right(false);
+      right(false);*/
+      Move(NULL, DIR_NONE, NULL);
       return true;
    }
 }
@@ -350,8 +357,9 @@ bool AIPlayer::StraightenUp()
 // Straightens the ship setting it with an slight down-direction.
 bool AIPlayer::StraightenDown()
 {
-   float off = 0.2f;
-   if(getDirectionVector().y > -0.2f || getDirectionVector().y < -0.4f)
+   /*float off = 0.2f;
+   Move(NULL, DIR_NONE, NULL);
+   if(getDirectionVector().y > 0)// || getDirectionVector().y < -0.4f)
    {
       if(getUpVector().y > 0)
          Move(NULL, DWN, NULL);
@@ -361,12 +369,14 @@ bool AIPlayer::StraightenDown()
    }
    else
    {
-      up(false);
+      Move(NULL, DIR_NONE, NULL);
+      /*up(false);
       down(false);
       left(false);
-      right(false);
-      return true;
-   }
+      right(false);*/
+     /* return true;
+   }*/
+   return true;
 }
 
 // Initializes AI. Function usually called in constructor.

@@ -62,7 +62,7 @@ public:
    void SeekIra(D3DXVECTOR3 enemyPos);
    void Wander(HWND hWnd);
    void Flee(HWND hWnd, D3DXVECTOR3 pos);
-   void Update(HWND hWnd, D3DXVECTOR3 pos);
+   void Update(HWND hWnd, D3DXVECTOR3 pos, float timeDelta);
    EDir Move(HWND hWnd, int dir, bool* outbound);
    void SetBehaviour(EBehaviour beh);
    void SetBounds(D3DXVECTOR3 pos);
