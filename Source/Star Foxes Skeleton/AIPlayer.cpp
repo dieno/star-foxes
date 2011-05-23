@@ -32,9 +32,15 @@ void AIPlayer::SetBounds(D3DXVECTOR3 pos)
 
 // Heart of the AI. Updates AI behaviour.
 // TODO: Behaviour evaluator to evaluate what behaviour to activate.
-void AIPlayer::Update(HWND hWnd, D3DXVECTOR3 pos, float timeDelta)
+void AIPlayer::Update(HWND hWnd, D3DXVECTOR3 targetpos, float timeDelta)
 {
-   //Move(hWnd, FWRD, NULL); // AI has constant forward movement
+   
+   Move(hWnd, FWRD, NULL); // AI has constant forward movement
+   //shoot(timeDelta);
+   D3DXVECTOR3 meToTarget;
+   float dist;
+   GetMeToPosVector(&targetpos, &meToTarget, &dist);
+   Shoot(&getDirectionVector(), &meToTarget, &timeDelta);
    //static int height;
    /*switch(_behave)
    {
@@ -48,12 +54,12 @@ void AIPlayer::Update(HWND hWnd, D3DXVECTOR3 pos, float timeDelta)
       Wander(hWnd);
       break;
    }*/
-   if(KeepInBounds(hWnd)) 
+   if(KeepInBounds(hWnd))
    { 
       //down(false);
       //Flee(hWnd, pos);
       //Wander(hWnd);
-      Seek(pos);
+      Seek(targetpos);
    }
    MainPlayerClass::Update(timeDelta);
    //Update(
@@ -72,13 +78,13 @@ bool AIPlayer::KeepInBounds(HWND hWnd)
       getPositionVector().z < _mv->back)
    {
       //Move(hWnd, DIR_NONE, NULL);
-      Seek(D3DXVECTOR3(1, 30, 1));
+      Seek(D3DXVECTOR3(1, 10, 1));
       return false;
    }
    
 
    // If it's out of y-bottom bound, straighten up.
-   /*if(getPositionVector().y < _mv->bottom)
+   if(getPositionVector().y < _mv->bottom)
    {   
       StraightenUp();
       return false;
@@ -89,7 +95,7 @@ bool AIPlayer::KeepInBounds(HWND hWnd)
    {
       StraightenDown();
       return false;
-   }*/
+   }
    
    return true;
 }
@@ -215,20 +221,22 @@ EDir AIPlayer::Move(HWND hWnd, int dir, bool *outbound)
 }
 
 void AIPlayer::Seek(D3DXVECTOR3 enemyPos) {
-   float x = getPositionVector().x;//getPositionX();
+   /*float x = getPositionVector().x;//getPositionX();
 	float z = getPositionVector().z;
 	float y = getPositionVector().y;
 	float xDif = enemyPos.x - x;
    float yDif = enemyPos.y - y;
-   float zDif = enemyPos.z - z;
-  
-	float dist = sqrt(xDif*xDif + yDif*yDif + zDif*zDif);
-   D3DXVECTOR3 d = enemyPos - getPositionVector();
-   d.x /= dist; // for some reason.. need to do this reflection first
+   float zDif = enemyPos.z - z;*/
+
+     
+	float dist;// = sqrt(xDif*xDif + yDif*yDif + zDif*zDif);
+   D3DXVECTOR3 d;// = enemyPos - getPositionVector();
+   GetMeToPosVector(&enemyPos, &d, &dist);
+   /*d.x /= dist; // for some reason.. need to do this reflection first
    d.y /= dist; // Setting univector from this ship to enemy position.
-   d.z /= dist;
+   d.z /= dist;*/
    D3DXVECTOR3 d2 = d;
-   float off = 0.2f;
+   float off = 0.02f;
    float angle, angle2;
    // Calculating horizontal rotation
    angle = atan2(getDirectionVector().z, getDirectionVector().x);
@@ -252,7 +260,7 @@ void AIPlayer::Seek(D3DXVECTOR3 enemyPos) {
    }
    
    //calculating vertical rotation
-   /*d2.z = d2.z;
+   d2.z = d2.z;
    d2.y = -d2.y;
    angle = atan2(getDirectionVector().y, getDirectionVector().z);
    Rotate2DvectorYZ(&d2, angle);
@@ -266,7 +274,7 @@ void AIPlayer::Seek(D3DXVECTOR3 enemyPos) {
    {
       up(false);
       down(false);
-   }*/
+   }
 }
 
 // Rotates the X and Z of the vector to the given angle.
@@ -357,7 +365,7 @@ bool AIPlayer::StraightenUp()
 // Straightens the ship setting it with an slight down-direction.
 bool AIPlayer::StraightenDown()
 {
-   /*float off = 0.2f;
+   float off = 0.2f;
    Move(NULL, DIR_NONE, NULL);
    if(getDirectionVector().y > 0)// || getDirectionVector().y < -0.4f)
    {
@@ -374,18 +382,41 @@ bool AIPlayer::StraightenDown()
       down(false);
       left(false);
       right(false);*/
-     /* return true;
-   }*/
-   return true;
+      return true;
+   }
+}
+
+void AIPlayer::Shoot(D3DXVECTOR3* mydir, D3DXVECTOR3* target, float* timeDelta)
+{
+   D3DXVECTOR3 diff = *mydir - *target;
+   if(abs(diff.x) < _shootArea.x && 
+      abs(diff.y) < _shootArea.y)
+      MainPlayerClass::shoot(*timeDelta);
+}
+
+// Gets a vector from this AI position to the position given in loc.
+// Resulting vector 'res' is returned as an UNIVECTOR.
+// Out pointer paramer 'dist' saves the distance between both locations.
+void AIPlayer::GetMeToPosVector(D3DXVECTOR3* loc, D3DXVECTOR3* res, float* dist)
+{
+   *res = *loc - getPositionVector();
+	*dist = sqrt(res->x*res->x + res->y*res->y + res->z*res->z);
+   
+   res->x /= *dist; // need to do this reflection first
+   res->y /= *dist; // Setting univector from this ship to enemy position.
+   res->z /= *dist;
 }
 
 // Initializes AI. Function usually called in constructor.
 void AIPlayer::IniAI()
 {
    //_mv = (PMovement) malloc (sizeof(PMovement));
+   float shootarea = 0.2f;
    srand(timeGetTime());
    _mv = (Movement*) malloc (sizeof(Movement));
    _mv->dir = -1;
+   _shootArea.x = shootarea;
+   _shootArea.y = shootarea;
 }
 
 AIPlayer::~AIPlayer(void)
