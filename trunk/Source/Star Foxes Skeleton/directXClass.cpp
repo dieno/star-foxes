@@ -491,7 +491,7 @@ int directXClass::GameLoop(float timeDelta) {
 				//directXClass::SetError(TEXT("p1: %f"), player1.getRotation().z); 
 				//(*ci)->bankLeft(0.01f);
 				//MessageBoxA(g_hWndMain, "hi", "hilo", 0);
-				(*ci)->Update(g_hWndMain, player1.getPositionVector());
+				(*ci)->Update(g_hWndMain, player1.getPositionVector(), timeDelta);
             //(*ci)->updatePosition(timeDelta);
 				//(*ci)->bankUp(0.04f);
 				// (*ci)->updateRotation();
