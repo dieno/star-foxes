@@ -5,8 +5,9 @@
 #include "gamecore.h"
 #include "gamestate.h"
 
-#include "mainPlayerClass.h"
 #include "humanPlayerClass.h"
+#include "mainPlayerClass.h"
+
 #include "computerPlayerClass.h"
 #include "AIPlayer.h"
 #include "terrain.h"
