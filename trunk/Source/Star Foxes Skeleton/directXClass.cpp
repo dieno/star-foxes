@@ -302,6 +302,7 @@ int directXClass::GameInit(){
 	//ai1.SetRotation(0, D3DX_PI, 0);
 	ai1.SetBehaviour(SEEK);
 	ai1.SetBounds(ai1.getPosition());   
+   ai1.initProjectiles(program->g_pMeshLaser, program->g_pMeshMaterialsLaser, program->g_pMeshTexturesLaser, program->g_dwNumMaterialsLaser);
 	//ai1.GetShip()->SetMtrlColor(D3DXCOLOR(0, 255.0f, 0, 255.0f), D3DXCOLOR(0, 255.0f, 0, 255.0f), D3DXCOLOR(0, 255.0f, 0, 255.0f));
    
 	//ai1.updatePosition(1);
