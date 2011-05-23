@@ -6,7 +6,7 @@
 #include "projectile.h"
 
 #define Y_AXIS_INVERTED false
-#define SHOOT_SPEED 0.5f
+#define SHOOT_SPEED 0.1f
 
 class MainShipClass {
 public:
