@@ -196,7 +196,7 @@ void MainShipClass::setupWorld()
 	D3DXMatrixIdentity(&mWorld_);
 }
 
-void MainShipClass::reset() 
+void MainShipClass::reset()
 {
 	vScale_ = D3DXVECTOR3(1.0f, 1.0f, 1.0f);
 	vPosition_ = D3DXVECTOR3(0.0f, 0.0f, 0.0f);
