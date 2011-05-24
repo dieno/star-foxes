@@ -456,7 +456,27 @@ int directXClass::GameLoop(float timeDelta) {
 			inputCommands(timeDelta);
 
 			player1.Update(timeDelta);
-
+			if(input.get_keystate(DIK_M))
+			{
+				player1.takeHit(5);
+			}
+			if(input.get_keystate(DIK_N))
+			{
+				player1.takeHit(-5);
+			}
+			for (int index = 0; index < 8; index++) {
+				if (currentPlayers[index] != NULL) {
+					if (currentPlayers[index]->getShipCurrentHealth() < 0 ) {
+						currentPlayers[index]->reduceLives();
+						if (currentPlayers[index]->getLives() <= 0) {
+							currentPlayers[index] = NULL;
+							if (index == 0) {
+								menuSelect = 0;
+							}
+						}
+					}
+				}
+			}
 			updateCameraTarget();
 			camera.Update(timeDelta);
 
