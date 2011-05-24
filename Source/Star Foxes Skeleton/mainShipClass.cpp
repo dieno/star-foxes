@@ -1,4 +1,5 @@
 #include "mainShipClass.h"
+#include "directXClass.h"
 
 float MainShipClass::afterburnerSpeed_ =  5.0f;
 float MainShipClass::damagePerShot =  1.0f;
@@ -14,24 +15,31 @@ void MainShipClass::Draw()
 }
 
 void MainShipClass::renderSelf() {
-	// Setup the world, view, and projection matrices
-	setupWorld();
+	if(!isBlinkedOut) {
+		// Setup the world, view, and projection matrices
+		setupWorld();
 
-	// Meshes are divided into subsets, one for each material. Render them in
-	// a loop
-	for( DWORD i=0; i<g_dwNumMaterials; i++ )
-	{
-		// Set the material and texture for this subset
-		g_pDevice->SetMaterial( &g_pMeshMaterials[i] );
-		g_pDevice->SetTexture( 0, g_pMeshTextures[i] );
+		// Meshes are divided into subsets, one for each material. Render them in
+		// a loop
+		for( DWORD i=0; i<g_dwNumMaterials; i++ )
+		{
+			// Set the material and texture for this subset
+			g_pDevice->SetMaterial( &g_pMeshMaterials[i] );
+			g_pDevice->SetTexture( 0, g_pMeshTextures[i] );
         
-		// Draw the mesh subset
-		g_pMesh->DrawSubset( i );
+			// Draw the mesh subset
+			g_pMesh->DrawSubset( i );
+		}
 	}
 }
 
 void MainShipClass::Update(float timeDelta)
 {
+	if (timeGetTime() - blinkStartTime > 100.0f) {
+		isBlinkedOut = false;
+		directXClass::SetError(TEXT("end blink!"));
+	}
+	directXClass::SetError(TEXT("curTime: %f startTime: %f"), timeGetTime(), blinkStartTime);
 	D3DXVECTOR3 vRotationAmount(0.0f, 0.0f, 0.0f);
 
 	vRotationAmount = vRotation_ * RotationRate_ * timeDelta;
@@ -318,6 +326,14 @@ void MainShipClass::drawProjectiles()
 	for(std::list<Projectile>::iterator it = projectileList.begin(); it != projectileList.end(); ++it)
 	{
 		(*it).Draw();
+	}
+}
+
+void MainShipClass::startBlinking() {
+	if(!isBlinkedOut) {
+		blinkStartTime = timeGetTime();
+		isBlinkedOut = true;
+		directXClass::SetError(TEXT("start blink!"));
 	}
 }
 
