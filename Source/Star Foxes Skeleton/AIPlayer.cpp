@@ -435,12 +435,12 @@ void AIPlayer::Seek(D3DXVECTOR3 enemyPos) {
    }
    
    //calculating vertical rotation
-   /*d2.z = d2.z;
+   d2.z = d2.z;
    d2.y = -d2.y;
    angle = atan2(getDirectionVector().y, getDirectionVector().z);
    Rotate2DvectorYZ(&d2, angle);
    
-   angle2 = atan2(d2.y, d2.z) - atan2(0, 1.0f);
+   angle2 = atan2(0, 1.0f) - atan2(d2.y, d2.z);
    if(angle2 > off)
       down(true);
    else if(angle2 < -off)
@@ -449,7 +449,7 @@ void AIPlayer::Seek(D3DXVECTOR3 enemyPos) {
    {
       up(false);
       down(false);
-   }*/
+   }
 }
 
 // Rotates the X and Z of the vector to the given angle.
