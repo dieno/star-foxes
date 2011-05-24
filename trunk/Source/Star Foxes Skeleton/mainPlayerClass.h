@@ -147,6 +147,10 @@ public:
 	int getID() {
 		return id_;
 	}
+
+	void startBlinking() {
+		playerShip_.startBlinking();
+	}
    
    //ship takes a hit, damage taken is the damage caused by hit
    //returns bool true if still alive, false if dead

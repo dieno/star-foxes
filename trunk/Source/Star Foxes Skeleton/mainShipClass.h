@@ -34,7 +34,9 @@ public:
 		MaxForce_(24000.0f),
 		Drag_(0.97f),
 		thrustAmount_(0.0f),
-		projectileList(){
+		projectileList(),
+		blinkStartTime(0),
+		isBlinkedOut(false){
          IniVectors();
       }
 
@@ -62,7 +64,9 @@ public:
 		MaxForce_(24000.0f),
 		Drag_(0.97f),
 		thrustAmount_(0.0f),
-		projectileList(){
+		projectileList(),
+		blinkStartTime(0),
+		isBlinkedOut(false){
          IniVectors();
       }
 
@@ -90,7 +94,9 @@ public:
 		MaxForce_(24000.0f),
 		Drag_(0.97f),
 		thrustAmount_(0.0f),
-		projectileList(){
+		projectileList(),
+		blinkStartTime(0),
+		isBlinkedOut(false){
          IniVectors();
       }
 
@@ -278,6 +284,8 @@ public:
 	   return meshData;
    }
 
+   void startBlinking();
+
 private:
 	static float afterburnerSpeed_;
 	int currentHealth;
@@ -347,6 +355,10 @@ private:
 
 	void updateProjectiles(float timeDelta);
 	void drawProjectiles();
+
+	
+	float blinkStartTime;
+	bool isBlinkedOut;
 
 };
 
