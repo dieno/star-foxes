@@ -37,9 +37,9 @@ void MainShipClass::Update(float timeDelta)
 {
 	if (timeGetTime() - blinkStartTime > 100.0f) {
 		isBlinkedOut = false;
-		directXClass::SetError(TEXT("end blink!"));
+		//directXClass::SetError(TEXT("end blink!"));
 	}
-	directXClass::SetError(TEXT("curTime: %f startTime: %f"), timeGetTime(), blinkStartTime);
+	//directXClass::SetError(TEXT("curTime: %f startTime: %f"), timeGetTime(), blinkStartTime);
 	D3DXVECTOR3 vRotationAmount(0.0f, 0.0f, 0.0f);
 
 	vRotationAmount = vRotation_ * RotationRate_ * timeDelta;
@@ -333,7 +333,7 @@ void MainShipClass::startBlinking() {
 	if(!isBlinkedOut) {
 		blinkStartTime = timeGetTime();
 		isBlinkedOut = true;
-		directXClass::SetError(TEXT("start blink!"));
+		//directXClass::SetError(TEXT("start blink!"));
 	}
 }
 

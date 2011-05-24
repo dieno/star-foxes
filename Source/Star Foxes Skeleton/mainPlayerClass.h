@@ -16,7 +16,48 @@ public:
 		int lives,
 		MainShipClass playerShip):playerName_(playerName), id_(playerIdx), teamNum_(teamNum), lives_(lives), playerShip_(playerShip),
 		rotationZ(0.0f), rotationX(0.0f), positionX(0.0f), currentSpeed(1.0f), vRotation(0.0f,0.0f,0.0f), vPosition(0.0f,0.0f,20.0f), afterboosterActive_(false),
-		isAlive(true), boosterTimer(10), hadCollision(false), hasShot(false){}
+		isAlive(true), boosterTimer(10), hadCollision(false), hasShot(false), mat1(new D3DMATERIAL9){
+		if (teamNum == 0) {
+			playerShip_.setMat(mat1);
+			playerShip_.SetMtrlColor(D3DXCOLOR(0, 0.0f, 0, 1.0f),D3DXCOLOR(0, 0.0f, 0, 1.0f),D3DXCOLOR(0, 0.0f, 0, 1.0f));
+		}
+		if (teamNum == 1) {
+			playerShip_.setMat(mat1);
+			playerShip_.SetMtrlColor(D3DXCOLOR(1, 0.0f, 0, 1.0f),D3DXCOLOR(1, 0.0f, 0, 1.0f),D3DXCOLOR(1, 0.0f, 0, 1.0f));
+		}
+		if (teamNum == 2) {
+			playerShip_.setMat(mat1);
+			playerShip_.SetMtrlColor(D3DXCOLOR(0, 1.0f, 0, 1.0f),D3DXCOLOR(0, 1.0f, 0, 1.0f),D3DXCOLOR(0, 1.0f, 0, 1.0f));
+		}
+		if (teamNum == 3) {
+			playerShip_.setMat(mat1);
+			playerShip_.SetMtrlColor(D3DXCOLOR(0, 0.0f, 1, 1.0f),D3DXCOLOR(0, 0.0f, 1, 1.0f),D3DXCOLOR(0, 0.0f, 1, 1.0f));
+		}
+		if (teamNum == 4) {
+			playerShip_.setMat(mat1);
+			playerShip_.SetMtrlColor(D3DXCOLOR(0, 1.0f, 1, 1.0f),D3DXCOLOR(0, 1.0f, 1, 1.0f),D3DXCOLOR(0, 1.0f, 1, 1.0f));
+		}
+		if (teamNum == 5) {
+			playerShip_.setMat(mat1);
+			playerShip_.SetMtrlColor(D3DXCOLOR(1, 0.0f, 1, 1.0f),D3DXCOLOR(1, 0.0f, 1, 1.0f),D3DXCOLOR(1, 0.0f, 1, 1.0f));
+		}
+		if (teamNum == 6) {
+			playerShip_.setMat(mat1);
+			playerShip_.SetMtrlColor(D3DXCOLOR(1, 1.0f, 0, 1.0f),D3DXCOLOR(1, 1.0f, 0, 1.0f),D3DXCOLOR(1, 1.0f, 0, 1.0f));
+		}
+		if (teamNum == 7) {
+			playerShip_.setMat(mat1);
+			playerShip_.SetMtrlColor(D3DXCOLOR(1, 1.0f, 1, 1.0f),D3DXCOLOR(1, 1.0f, 1, 1.0f),D3DXCOLOR(1, 1.0f, 1, 1.0f));
+		}
+		if (teamNum == 8) {
+			playerShip_.setMat(mat1);
+			playerShip_.SetMtrlColor(D3DXCOLOR(0.5f, 0.5f, 0.5f, 1.0f),D3DXCOLOR(0.5f, 0.5f, 0.5f, 1.0f),D3DXCOLOR(0.5f, 0.5f, 0.5f, 1.0f));
+		}
+		if (teamNum == 9) {
+			playerShip_.setMat(mat1);
+			playerShip_.SetMtrlColor(D3DXCOLOR(0.5f, 0.5f, 0.0f, 1.0f),D3DXCOLOR(0.5f, 0.5f, 0.0f, 1.0f),D3DXCOLOR(0.5f, 0.5f, 0.0f, 1.0f));
+		}
+	}
 
 	MainPlayerClass():playerName_(),teamNum_(),lives_(),playerShip_(),
 		rotationZ(0.0f), rotationX(0.0f), positionX(0.0f), currentSpeed(1.0f), vRotation(0.0f,0.0f,0.0f), vPosition(0.0f,0.0f,20.0f), afterboosterActive_(false),
@@ -187,6 +228,7 @@ private:
 	float currentSpeed;
 	bool hadCollision;
 	bool hasShot;
+	D3DMATERIAL9 *mat1;
 };
 
 

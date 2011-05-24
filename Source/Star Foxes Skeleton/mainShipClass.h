@@ -286,6 +286,11 @@ public:
 
    void startBlinking();
 
+   void setMat(D3DMATERIAL9* newMat) {
+		g_pMeshMaterials = newMat;
+		g_pMeshMaterials2 = newMat;
+   }
+
 private:
 	static float afterburnerSpeed_;
 	int currentHealth;
