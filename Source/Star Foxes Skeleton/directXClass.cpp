@@ -1877,7 +1877,7 @@ BOOL CALLBACK directXClass::startDialog (HWND hwnd, UINT msg, WPARAM wParam, LPA
                      player2 = (MainPlayerClass*)malloc(sizeof(AIPlayer));
 							player2 = shipBuilder2(NULL, STANDARD, AI, 2, hwnd, wszBuff, wszBuff2, wszBuff3);
                      player2->GetShip()->SetPosition(0, 10, 50);
-	                  player2->GetShip()->SetRotation(0, D3DX_PI, 0);
+	                  player2->GetShip()->SetRotation(D3DX_PI, 0, 0);
 	                  player2->GetShip()->Update(2);
 	                  player2->GetShip()->SetRotation(0, 0, 0);
 	                  //ai1.SetRotation(0, D3DX_PI, 0);
