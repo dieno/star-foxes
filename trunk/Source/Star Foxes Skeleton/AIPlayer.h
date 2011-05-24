@@ -91,13 +91,13 @@ public:
    bool StraightenUp();
    bool StraightenDown();
    //void Shoot();
-   void Shoot(D3DXVECTOR3 target, float* timeDelta);
+   void Shoot(D3DXVECTOR3 target, float timeDelta);
    void GetMeToPosVector(D3DXVECTOR3* loc, D3DXVECTOR3* res, float* dist);
    void Rotate2DvectorYZ(D3DXVECTOR3* pV2, float angle);
    void Rotate2DvectorXZ(D3DXVECTOR3* pV2, float angle);
    void Evaluate();
    void Seek(D3DXVECTOR3 enemyPos);
-   //void SeekIra(D3DXVECTOR3 enemyPos);
+   void Attack(D3DXVECTOR3 target, float timeDelta);
    void Wander(HWND hWnd);
    void Flee(HWND hWnd, D3DXVECTOR3 pos);
    virtual void Update(float timeDelta);

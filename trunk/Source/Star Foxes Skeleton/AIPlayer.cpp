@@ -59,44 +59,23 @@ float FSM::evalDistToTarget(D3DXVECTOR3 target, D3DXVECTOR3 origin)
 */
 D3DXVECTOR3 FSM::eval()
 {
-	std::list<MainPlayerClass*> players;
-	float shortestDist = 100; //the radar / 'sight' distance the AI can detect
-	float currDist;
-	int targetIdx = 0;
 	D3DXVECTOR3 target;
-
-	for (std::list<MainPlayerClass*>::const_iterator pi = players.begin(); pi != players.end(); ++pi)
-	{
-		//Search through enemies until one is found within range. Begin seeking target.
-		if((*pi) != NULL && ((*pi)->getID() != getMasterIdx())) {
-			currDist = evalDistToTarget((*pi)->getPosition(), gamestate->getPlayer(getMasterIdx()).getPosition());
-			if(currDist < shortestDist) {
-				shortestDist = currDist;
-				targetIdx = (*pi)->getID();
-				setCurrentState(SEEK);
-			}
-		}  		
-	}
-
-	target = gamestate->getPlayer(targetIdx).getPosition();
-
-	/*
+	
 	switch(currentState){
 		case FLEE:
-			evalFlee();
+			target = evalFlee();
 			break;
 		case WAND:
-			evalWander();
+			target = evalWander();
 			break;
 		case ATCK:
-			evalAttack();
+			target = evalAttack();
 			break;
 		case SEEK:
-			evalSeek();
+			target = evalSeek();
 			break;
 	}
-	*/
-	
+		
 	return target;
 }
 
@@ -114,17 +93,74 @@ D3DXVECTOR3 FSM::evalFlee()
 */
 D3DXVECTOR3 FSM::evalWander()
 {
-	D3DXVECTOR3 tmp;
-	return tmp;
+	std::list<MainPlayerClass*> players;
+	float shortestDist = RADAR_RADIUS; //the radar / 'sight' distance the AI can detect
+	float currDist;
+	int targetIdx;
+	D3DXVECTOR3 target;
+
+	for (std::list<MainPlayerClass*>::const_iterator pi = players.begin(); pi != players.end(); ++pi)
+	{
+		//Search through enemies until one is found within range. Begin seeking target.
+		if((*pi) != NULL && ((*pi)->getID() != getMasterIdx())) {
+			currDist = evalDistToTarget((*pi)->getPosition(), gamestate->getPlayer(getMasterIdx()).getPosition());
+			if(currDist < shortestDist) {
+				shortestDist = currDist;
+				targetIdx = (*pi)->getID();
+				setCurrentState(SEEK);
+			}
+		}  		
+	}
+
+	if(getCurrentState() == SEEK) {
+		target = gamestate->getPlayer(targetIdx).getPosition();
+	}
+
+	return target;
 }
 
 /*
 	Evaluate gamestate and determine transition (if any) when current state is ATCK. 
+		-Attacks player closest and with the lowest HP of all targets in shooting range.
 */
 D3DXVECTOR3 FSM::evalAttack()
 {
-	D3DXVECTOR3 tmp;
-	return tmp;
+	std::list<MainPlayerClass*> players;
+	float shortestDist = RADAR_RADIUS; //the radar / 'sight' distance the AI can detect
+	bool isShootingRange = false;
+	float currDist;
+	int targetIdx;
+	int lastTargetIdx;
+	D3DXVECTOR3 target;
+
+	for (std::list<MainPlayerClass*>::const_iterator pi = players.begin(); pi != players.end(); ++pi)
+	{
+		//Search through enemies until one is found within range. Begin seeking target.
+		if((*pi) != NULL && ((*pi)->getID() != getMasterIdx())) {
+			shortestDist = evalDistToTarget((*pi)->getPosition(), gamestate->getPlayer(getMasterIdx()).getPosition());
+			if(shortestDist < RADAR_RADIUS) {
+				targetIdx = (*pi)->getID();
+				if((shortestDist <= SHOOT_RANGE) && 
+					(gamestate->getPlayer(targetIdx).getShipCurrentHealth() 
+					< gamestate->getPlayer(lastTargetIdx).getShipCurrentHealth())) {
+					isShootingRange = true;
+				}
+			}
+			lastTargetIdx = (*pi)->getID();
+		} 		
+	}
+
+	if(shortestDist == RADAR_RADIUS) {
+		setCurrentState(WAND);
+	}else if(isShootingRange) {
+		target = gamestate->getPlayer(targetIdx).getPosition();
+	}
+	else {
+		setCurrentState(SEEK);
+		target = gamestate->getPlayer(targetIdx).getPosition();
+	}
+
+	return target;
 }
 
 /*
@@ -132,8 +168,35 @@ D3DXVECTOR3 FSM::evalAttack()
 */
 D3DXVECTOR3 FSM::evalSeek()
 {
-	D3DXVECTOR3 tmp;
-	return tmp;
+	std::list<MainPlayerClass*> players;
+	float shortestDist = RADAR_RADIUS; //the radar / 'sight' distance the AI can detect
+	float currDist;
+	int targetIdx;
+	D3DXVECTOR3 target;
+
+	for (std::list<MainPlayerClass*>::const_iterator pi = players.begin(); pi != players.end(); ++pi)
+	{
+		//Search through enemies until one is found within range. Begin seeking target.
+		if((*pi) != NULL && ((*pi)->getID() != getMasterIdx())) {
+			currDist = evalDistToTarget((*pi)->getPosition(), gamestate->getPlayer(getMasterIdx()).getPosition());
+			if(currDist < shortestDist) {
+				shortestDist = currDist;
+				targetIdx = (*pi)->getID();
+			}
+		}  		
+	}
+
+	if(shortestDist == RADAR_RADIUS) {
+		setCurrentState(WAND);
+	} else if(shortestDist <= SHOOT_RANGE) {
+		setCurrentState(ATCK);
+		target = gamestate->getPlayer(targetIdx).getPosition();
+	}
+	else {
+		target = gamestate->getPlayer(targetIdx).getPosition();
+	}
+
+	return target;
 }
 
 
@@ -164,7 +227,7 @@ void AIPlayer::SetBounds(D3DXVECTOR3* pos)
 // TODO: Behaviour evaluator to evaluate what behaviour to activate.
 void AIPlayer::Update(float timeDelta)
 {
-	D3DXVECTOR3 target = _fsm.eval();
+   D3DXVECTOR3 target = _fsm.eval();
    HWND hWnd = _fsm.getGameState()->getHWND();
    
    if(KeepInBounds(hWnd))
@@ -180,7 +243,7 @@ void AIPlayer::Update(float timeDelta)
 			Wander(hWnd);
 			break;
 		case ATCK:
-			//Attack();
+			Attack(target, timeDelta);
 			break;
 		case SEEK:
 			Seek(target);
@@ -341,23 +404,14 @@ EDir AIPlayer::Move(HWND hWnd, int dir, bool *outbound)
 }
 
 void AIPlayer::Seek(D3DXVECTOR3 enemyPos) {
-   /*float x = getPositionVector().x;//getPositionX();
-	float z = getPositionVector().z;
-	float y = getPositionVector().y;
-	float xDif = enemyPos.x - x;
-   float yDif = enemyPos.y - y;
-   float zDif = enemyPos.z - z;*/
-
-     
-	float dist;// = sqrt(xDif*xDif + yDif*yDif + zDif*zDif);
+   
+   float dist;// = sqrt(xDif*xDif + yDif*yDif + zDif*zDif);
    D3DXVECTOR3 d;// = enemyPos - getPositionVector();
    GetMeToPosVector(&enemyPos, &d, &dist);
-   /*d.x /= dist; // for some reason.. need to do this reflection first
-   d.y /= dist; // Setting univector from this ship to enemy position.
-   d.z /= dist;*/
    D3DXVECTOR3 d2 = d;
    float off = 0.02f;
    float angle, angle2;
+
    // Calculating horizontal rotation
    angle = atan2(getDirectionVector().z, getDirectionVector().x);
    Rotate2DvectorXZ(&d, -angle);
@@ -423,33 +477,6 @@ void AIPlayer::Rotate2DvectorYZ(D3DXVECTOR3* pV2, float angle)
 	return;
 }
 
-/*
-void AIPlayer::SeekIra(D3DXVECTOR3 enemyPos) {
-
-   float x = getPositionVector().x;//getPositionX();
-	float z = getPositionVector().z;
-	float y = getPositionVector().y;
-	float xDif = enemyPos.x - x;
-   float yDif = enemyPos.y - y;
-   float zDif = enemyPos.z - z;
-
-	float dist = sqrt(xDif*xDif + yDif*yDif + zDif*zDif);
-	bool offset = true; //dist >= 1;
-   //this->up(true);
-   
-	if((enemyPos.x < x) && (offset)) {
-		this->left(true);//this->bankLeft(0.03f);
-      //this->right(false);
-		//directXClass::SetError(TEXT("SEEK: Moving [left] | from %f | to %f"), x, enemyPos.x);  
-	} else if((enemyPos.x > x) && (offset)){
-		this->right(true); //this->bankRight(0.03f);
-      //this->left(false);
-		//directXClass::SetError(TEXT("SEEK: Moving [right] | from %f | to %f"), x, enemyPos.x);  
-	}
-
-}
-*/
-
 // Straightens the ship setting it with an slight up-direction.
 bool AIPlayer::StraightenUp()
 {
@@ -498,7 +525,16 @@ bool AIPlayer::StraightenDown()
    }
 }
 
-void AIPlayer::Shoot(D3DXVECTOR3 target, float* timeDelta)
+/*
+	Attack state is a combination of SEEK state and shoot. 
+*/
+void AIPlayer::Attack(D3DXVECTOR3 target, float timeDelta)
+{
+	Seek(target);
+	Shoot(target, timeDelta);
+}
+
+void AIPlayer::Shoot(D3DXVECTOR3 target, float timeDelta)
 {
 	D3DXVECTOR3 dist;
 	float fDist;
@@ -508,7 +544,7 @@ void AIPlayer::Shoot(D3DXVECTOR3 target, float* timeDelta)
     D3DXVECTOR3 diff = comp - dist;
 
     if(abs(diff.x) < _shootArea.x && abs(diff.y) < _shootArea.y) {
-       MainPlayerClass::shoot(*timeDelta);
+       MainPlayerClass::shoot(timeDelta);
 	}
 }
 
