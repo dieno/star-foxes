@@ -142,6 +142,14 @@ public:
 		isAlive = true;
 		playerShip_.setCurrentHealth(playerShip_.getMaxHealth());
 	}
+
+	int getID() {
+		return id;
+	}
+
+	int setID(int newID) {
+		id = newID;
+	}
    
    //ship takes a hit, damage taken is the damage caused by hit
    //returns bool true if still alive, false if dead
@@ -163,6 +171,9 @@ private:
 
 	//The ship this player controls
 	MainShipClass playerShip_;
+
+	//player id 0-7;
+	int id;
 
 	D3DXVECTOR3 vRotation;
 	D3DXVECTOR3 vPosition;
