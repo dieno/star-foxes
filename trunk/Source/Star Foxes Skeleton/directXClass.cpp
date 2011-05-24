@@ -495,6 +495,17 @@ int directXClass::GameLoop(float timeDelta) {
 			if (nullCount >= 7) {
 				menuSelect = 0;
 			}
+			if(input.get_keystate(DIK_Q))
+			{
+				menuSelect = 0;
+			}
+
+			
+			if(input.get_keystate(DIK_Q))
+			{
+				menuSelect = 0;
+			}
+
 			updateCameraTarget();
 			camera.Update(timeDelta);
 
@@ -1976,6 +1987,7 @@ BOOL CALLBACK directXClass::startDialog (HWND hwnd, UINT msg, WPARAM wParam, LPA
 					{
 						if (program->currentPlayers[i] != NULL) {
 							program->currentPlayers[i]->initProjectiles(program->g_pMeshLaser, program->g_pMeshMaterialsLaser, program->g_pMeshTexturesLaser, program->g_dwNumMaterialsLaser);
+							program->currentPlayers[i]->setID(i);
 						}
 					}
 					program->player1 = *program->currentPlayers[0];
