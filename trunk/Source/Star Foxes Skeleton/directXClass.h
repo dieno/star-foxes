@@ -131,7 +131,7 @@ public:
 	static D3DXMATRIX Translate(const float dx, const float dy, const float dz);
 	GameState _gamestate;
 	static BOOL CALLBACK startDialog(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
-	static MainPlayerClass shipBuilder(EShipType sType, EPlayerType pType, HWND hwnd, WCHAR wszBuff[256], WCHAR wszBuff2[1], WCHAR wszBuff3[2]);
+	static MainPlayerClass shipBuilder(EShipType sType, EPlayerType pType, int pIdx, HWND hwnd, WCHAR wszBuff[256], WCHAR wszBuff2[1], WCHAR wszBuff3[2]);
 
 private:
 	void drawLine(float startX, float startY, float endX, float endY, LPDIRECT3DSURFACE9 pBackSurf);

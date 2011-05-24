@@ -13,8 +13,9 @@ public:
 		LPDIRECT3DDEVICE9 newg_pDevice, 
 		std::wstring playerName, 
 		int teamNum, 
-		int lives)
-	: MainPlayerClass(playerName, teamNum, lives, MainShipClass(mesh, meshMat, meshTex, meshNumMat, newg_pDevice)) {}
+		int lives,
+		int playerIdx)
+	: MainPlayerClass(playerName, playerIdx, teamNum, lives, MainShipClass(mesh, meshMat, meshTex, meshNumMat, newg_pDevice)) {}
 
 	
 	HumanPlayerClass(
@@ -22,14 +23,16 @@ public:
 		LPDIRECT3DDEVICE9 newg_pDevice, 
 		std::wstring playerName, 
 		int teamNum, 
-		int lives)
-	: MainPlayerClass(playerName, teamNum, lives, MainShipClass(meshStruct, newg_pDevice)) {}
+		int lives,
+		int playerIdx)
+	: MainPlayerClass(playerName, playerIdx, teamNum, lives, MainShipClass(meshStruct, newg_pDevice)) {}
 	
 	HumanPlayerClass(MainShipClass shiptype, 
 		std::wstring playerName, 
 		int teamNum, 
-		int lives)
-	: MainPlayerClass(playerName, teamNum, lives, shiptype) {}
+		int lives,
+		int playerIdx)
+	: MainPlayerClass(playerName, playerIdx, teamNum, lives, shiptype) {}
 
 	HumanPlayerClass():MainPlayerClass(){}
 
