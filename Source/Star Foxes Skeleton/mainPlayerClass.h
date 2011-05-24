@@ -9,6 +9,8 @@
 
 class MainPlayerClass {
 public:
+   virtual void SetBounds(D3DXVECTOR3* pos){};
+
 	MainPlayerClass (
 		std::wstring playerName, 
 		int playerIdx,
@@ -69,8 +71,8 @@ public:
 	void down(bool active) {playerShip_.bankDown(active);}
 	void boost(bool active) {playerShip_.boost(active);}
 	void shoot(float timeDelta) {playerShip_.shoot(timeDelta);}
-
-	void Update(float timeDelta);
+   //virtual void Update(HWND hWnd, D3DXVECTOR3 pos, float timeDelta){};
+	virtual void Update(float timeDelta);
 
 	void updatePosition(float timeDelta); //put movement in here!
 
