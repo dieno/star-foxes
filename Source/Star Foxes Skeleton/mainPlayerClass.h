@@ -137,6 +137,11 @@ public:
 		return vRotation;
 	}
 
+	void reduceLives() {
+		lives_--;
+		isAlive = true;
+		playerShip_.setCurrentHealth(playerShip_.getMaxHealth());
+	}
    
    //ship takes a hit, damage taken is the damage caused by hit
    //returns bool true if still alive, false if dead
