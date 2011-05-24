@@ -1474,22 +1474,16 @@ void directXClass::inputCommands(float timeDelta)
 	{
 		player1.right(false);
 		player1.left(true);
-		currentPlayers[0]->right(false);
-		currentPlayers[0]->left(true);
 	}
 	else if(input.get_keystate(DIK_D))
 	{
 		player1.left(false);
 		player1.right(true);
-		(*currentPlayers[0]).right(true);
-		(*currentPlayers[0]).left(false);
 	}
 	else
 	{
 		player1.right(false);
 		player1.left(false);
-		currentPlayers[0]->right(false);
-		currentPlayers[0]->left(false);
 	}
 
 	
@@ -1497,22 +1491,16 @@ void directXClass::inputCommands(float timeDelta)
 	{
 		player1.up(false);
 		player1.down(true);
-		currentPlayers[0]->up(false);
-		currentPlayers[0]->down(true);
 	}
 	else if(input.get_keystate(DIK_S))
 	{
 		player1.down(false);
 		player1.up(true);
-		currentPlayers[0]->up(true);
-		currentPlayers[0]->down(false);
 	}
 	else
 	{
 		player1.up(false);
 		player1.down(false);
-		currentPlayers[0]->up(false);
-		currentPlayers[0]->down(false);
 	}
 
 	if(input.get_keystate(DIK_M) && !player1.gethasShot())
@@ -1536,18 +1524,15 @@ void directXClass::inputCommands(float timeDelta)
 	if(input.get_keystate(DIK_SPACE))
 	{
 		player1.boost(true);
-		currentPlayers[0]->boost(true);
 	}
 	else
 	{
 		player1.boost(false);
-		currentPlayers[0]->boost(false);
 	}
 
 	if(input.get_keystate(DIK_F))
 	{
 		player1.shoot(timeDelta);
-		currentPlayers[0]->shoot(timeDelta);
 	}
 }
 
