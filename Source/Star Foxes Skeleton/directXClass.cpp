@@ -293,7 +293,7 @@ int directXClass::GameInit(){
 
 	static D3DMATERIAL9* mat1 = new D3DMATERIAL9;
 	dummyAI2 = StandardShipClass(g_pMesh, mat1, g_pMeshTextures, 1, g_pDevice);
-	static AIPlayer ai1 = AIPlayer(dummyAI2, name, 0, 1, &program->_gamestate);
+	static AIPlayer ai1 = AIPlayer(dummyAI2, name, 0, 1, &program->_gamestate, 8);
 	//ai1.GetShip()->setTranslation(10, 10, 10);   
 	ai1.GetShip()->SetPosition(0, 10, 50);
 	ai1.GetShip()->SetRotation(D3DX_PI, 0, 0);
@@ -1671,8 +1671,14 @@ void directXClass::setupLights()
 
 /*
  Psuedo factory for players - functions like a factory class.
+	@params sType
+		- Type of ship to create (standard, light, heavy)
+	@params pType
+		- Type of player to create (human, AI)
+	@params pIdx
+		- Number of the player (1-8); denotes position within the list of players.
 */
-MainPlayerClass directXClass::shipBuilder(EShipType sType, EPlayerType pType, HWND hwnd, WCHAR wszBuff[256], WCHAR wszBuff2[1], WCHAR wszBuff3[2])
+MainPlayerClass directXClass::shipBuilder(EShipType sType, EPlayerType pType, int pIdx, HWND hwnd, WCHAR wszBuff[256], WCHAR wszBuff2[1], WCHAR wszBuff3[2])
 {
 	SendMessage(GetDlgItem(hwnd,IDC_COMBO3), WM_GETTEXT, 256, (LPARAM)wszBuff);
 	SendMessage(GetDlgItem(hwnd,IDC_COMBO2), WM_GETTEXT, 256, (LPARAM)wszBuff3);
@@ -1687,13 +1693,13 @@ MainPlayerClass directXClass::shipBuilder(EShipType sType, EPlayerType pType, HW
 			return HumanPlayerClass(
 					StandardShipClass(program->g_pMesh, program->g_pMeshMaterials, program->g_pMeshTextures,
 					program->g_dwNumMaterials, g_pDevice),
-					std::wstring(wszBuff, 256), _wtoi(wszBuff2), _wtoi(wszBuff3));
+					std::wstring(wszBuff, 256), _wtoi(wszBuff2), _wtoi(wszBuff3), (pIdx-1));
 			break;
 		case AI:
 			return AIPlayer(
 					StandardShipClass(program->g_pMesh, program->g_pMeshMaterials, program->g_pMeshTextures,
 					program->g_dwNumMaterials, g_pDevice),
-					std::wstring(wszBuff, 256), _wtoi(wszBuff2), _wtoi(wszBuff3), &program->_gamestate);
+					std::wstring(wszBuff, 256), _wtoi(wszBuff2), _wtoi(wszBuff3), &program->_gamestate, (pIdx-1));
 			break;
 		}		
 		break;
@@ -1704,13 +1710,13 @@ MainPlayerClass directXClass::shipBuilder(EShipType sType, EPlayerType pType, HW
 			return HumanPlayerClass(
 					LightShipClass(program->g_pMeshLight, program->g_pMeshMaterialsLight, program->g_pMeshTexturesLight,
 					program->g_dwNumMaterialsLight, g_pDevice),
-					std::wstring(wszBuff, 256), _wtoi(wszBuff2), _wtoi(wszBuff3));
+					std::wstring(wszBuff, 256), _wtoi(wszBuff2), _wtoi(wszBuff3), (pIdx-1));
 			break;
 		case AI:
 			return AIPlayer(
 					LightShipClass(program->g_pMeshLight, program->g_pMeshMaterialsLight, program->g_pMeshTexturesLight,
 					program->g_dwNumMaterialsLight, g_pDevice),
-					std::wstring(wszBuff, 256), _wtoi(wszBuff2), _wtoi(wszBuff3), &program->_gamestate);
+					std::wstring(wszBuff, 256), _wtoi(wszBuff2), _wtoi(wszBuff3), &program->_gamestate, (pIdx-1));
 			break;
 		}
 
@@ -1721,13 +1727,13 @@ MainPlayerClass directXClass::shipBuilder(EShipType sType, EPlayerType pType, HW
 			return HumanPlayerClass(
 					HeavyShipClass(program->g_pMeshHeavy, program->g_pMeshMaterialsHeavy, program->g_pMeshTexturesHeavy,
 					program->g_dwNumMaterialsHeavy, g_pDevice),
-					std::wstring(wszBuff, 256), _wtoi(wszBuff2), _wtoi(wszBuff3));
+					std::wstring(wszBuff, 256), _wtoi(wszBuff2), _wtoi(wszBuff3), (pIdx-1));
 			break;
 		case AI:
 			return AIPlayer(
 					HeavyShipClass(program->g_pMeshHeavy, program->g_pMeshMaterialsHeavy, program->g_pMeshTexturesHeavy,
 					program->g_dwNumMaterialsHeavy, g_pDevice),
-					std::wstring(wszBuff, 256), _wtoi(wszBuff2), _wtoi(wszBuff3), &program->_gamestate);
+					std::wstring(wszBuff, 256), _wtoi(wszBuff2), _wtoi(wszBuff3), &program->_gamestate, (pIdx-1));
 			break;
 		}
 	}
@@ -1772,30 +1778,30 @@ BOOL CALLBACK directXClass::startDialog (HWND hwnd, UINT msg, WPARAM wParam, LPA
 				case IDOK:
 					if (player1TypeAIClosedHuman == 0) {
 						if (player1ShipClass == 0) {
-							player1 = shipBuilder(STANDARD, HUMAN, hwnd, wszBuff, wszBuff2, wszBuff3);
+							player1 = shipBuilder(STANDARD, HUMAN, 1, hwnd, wszBuff, wszBuff2, wszBuff3);
 							program->currentPlayers[0] = &player1;
 						}
 						if (player1ShipClass == 1) {
-							player1 = shipBuilder(LIGHT, HUMAN, hwnd, wszBuff, wszBuff2, wszBuff3);
+							player1 = shipBuilder(LIGHT, HUMAN, 1, hwnd, wszBuff, wszBuff2, wszBuff3);
 							program->currentPlayers[0] = &player1;
 						}
 						if (player1ShipClass == 2) {
-							player1 = shipBuilder(HEAVY, HUMAN, hwnd, wszBuff, wszBuff2, wszBuff3);
+							player1 = shipBuilder(HEAVY, HUMAN, 1, hwnd, wszBuff, wszBuff2, wszBuff3);
 							program->currentPlayers[0] = &player1;
 						}
 					}
 			
 					if (player2TypeAIClosedHuman == 1) {
 						if (player2ShipClass == 0) {					
-							player2 = shipBuilder(STANDARD, AI, hwnd, wszBuff, wszBuff2, wszBuff3);
+							player2 = shipBuilder(STANDARD, AI, 2, hwnd, wszBuff, wszBuff2, wszBuff3);
 							program->currentPlayers[1] = &player2;
 						}
 						if (player2ShipClass == 1) {
-							player2 = shipBuilder(LIGHT, AI, hwnd, wszBuff, wszBuff2, wszBuff3);
+							player2 = shipBuilder(LIGHT, AI, 2, hwnd, wszBuff, wszBuff2, wszBuff3);
 							program->currentPlayers[1] = &player2;
 						}
 						if (player2ShipClass == 2) {
-							player2 = shipBuilder(HEAVY, AI, hwnd, wszBuff, wszBuff2, wszBuff3);
+							player2 = shipBuilder(HEAVY, AI, 2, hwnd, wszBuff, wszBuff2, wszBuff3);
 							program->currentPlayers[1] = &player2;
 						}
 					}
@@ -1804,15 +1810,15 @@ BOOL CALLBACK directXClass::startDialog (HWND hwnd, UINT msg, WPARAM wParam, LPA
 					}
 					if (player3TypeAIClosedHuman == 1) {
 						if (player3ShipClass == 0) {							
-							player3 = shipBuilder(STANDARD, AI, hwnd, wszBuff, wszBuff2, wszBuff3);
+							player3 = shipBuilder(STANDARD, AI, 3, hwnd, wszBuff, wszBuff2, wszBuff3);
 							program->currentPlayers[2] = &player3;
 						}
 						if (player3ShipClass == 1) {
-							player3 = shipBuilder(LIGHT, AI, hwnd, wszBuff, wszBuff2, wszBuff3);
+							player3 = shipBuilder(LIGHT, AI, 3, hwnd, wszBuff, wszBuff2, wszBuff3);
 							program->currentPlayers[2] = &player3;
 						}
 						if (player3ShipClass == 2) {
-							player3 = shipBuilder(HEAVY, AI, hwnd, wszBuff, wszBuff2, wszBuff3);
+							player3 = shipBuilder(HEAVY, AI, 3, hwnd, wszBuff, wszBuff2, wszBuff3);
 							program->currentPlayers[2] = &player3;
 						}
 					}
@@ -1821,15 +1827,15 @@ BOOL CALLBACK directXClass::startDialog (HWND hwnd, UINT msg, WPARAM wParam, LPA
 					}
 					if (player4TypeAIClosedHuman == 1) {
 						if (player4ShipClass == 0) {
-							player4 = shipBuilder(STANDARD, AI, hwnd, wszBuff, wszBuff2, wszBuff3);
+							player4 = shipBuilder(STANDARD, AI, 4, hwnd, wszBuff, wszBuff2, wszBuff3);
 							program->currentPlayers[3] = &player4;
 						}
 						if (player3ShipClass == 1) {
-							player4 = shipBuilder(LIGHT, AI, hwnd, wszBuff, wszBuff2, wszBuff3);
+							player4 = shipBuilder(LIGHT, AI, 4, hwnd, wszBuff, wszBuff2, wszBuff3);
 							program->currentPlayers[3] = &player4;
 						}
 						if (player4ShipClass == 2) {
-							player4 = shipBuilder(HEAVY, AI, hwnd, wszBuff, wszBuff2, wszBuff3);
+							player4 = shipBuilder(HEAVY, AI, 4, hwnd, wszBuff, wszBuff2, wszBuff3);
 							program->currentPlayers[3] = &player4;
 						}
 					}
@@ -1838,15 +1844,15 @@ BOOL CALLBACK directXClass::startDialog (HWND hwnd, UINT msg, WPARAM wParam, LPA
 					}
 					if (player5TypeAIClosedHuman == 1) {
 						if (player5ShipClass == 0) {
-							player5 = shipBuilder(STANDARD, AI, hwnd, wszBuff, wszBuff2, wszBuff3);
+							player5 = shipBuilder(STANDARD, AI, 5, hwnd, wszBuff, wszBuff2, wszBuff3);
 							program->currentPlayers[4] = &player5;
 						}
 						if (player5ShipClass == 1) {
-							player5 = shipBuilder(LIGHT, AI, hwnd, wszBuff, wszBuff2, wszBuff3);
+							player5 = shipBuilder(LIGHT, AI, 5, hwnd, wszBuff, wszBuff2, wszBuff3);
 							program->currentPlayers[4] = &player5;
 						}
 						if (player5ShipClass == 2) {
-							player5 = shipBuilder(HEAVY, AI, hwnd, wszBuff, wszBuff2, wszBuff3);
+							player5 = shipBuilder(HEAVY, AI, 5, hwnd, wszBuff, wszBuff2, wszBuff3);
 							program->currentPlayers[4] = &player5;
 						}
 					}
@@ -1855,15 +1861,15 @@ BOOL CALLBACK directXClass::startDialog (HWND hwnd, UINT msg, WPARAM wParam, LPA
 					}
 					if (player6TypeAIClosedHuman == 1) {
 						if (player6ShipClass == 0) {
-							player6 = shipBuilder(STANDARD, AI, hwnd, wszBuff, wszBuff2, wszBuff3);
+							player6 = shipBuilder(STANDARD, AI, 6, hwnd, wszBuff, wszBuff2, wszBuff3);
 							program->currentPlayers[5] = &player6;
 						}
 						if (player6ShipClass == 1) {
-							player6 = shipBuilder(LIGHT, AI, hwnd, wszBuff, wszBuff2, wszBuff3);
+							player6 = shipBuilder(LIGHT, AI, 6, hwnd, wszBuff, wszBuff2, wszBuff3);
 							program->currentPlayers[5] = &player6;
 						}
 						if (player6ShipClass == 2) {
-							player6 = shipBuilder(HEAVY, AI, hwnd, wszBuff, wszBuff2, wszBuff3);
+							player6 = shipBuilder(HEAVY, AI, 6, hwnd, wszBuff, wszBuff2, wszBuff3);
 							program->currentPlayers[5] = &player6;
 						}
 					}
@@ -1872,15 +1878,15 @@ BOOL CALLBACK directXClass::startDialog (HWND hwnd, UINT msg, WPARAM wParam, LPA
 					}
 					if (player7TypeAIClosedHuman == 1) {
 						if (player7ShipClass == 0) {
-							player7 = shipBuilder(STANDARD, AI, hwnd, wszBuff, wszBuff2, wszBuff3);
+							player7 = shipBuilder(STANDARD, AI, 7, hwnd, wszBuff, wszBuff2, wszBuff3);
 							program->currentPlayers[6] = &player7;
 						}
 						if (player7ShipClass == 1) {
-							player7 = shipBuilder(LIGHT, AI, hwnd, wszBuff, wszBuff2, wszBuff3);
+							player7 = shipBuilder(LIGHT, AI, 7, hwnd, wszBuff, wszBuff2, wszBuff3);
 							program->currentPlayers[6] = &player7;
 						}
 						if (player7ShipClass == 2) {
-							player7 = shipBuilder(HEAVY, AI, hwnd, wszBuff, wszBuff2, wszBuff3);
+							player7 = shipBuilder(HEAVY, AI, 7, hwnd, wszBuff, wszBuff2, wszBuff3);
 							program->currentPlayers[6] = &player7;
 						}
 					}
@@ -1889,15 +1895,15 @@ BOOL CALLBACK directXClass::startDialog (HWND hwnd, UINT msg, WPARAM wParam, LPA
 					}
 					if (player8TypeAIClosedHuman == 1) {
 						if (player8ShipClass == 0) {
-							player8 = shipBuilder(STANDARD, AI, hwnd, wszBuff, wszBuff2, wszBuff3);
+							player8 = shipBuilder(STANDARD, AI, 8, hwnd, wszBuff, wszBuff2, wszBuff3);
 							program->currentPlayers[7] = &player8;
 						}
 						if (player8ShipClass == 1) {
-							player8 = shipBuilder(LIGHT, AI, hwnd, wszBuff, wszBuff2, wszBuff3);
+							player8 = shipBuilder(LIGHT, AI, 8, hwnd, wszBuff, wszBuff2, wszBuff3);
 							program->currentPlayers[7] = &player8;
 						}
 						if (player8ShipClass == 2) {
-							player8 = shipBuilder(HEAVY, AI, hwnd, wszBuff, wszBuff2, wszBuff3);
+							player8 = shipBuilder(HEAVY, AI, 8, hwnd, wszBuff, wszBuff2, wszBuff3);
 							program->currentPlayers[7] = &player8;
 						}
 					}
@@ -1908,7 +1914,6 @@ BOOL CALLBACK directXClass::startDialog (HWND hwnd, UINT msg, WPARAM wParam, LPA
 					{
 						if (program->currentPlayers[i] != NULL) {
 							program->currentPlayers[i]->initProjectiles(program->g_pMeshLaser, program->g_pMeshMaterialsLaser, program->g_pMeshTexturesLaser, program->g_dwNumMaterialsLaser);
-							program->currentPlayers[i]->setID(i);
 						}
 					}
 					program->player1 = *program->currentPlayers[0];

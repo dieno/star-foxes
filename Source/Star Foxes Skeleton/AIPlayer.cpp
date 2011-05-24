@@ -9,6 +9,10 @@ void FSM::setCurrentState(EState _state)
    currentState = _state;   
 }
 
+int FSM::getMasterIdx() 
+{
+	return masterIdx;
+}
 
 string FSM::getCurrentStateName()
 {
@@ -61,14 +65,14 @@ D3DXVECTOR3 FSM::eval()
 
 	for (std::list<MainPlayerClass*>::const_iterator pi = players.begin(); pi != players.end(); ++pi)
 	{
-		/*
-		if((*pi) != NULL && (*pi)->getInd()) {
-			currDist = evalDistToTarget((*pi)->getPosition(), gamestate->getPlayer(getControllerComp());
+
+		if((*pi) != NULL && ((*pi)->getID() != getMasterIdx())) {
+			currDist = evalDistToTarget((*pi)->getPosition(), gamestate->getPlayer(getMasterIdx()).getPosition());
 			if(currDist < shortestDist) {
 				shortestDist = currDist;
 			}
 		}  
-		*/
+		
 	}
 
 	/*

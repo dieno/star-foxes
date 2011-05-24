@@ -11,9 +11,10 @@ class MainPlayerClass {
 public:
 	MainPlayerClass (
 		std::wstring playerName, 
+		int playerIdx,
 		int teamNum, 
 		int lives,
-		MainShipClass playerShip):playerName_(playerName), teamNum_(teamNum), lives_(lives), playerShip_(playerShip),
+		MainShipClass playerShip):playerName_(playerName), id_(playerIdx), teamNum_(teamNum), lives_(lives), playerShip_(playerShip),
 		rotationZ(0.0f), rotationX(0.0f), positionX(0.0f), currentSpeed(1.0f), vRotation(0.0f,0.0f,0.0f), vPosition(0.0f,0.0f,20.0f), afterboosterActive_(false),
 		isAlive(true), boosterTimer(10), hadCollision(false), hasShot(false){}
 
@@ -144,11 +145,7 @@ public:
 	}
 
 	int getID() {
-		return id;
-	}
-
-	void setID(int newID) {
-		id = newID;
+		return id_;
 	}
    
    //ship takes a hit, damage taken is the damage caused by hit
@@ -173,7 +170,7 @@ private:
 	MainShipClass playerShip_;
 
 	//player id 0-7;
-	int id;
+	int id_;
 
 	D3DXVECTOR3 vRotation;
 	D3DXVECTOR3 vPosition;

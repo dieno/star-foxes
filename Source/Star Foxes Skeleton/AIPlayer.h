@@ -56,14 +56,16 @@ class FSM
 	private:
 		EState currentState;
 		GameState* gamestate;
+		int masterIdx; //Index of controlling computer.
 
 	public:
-		FSM(GameState* _gamestate):gamestate(_gamestate){
+		FSM(GameState* _gamestate, int _masterIdx):gamestate(_gamestate), masterIdx(_masterIdx){
 			currentState = WAND;
 		};
 
 		void setCurrentState(EState _state);
 
+		int getMasterIdx();
 		std::string getCurrentStateName();
 		EState getCurrentState();
 		GameState* getGameState() {
@@ -113,8 +115,9 @@ public:
 		std::wstring playerName, 
 		int teamNum, 
 		int lives,
-		GameState* initgamestate)
-	: MainPlayerClass(playerName, teamNum, lives, MainShipClass(mesh, meshMat, meshTex, meshNumMat, newg_pDevice)), _fsm(initgamestate) {	
+		GameState* initgamestate,
+		int playerIdx)
+	: MainPlayerClass(playerName, playerIdx, teamNum, lives, MainShipClass(mesh, meshMat, meshTex, meshNumMat, newg_pDevice)), _fsm(initgamestate, playerIdx) {	
 		IniAI();
    }
 
@@ -124,8 +127,9 @@ public:
 		std::wstring playerName, 
 		int teamNum, 
 		int lives,
-		GameState* initgamestate)
-	: MainPlayerClass(playerName, teamNum, lives, MainShipClass(meshStruct, newg_pDevice)), _fsm(initgamestate) {
+		GameState* initgamestate,
+		int playerIdx)
+	: MainPlayerClass(playerName, playerIdx, teamNum, lives, MainShipClass(meshStruct, newg_pDevice)), _fsm(initgamestate, playerIdx) {
     IniAI();
    }
 	
@@ -133,8 +137,9 @@ public:
 		std::wstring playerName, 
 		int teamNum, 
 		int lives,
-		GameState* initgamestate)
-	: MainPlayerClass(playerName, teamNum, lives, shiptype), _fsm(initgamestate) {
+		GameState* initgamestate,
+		int playerIdx)
+	: MainPlayerClass(playerName, playerIdx, teamNum, lives, shiptype), _fsm(initgamestate, playerIdx) {
       IniAI();
    }
 
