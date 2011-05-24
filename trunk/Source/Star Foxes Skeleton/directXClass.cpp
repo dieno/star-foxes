@@ -658,7 +658,7 @@ int directXClass::Render(){
 		//player2.drawSelf();
 		//SetupMatrices(true);
 
-		drawCubes();
+		//drawCubes();
         _chat.RenderChat();
       
       for (std::list<AIPlayer*>::const_iterator ci = _aiPlayer.begin(); ci != _aiPlayer.end(); ++ci)
