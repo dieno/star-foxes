@@ -8,7 +8,6 @@
 #include "humanPlayerClass.h"
 #include "mainPlayerClass.h"
 
-#include "computerPlayerClass.h"
 #include "AIPlayer.h"
 #include "terrain.h"
 #include "Networking\SocketExtras.h"
@@ -29,6 +28,24 @@
 #define SCREEN_WIDTH 640
 #define SCREEN_HEIGHT 480
 
+/*
+	Used by ship constructor helper.
+*/
+static enum EShipType
+{
+	LIGHT = 0,
+	STANDARD = 1,
+	HEAVY = 2
+};
+
+/*
+	Used by player constructor helper.
+*/
+static enum EPlayerType
+{
+	HUMAN = 0,
+	AI = 1
+};
 
 //main class used by the program for everything
 class directXClass {
@@ -114,6 +131,8 @@ public:
 	static D3DXMATRIX Translate(const float dx, const float dy, const float dz);
 	GameState _gamestate;
 	static BOOL CALLBACK startDialog(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
+	static MainPlayerClass shipBuilder(EShipType sType, EPlayerType pType, HWND hwnd, WCHAR wszBuff[256], WCHAR wszBuff2[1], WCHAR wszBuff3[2]);
+
 private:
 	void drawLine(float startX, float startY, float endX, float endY, LPDIRECT3DSURFACE9 pBackSurf);
 	void inputCommands(float timeDelta);

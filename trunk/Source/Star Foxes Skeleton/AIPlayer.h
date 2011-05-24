@@ -1,8 +1,7 @@
 //#pragma once
-//#include "directXHeader.h"
 #include "directXClass.h"
-//#include "MainPlayerClass.h"
 #include <math.h>
+//#include "FSM.h"
 
 #ifndef AIPLAYER
 #define AIPLAYER
@@ -17,14 +16,13 @@ enum EDir
    UPLEFT = 5,
    DWNRGHT = 6,
    DWNLFT = 7,
-   FWRD = 8,
    DIR_NONE
 };
 
-enum EBehaviour
+enum EState
 {
+   WAND = 0,
    FLEE,
-   WAND,
    ATCK,
    SEEK
 };
@@ -46,10 +44,44 @@ typedef struct Movement
    float straightDownHi;
 }*PMovement;
 
+
+/*
+	FSM Class
+		- The FSM class controls a set of states
+		- All state transitions depend on how the states are configured
+		- Configure a set of states and then upload them to the FSM
+*/
+class FSM
+{
+	private:
+		EState currentState;
+		GameState* gamestate;
+
+	public:
+		FSM(GameState* _gamestate):gamestate(_gamestate){
+			currentState = WAND;
+		};
+
+		void setCurrentState(EState _state);
+
+		std::string getCurrentStateName();
+		EState getCurrentState();
+		GameState* getGameState() {
+			return gamestate;	
+		};
+
+		float evalDistToTarget(D3DXVECTOR3 target, D3DXVECTOR3 origin);
+		D3DXVECTOR3 eval();
+		D3DXVECTOR3 evalFlee();
+		D3DXVECTOR3 evalWander();
+		D3DXVECTOR3 evalAttack();
+		D3DXVECTOR3 evalSeek();
+};
+
 class AIPlayer: public MainPlayerClass
 {
 private:
-   EBehaviour _behave;
+   FSM _fsm;
    bool KeepInBounds(HWND hWnd);
    D3DXVECTOR3 _shootArea;
 public:
@@ -57,21 +89,20 @@ public:
    bool StraightenUp();
    bool StraightenDown();
    //void Shoot();
-   void Shoot(D3DXVECTOR3* dir, D3DXVECTOR3* target, float* timeDelta);
+   void Shoot(D3DXVECTOR3 target, float* timeDelta);
    void GetMeToPosVector(D3DXVECTOR3* loc, D3DXVECTOR3* res, float* dist);
    void Rotate2DvectorYZ(D3DXVECTOR3* pV2, float angle);
    void Rotate2DvectorXZ(D3DXVECTOR3* pV2, float angle);
    void Evaluate();
    void Seek(D3DXVECTOR3 enemyPos);
-   void SeekIra(D3DXVECTOR3 enemyPos);
+   //void SeekIra(D3DXVECTOR3 enemyPos);
    void Wander(HWND hWnd);
    void Flee(HWND hWnd, D3DXVECTOR3 pos);
-   void Update(HWND hWnd, D3DXVECTOR3 pos, float timeDelta);
+   void Update(float timeDelta);
    EDir Move(HWND hWnd, int dir, bool* outbound);
-   void SetBehaviour(EBehaviour beh);
+   void SetBehaviour(EState beh);
    void SetBounds(D3DXVECTOR3 pos);
    void IniAI();
-   //AI(void);
 
 	AIPlayer(
 		LPD3DXMESH mesh, 
@@ -81,9 +112,10 @@ public:
 		LPDIRECT3DDEVICE9 newg_pDevice, 
 		std::wstring playerName, 
 		int teamNum, 
-		int lives)
-	: MainPlayerClass(playerName, teamNum, lives, MainShipClass(mesh, meshMat, meshTex, meshNumMat, newg_pDevice)) {
-    IniAI();
+		int lives,
+		GameState* initgamestate)
+	: MainPlayerClass(playerName, teamNum, lives, MainShipClass(mesh, meshMat, meshTex, meshNumMat, newg_pDevice)), _fsm(initgamestate) {	
+		IniAI();
    }
 
 	AIPlayer(
@@ -91,20 +123,18 @@ public:
 		LPDIRECT3DDEVICE9 newg_pDevice, 
 		std::wstring playerName, 
 		int teamNum, 
-		int lives)
-	: MainPlayerClass(playerName, teamNum, lives, MainShipClass(meshStruct, newg_pDevice)) {
+		int lives,
+		GameState* initgamestate)
+	: MainPlayerClass(playerName, teamNum, lives, MainShipClass(meshStruct, newg_pDevice)), _fsm(initgamestate) {
     IniAI();
    }
 	
 	AIPlayer(MainShipClass shiptype,
 		std::wstring playerName, 
 		int teamNum, 
-		int lives)
-	: MainPlayerClass(playerName, teamNum, lives, shiptype) {
-      IniAI();
-   }
-
-	AIPlayer():MainPlayerClass(){
+		int lives,
+		GameState* initgamestate)
+	: MainPlayerClass(playerName, teamNum, lives, shiptype), _fsm(initgamestate) {
       IniAI();
    }
 

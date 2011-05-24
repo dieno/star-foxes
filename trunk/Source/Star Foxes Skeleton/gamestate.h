@@ -10,7 +10,7 @@ class GameState
 private:
 	MainPlayerClass *players[8];
 	HWND hWnd_;
-	int numberOfPlayers;
+	int numberOfPlayers_;
 
 public:
 
@@ -24,8 +24,9 @@ public:
 	HWND getHWND();
 
 	//getsNumberOfPlayers
-	int getNumberOfPlayers() {
-		return numberOfPlayers;
+	int getNumberOfPlayers() 
+	{
+		return numberOfPlayers_;
 	}
 };
 
