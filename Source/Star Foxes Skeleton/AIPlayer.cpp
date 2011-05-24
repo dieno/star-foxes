@@ -112,7 +112,8 @@ D3DXVECTOR3 FSM::evalWander()
 		}  		
 	}
 
-	if(getCurrentState() == SEEK) {
+	targetIdx = 0;
+   if(getCurrentState() == SEEK) {
 		target = gamestate->getPlayer(targetIdx).getPosition();
 	}
 
@@ -229,11 +230,12 @@ void AIPlayer::Update(float timeDelta)
 {
    D3DXVECTOR3 target = _fsm.eval();
    HWND hWnd = _fsm.getGameState()->getHWND();
-   
+   //boost(true);
+
    if(KeepInBounds(hWnd))
    { 
-      Seek(target);
-      /*
+      //Seek(target);
+      
 	   switch(_fsm.getCurrentState())
 	   {
 		case FLEE:
@@ -248,7 +250,7 @@ void AIPlayer::Update(float timeDelta)
 		case SEEK:
 			Seek(target);
 			break;
-	   }*/
+	   }
    }
 
    MainPlayerClass::Update(timeDelta);
@@ -403,8 +405,7 @@ EDir AIPlayer::Move(HWND hWnd, int dir, bool *outbound)
    }
 }
 
-void AIPlayer::Seek(D3DXVECTOR3 enemyPos) {
-   
+void AIPlayer::Seek(D3DXVECTOR3 enemyPos) {   
    float dist;// = sqrt(xDif*xDif + yDif*yDif + zDif*zDif);
    D3DXVECTOR3 d;// = enemyPos - getPositionVector();
    GetMeToPosVector(&enemyPos, &d, &dist);
@@ -434,7 +435,7 @@ void AIPlayer::Seek(D3DXVECTOR3 enemyPos) {
    }
    
    //calculating vertical rotation
-   d2.z = d2.z;
+   /*d2.z = d2.z;
    d2.y = -d2.y;
    angle = atan2(getDirectionVector().y, getDirectionVector().z);
    Rotate2DvectorYZ(&d2, angle);
@@ -448,7 +449,7 @@ void AIPlayer::Seek(D3DXVECTOR3 enemyPos) {
    {
       up(false);
       down(false);
-   }
+   }*/
 }
 
 // Rotates the X and Z of the vector to the given angle.
