@@ -100,10 +100,10 @@ public:
    //void SeekIra(D3DXVECTOR3 enemyPos);
    void Wander(HWND hWnd);
    void Flee(HWND hWnd, D3DXVECTOR3 pos);
-   void Update(float timeDelta);
+   virtual void Update(float timeDelta);
    EDir Move(HWND hWnd, int dir, bool* outbound);
    void SetBehaviour(EState beh);
-   void SetBounds(D3DXVECTOR3 pos);
+   virtual void SetBounds(D3DXVECTOR3* pos);
    void IniAI();
 
 	AIPlayer(

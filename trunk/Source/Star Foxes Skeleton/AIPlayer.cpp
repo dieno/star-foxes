@@ -62,7 +62,7 @@ D3DXVECTOR3 FSM::eval()
 	std::list<MainPlayerClass*> players;
 	float shortestDist = 100; //the radar / 'sight' distance the AI can detect
 	float currDist;
-	int targetIdx;
+	int targetIdx = 0;
 	D3DXVECTOR3 target;
 
 	for (std::list<MainPlayerClass*>::const_iterator pi = players.begin(); pi != players.end(); ++pi)
@@ -142,7 +142,7 @@ D3DXVECTOR3 FSM::evalSeek()
 
 // Sets the x and y bounds in which the AI can move around.
 // Always set bounds of movement of AI by calling this function, otherwise it won't move.
-void AIPlayer::SetBounds(D3DXVECTOR3 pos)
+void AIPlayer::SetBounds(D3DXVECTOR3* pos)
 {
    // Bounds of movement for ship
    float xzBound = 60;
@@ -169,6 +169,8 @@ void AIPlayer::Update(float timeDelta)
    
    if(KeepInBounds(hWnd))
    { 
+      Seek(target);
+      /*
 	   switch(_fsm.getCurrentState())
 	   {
 		case FLEE:
@@ -183,11 +185,10 @@ void AIPlayer::Update(float timeDelta)
 		case SEEK:
 			Seek(target);
 			break;
-	   }
+	   }*/
    }
 
    MainPlayerClass::Update(timeDelta);
-
 }
 
 // Returns true if the ship is inside the bounds.
@@ -384,11 +385,11 @@ void AIPlayer::Seek(D3DXVECTOR3 enemyPos) {
    angle = atan2(getDirectionVector().y, getDirectionVector().z);
    Rotate2DvectorYZ(&d2, angle);
    
-   angle2 = atan2(0, 1.0f) - atan2(d2.y, d2.z);
+   angle2 = atan2(d2.y, d2.z) - atan2(0, 1.0f);
    if(angle2 > off)
-      up(true);
-   else if(angle2 < -off)
       down(true);
+   else if(angle2 < -off)
+      up(true);
    else
    {
       up(false);
