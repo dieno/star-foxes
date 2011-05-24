@@ -535,8 +535,15 @@ int directXClass::GameLoop(float timeDelta) {
 			camera.Update(timeDelta);//reset();
 			UpdateHUD();
 
+         for (int i = 1; i < 8; i++)
+			{
+				if (program->currentPlayers[i] != NULL) {
+					program->currentPlayers[i]->Update(timeDelta);
+				}
+			}
+
 			//directXClass::SetError(TEXT("p1: %f"), player1.getPositionZ());
-			for (std::list<AIPlayer*>::const_iterator ci = _aiPlayer.begin(); ci != _aiPlayer.end(); ++ci)
+/*			for (std::list<AIPlayer*>::const_iterator ci = _aiPlayer.begin(); ci != _aiPlayer.end(); ++ci)
 			{
 				//directXClass::SetError(TEXT("p1: %f"), player1.getRotation().z); 
 				//(*ci)->bankLeft(0.01f);
@@ -547,7 +554,7 @@ int directXClass::GameLoop(float timeDelta) {
 				// (*ci)->updateRotation();
 				//(*ci)->updatePosition();
             
-			}
+			}*/
 			//_aiPlayer.front()->bankLeft(0.01f);
 			//_aiplayer1.bankLeft(0.01f);
 			//player2.(0.01f);
@@ -659,12 +666,12 @@ int directXClass::Render(){
 		//SetupMatrices(true);
 
 		//drawCubes();
-        _chat.RenderChat();
+      _chat.RenderChat();
       
-      for (std::list<AIPlayer*>::const_iterator ci = _aiPlayer.begin(); ci != _aiPlayer.end(); ++ci)
+/*      for (std::list<AIPlayer*>::const_iterator ci = _aiPlayer.begin(); ci != _aiPlayer.end(); ++ci)
       {
          (*ci)->drawSelf();
-      }		
+      }		*/
 		// End the scene
 		g_pDevice->EndScene();
 	}
@@ -1693,11 +1700,12 @@ MainPlayerClass directXClass::shipBuilder(EShipType sType, EPlayerType pType, in
 					std::wstring(wszBuff, 256), _wtoi(wszBuff2), _wtoi(wszBuff3), (pIdx-1));
 			break;
 		case AI:
-			return AIPlayer(
+			      return AIPlayer(
 					StandardShipClass(program->g_pMesh, program->g_pMeshMaterials, program->g_pMeshTextures,
 					program->g_dwNumMaterials, g_pDevice),
 					std::wstring(wszBuff, 256), _wtoi(wszBuff2), _wtoi(wszBuff3), &program->_gamestate, (pIdx-1));
-			break;
+			
+         break;
 		}		
 		break;
 	case LIGHT:
@@ -1736,6 +1744,66 @@ MainPlayerClass directXClass::shipBuilder(EShipType sType, EPlayerType pType, in
 	}
 }
 
+MainPlayerClass* directXClass::shipBuilder2(MainPlayerClass* player, EShipType sType, EPlayerType pType, int pIdx, HWND hwnd, WCHAR wszBuff[256], WCHAR wszBuff2[1], WCHAR wszBuff3[2])
+{
+	switch(sType)
+	{
+	case STANDARD:
+		switch(pType)
+		{
+		case HUMAN:
+			/*return HumanPlayerClass(
+					StandardShipClass(program->g_pMesh, program->g_pMeshMaterials, program->g_pMeshTextures,
+					program->g_dwNumMaterials, g_pDevice),
+					std::wstring(wszBuff, 256), _wtoi(wszBuff2), _wtoi(wszBuff3), (pIdx-1));*/
+			break;
+		case AI:
+			      return new AIPlayer(
+					StandardShipClass(program->g_pMesh, program->g_pMeshMaterials, program->g_pMeshTextures,
+					program->g_dwNumMaterials, g_pDevice),
+					std::wstring(wszBuff, 256), _wtoi(wszBuff2), _wtoi(wszBuff3), &program->_gamestate, (pIdx-1));
+			
+         break;
+		}		
+		break;
+	/*case LIGHT:
+		switch(pType)
+		{
+		case HUMAN:
+			return HumanPlayerClass(
+					LightShipClass(program->g_pMeshLight, program->g_pMeshMaterialsLight, program->g_pMeshTexturesLight,
+					program->g_dwNumMaterialsLight, g_pDevice),
+					std::wstring(wszBuff, 256), _wtoi(wszBuff2), _wtoi(wszBuff3), (pIdx-1));
+			break;
+		case AI:
+			return AIPlayer(
+					LightShipClass(program->g_pMeshLight, program->g_pMeshMaterialsLight, program->g_pMeshTexturesLight,
+					program->g_dwNumMaterialsLight, g_pDevice),
+					std::wstring(wszBuff, 256), _wtoi(wszBuff2), _wtoi(wszBuff3), &program->_gamestate, (pIdx-1));
+			break;
+		}
+
+	case HEAVY:
+		switch(pType)
+		{
+		case HUMAN:
+			return HumanPlayerClass(
+					HeavyShipClass(program->g_pMeshHeavy, program->g_pMeshMaterialsHeavy, program->g_pMeshTexturesHeavy,
+					program->g_dwNumMaterialsHeavy, g_pDevice),
+					std::wstring(wszBuff, 256), _wtoi(wszBuff2), _wtoi(wszBuff3), (pIdx-1));
+			break;
+		case AI:
+			return AIPlayer(
+					HeavyShipClass(program->g_pMeshHeavy, program->g_pMeshMaterialsHeavy, program->g_pMeshTexturesHeavy,
+					program->g_dwNumMaterialsHeavy, g_pDevice),
+					std::wstring(wszBuff, 256), _wtoi(wszBuff2), _wtoi(wszBuff3), &program->_gamestate, (pIdx-1));
+			break;
+		}
+      */
+	}
+   return NULL;
+}
+
 BOOL CALLBACK directXClass::startDialog (HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam){
 	static int player1ShipClass; //0 = standard 1 = light 2 = heavy
 	static int player1TypeAIClosedHuman; //0 = Human 1 = AI 2 = closed
@@ -1754,7 +1822,7 @@ BOOL CALLBACK directXClass::startDialog (HWND hwnd, UINT msg, WPARAM wParam, LPA
 	static int player8ShipClass; //0 = standard 1 = light 2 = heavy
 	static int player8TypeAIClosedHuman; //0 = Human 1 = AI 2 = closed
 	static MainPlayerClass player1;
-	static MainPlayerClass player2;
+	static MainPlayerClass* player2;
 	static MainPlayerClass player3;
 	static MainPlayerClass player4;
 	static MainPlayerClass player5;
@@ -1806,24 +1874,32 @@ BOOL CALLBACK directXClass::startDialog (HWND hwnd, UINT msg, WPARAM wParam, LPA
 							SendMessage(GetDlgItem(hwnd,IDC_COMBO5), WM_GETTEXT, 256, (LPARAM)wszBuff3);
 							SendMessage(GetDlgItem(hwnd,IDC_COMBO4), WM_GETTEXT, 256, (LPARAM)wszBuff2);
 
-							player2 = shipBuilder(STANDARD, AI, 2, hwnd, wszBuff, wszBuff2, wszBuff3);
-							program->currentPlayers[1] = &player2;
+                     player2 = (MainPlayerClass*)malloc(sizeof(AIPlayer));
+							player2 = shipBuilder2(NULL, STANDARD, AI, 2, hwnd, wszBuff, wszBuff2, wszBuff3);
+                     player2->GetShip()->SetPosition(0, 10, 50);
+	                  player2->GetShip()->SetRotation(0, D3DX_PI, 0);
+	                  player2->GetShip()->Update(2);
+	                  player2->GetShip()->SetRotation(0, 0, 0);
+	                  //ai1.SetRotation(0, D3DX_PI, 0);
+	                  //ai1.SetBehaviour(SEEK);
+	                  player2->SetBounds(NULL);   
+							program->currentPlayers[1] = player2;
 						}
 						if (player2ShipClass == 1) {
 							SendMessage(GetDlgItem(hwnd,IDC_COMBO6), WM_GETTEXT, 256, (LPARAM)wszBuff);
 							SendMessage(GetDlgItem(hwnd,IDC_COMBO5), WM_GETTEXT, 256, (LPARAM)wszBuff3);
 							SendMessage(GetDlgItem(hwnd,IDC_COMBO4), WM_GETTEXT, 256, (LPARAM)wszBuff2);
 
-							player2 = shipBuilder(LIGHT, AI, 2, hwnd, wszBuff, wszBuff2, wszBuff3);
-							program->currentPlayers[1] = &player2;
+							//player2 = shipBuilder(LIGHT, AI, 2, hwnd, wszBuff, wszBuff2, wszBuff3);
+							//program->currentPlayers[1] = &player2;
 						}
 						if (player2ShipClass == 2) {
 							SendMessage(GetDlgItem(hwnd,IDC_COMBO6), WM_GETTEXT, 256, (LPARAM)wszBuff);
 							SendMessage(GetDlgItem(hwnd,IDC_COMBO5), WM_GETTEXT, 256, (LPARAM)wszBuff3);
 							SendMessage(GetDlgItem(hwnd,IDC_COMBO4), WM_GETTEXT, 256, (LPARAM)wszBuff2);
 
-							player2 = shipBuilder(HEAVY, AI, 2, hwnd, wszBuff, wszBuff2, wszBuff3);
-							program->currentPlayers[1] = &player2;
+							//player2 = shipBuilder(HEAVY, AI, 2, hwnd, wszBuff, wszBuff2, wszBuff3);
+							//program->currentPlayers[1] = &player2;
 						}
 					}
 					if (player2TypeAIClosedHuman == 2) {
