@@ -292,7 +292,7 @@ int directXClass::GameInit(){
 	mainTerrain.setupBuildings();
 
 	static D3DMATERIAL9* mat1 = new D3DMATERIAL9;
-	dummyAI2 = StandardShipClass(g_pMesh, mat1, g_pMeshTextures, 1, g_pDevice);
+	/*dummyAI2 = StandardShipClass(g_pMesh, mat1, g_pMeshTextures, 1, g_pDevice);
 	static AIPlayer ai1 = AIPlayer(dummyAI2, name, 0, 1, &program->_gamestate, 8);
 	//ai1.GetShip()->setTranslation(10, 10, 10);   
 	ai1.GetShip()->SetPosition(0, 10, 50);
@@ -304,7 +304,7 @@ int directXClass::GameInit(){
 	ai1.SetBounds(ai1.getPosition());   
    ai1.initProjectiles(program->g_pMeshLaser, program->g_pMeshMaterialsLaser, program->g_pMeshTexturesLaser, program->g_dwNumMaterialsLaser);
 	//ai1.GetShip()->SetMtrlColor(D3DXCOLOR(0, 255.0f, 0, 255.0f), D3DXCOLOR(0, 255.0f, 0, 255.0f), D3DXCOLOR(0, 255.0f, 0, 255.0f));
-   
+  
 	//ai1.updatePosition(1);
 
 	//static D3DMATERIAL9* mat2 = new D3DMATERIAL9;
@@ -338,7 +338,7 @@ int directXClass::GameInit(){
 	_aiPlayer.push_back(&ai3);
 	_aiPlayer.push_back(&ai4);*/
    
-	//player2 = MainPlayerClass("Dummy",0, 1, dummyAI);
+	//player2 = MainPlayerClass("Dummy",0, 1, dummyAI); */
    
 	if(FAILED(r)){//FAILED is a macro that returns false if return value is a failure - safer than using value itself
 		SetError(TEXT("Initialization of the device failed"));
@@ -1681,10 +1681,6 @@ void directXClass::setupLights()
 */
 MainPlayerClass directXClass::shipBuilder(EShipType sType, EPlayerType pType, int pIdx, HWND hwnd, WCHAR wszBuff[256], WCHAR wszBuff2[1], WCHAR wszBuff3[2])
 {
-	SendMessage(GetDlgItem(hwnd,IDC_COMBO3), WM_GETTEXT, 256, (LPARAM)wszBuff);
-	SendMessage(GetDlgItem(hwnd,IDC_COMBO2), WM_GETTEXT, 256, (LPARAM)wszBuff3);
-	SendMessage(GetDlgItem(hwnd,IDC_COMBO1), WM_GETTEXT, 256, (LPARAM)wszBuff2);
-
 	switch(sType)
 	{
 	case STANDARD:
@@ -1779,29 +1775,53 @@ BOOL CALLBACK directXClass::startDialog (HWND hwnd, UINT msg, WPARAM wParam, LPA
 				case IDOK:
 					if (player1TypeAIClosedHuman == 0) {
 						if (player1ShipClass == 0) {
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO3), WM_GETTEXT, 256, (LPARAM)wszBuff);
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO2), WM_GETTEXT, 256, (LPARAM)wszBuff3);
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO1), WM_GETTEXT, 256, (LPARAM)wszBuff2);
+
 							player1 = shipBuilder(STANDARD, HUMAN, 1, hwnd, wszBuff, wszBuff2, wszBuff3);
 							program->currentPlayers[0] = &player1;
 						}
 						if (player1ShipClass == 1) {
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO3), WM_GETTEXT, 256, (LPARAM)wszBuff);
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO2), WM_GETTEXT, 256, (LPARAM)wszBuff3);
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO1), WM_GETTEXT, 256, (LPARAM)wszBuff2);
+
 							player1 = shipBuilder(LIGHT, HUMAN, 1, hwnd, wszBuff, wszBuff2, wszBuff3);
 							program->currentPlayers[0] = &player1;
 						}
 						if (player1ShipClass == 2) {
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO3), WM_GETTEXT, 256, (LPARAM)wszBuff);
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO2), WM_GETTEXT, 256, (LPARAM)wszBuff3);
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO1), WM_GETTEXT, 256, (LPARAM)wszBuff2);
+
 							player1 = shipBuilder(HEAVY, HUMAN, 1, hwnd, wszBuff, wszBuff2, wszBuff3);
 							program->currentPlayers[0] = &player1;
 						}
 					}
 			
 					if (player2TypeAIClosedHuman == 1) {
-						if (player2ShipClass == 0) {					
+						if (player2ShipClass == 0) {		
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO6), WM_GETTEXT, 256, (LPARAM)wszBuff);
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO5), WM_GETTEXT, 256, (LPARAM)wszBuff3);
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO4), WM_GETTEXT, 256, (LPARAM)wszBuff2);
+
 							player2 = shipBuilder(STANDARD, AI, 2, hwnd, wszBuff, wszBuff2, wszBuff3);
 							program->currentPlayers[1] = &player2;
 						}
 						if (player2ShipClass == 1) {
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO6), WM_GETTEXT, 256, (LPARAM)wszBuff);
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO5), WM_GETTEXT, 256, (LPARAM)wszBuff3);
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO4), WM_GETTEXT, 256, (LPARAM)wszBuff2);
+
 							player2 = shipBuilder(LIGHT, AI, 2, hwnd, wszBuff, wszBuff2, wszBuff3);
 							program->currentPlayers[1] = &player2;
 						}
 						if (player2ShipClass == 2) {
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO6), WM_GETTEXT, 256, (LPARAM)wszBuff);
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO5), WM_GETTEXT, 256, (LPARAM)wszBuff3);
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO4), WM_GETTEXT, 256, (LPARAM)wszBuff2);
+
 							player2 = shipBuilder(HEAVY, AI, 2, hwnd, wszBuff, wszBuff2, wszBuff3);
 							program->currentPlayers[1] = &player2;
 						}
@@ -1810,15 +1830,27 @@ BOOL CALLBACK directXClass::startDialog (HWND hwnd, UINT msg, WPARAM wParam, LPA
 						program->currentPlayers[1] = NULL;
 					}
 					if (player3TypeAIClosedHuman == 1) {
-						if (player3ShipClass == 0) {							
+						if (player3ShipClass == 0) {		
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO9), WM_GETTEXT, 256, (LPARAM)wszBuff);
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO8), WM_GETTEXT, 256, (LPARAM)wszBuff3);
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO7), WM_GETTEXT, 256, (LPARAM)wszBuff2);
+
 							player3 = shipBuilder(STANDARD, AI, 3, hwnd, wszBuff, wszBuff2, wszBuff3);
 							program->currentPlayers[2] = &player3;
 						}
 						if (player3ShipClass == 1) {
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO9), WM_GETTEXT, 256, (LPARAM)wszBuff);
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO8), WM_GETTEXT, 256, (LPARAM)wszBuff3);
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO7), WM_GETTEXT, 256, (LPARAM)wszBuff2);
+
 							player3 = shipBuilder(LIGHT, AI, 3, hwnd, wszBuff, wszBuff2, wszBuff3);
 							program->currentPlayers[2] = &player3;
 						}
 						if (player3ShipClass == 2) {
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO9), WM_GETTEXT, 256, (LPARAM)wszBuff);
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO8), WM_GETTEXT, 256, (LPARAM)wszBuff3);
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO7), WM_GETTEXT, 256, (LPARAM)wszBuff2);
+
 							player3 = shipBuilder(HEAVY, AI, 3, hwnd, wszBuff, wszBuff2, wszBuff3);
 							program->currentPlayers[2] = &player3;
 						}
@@ -1828,14 +1860,26 @@ BOOL CALLBACK directXClass::startDialog (HWND hwnd, UINT msg, WPARAM wParam, LPA
 					}
 					if (player4TypeAIClosedHuman == 1) {
 						if (player4ShipClass == 0) {
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO12), WM_GETTEXT, 256, (LPARAM)wszBuff);
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO11), WM_GETTEXT, 256, (LPARAM)wszBuff3);
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO10), WM_GETTEXT, 256, (LPARAM)wszBuff2);
+
 							player4 = shipBuilder(STANDARD, AI, 4, hwnd, wszBuff, wszBuff2, wszBuff3);
 							program->currentPlayers[3] = &player4;
 						}
 						if (player3ShipClass == 1) {
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO12), WM_GETTEXT, 256, (LPARAM)wszBuff);
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO11), WM_GETTEXT, 256, (LPARAM)wszBuff3);
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO10), WM_GETTEXT, 256, (LPARAM)wszBuff2);
+
 							player4 = shipBuilder(LIGHT, AI, 4, hwnd, wszBuff, wszBuff2, wszBuff3);
 							program->currentPlayers[3] = &player4;
 						}
 						if (player4ShipClass == 2) {
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO12), WM_GETTEXT, 256, (LPARAM)wszBuff);
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO11), WM_GETTEXT, 256, (LPARAM)wszBuff3);
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO10), WM_GETTEXT, 256, (LPARAM)wszBuff2);
+
 							player4 = shipBuilder(HEAVY, AI, 4, hwnd, wszBuff, wszBuff2, wszBuff3);
 							program->currentPlayers[3] = &player4;
 						}
@@ -1845,14 +1889,26 @@ BOOL CALLBACK directXClass::startDialog (HWND hwnd, UINT msg, WPARAM wParam, LPA
 					}
 					if (player5TypeAIClosedHuman == 1) {
 						if (player5ShipClass == 0) {
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO15), WM_GETTEXT, 256, (LPARAM)wszBuff);
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO14), WM_GETTEXT, 256, (LPARAM)wszBuff3);
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO13), WM_GETTEXT, 256, (LPARAM)wszBuff2);
+
 							player5 = shipBuilder(STANDARD, AI, 5, hwnd, wszBuff, wszBuff2, wszBuff3);
 							program->currentPlayers[4] = &player5;
 						}
 						if (player5ShipClass == 1) {
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO15), WM_GETTEXT, 256, (LPARAM)wszBuff);
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO14), WM_GETTEXT, 256, (LPARAM)wszBuff3);
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO13), WM_GETTEXT, 256, (LPARAM)wszBuff2);
+
 							player5 = shipBuilder(LIGHT, AI, 5, hwnd, wszBuff, wszBuff2, wszBuff3);
 							program->currentPlayers[4] = &player5;
 						}
 						if (player5ShipClass == 2) {
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO15), WM_GETTEXT, 256, (LPARAM)wszBuff);
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO14), WM_GETTEXT, 256, (LPARAM)wszBuff3);
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO13), WM_GETTEXT, 256, (LPARAM)wszBuff2);
+
 							player5 = shipBuilder(HEAVY, AI, 5, hwnd, wszBuff, wszBuff2, wszBuff3);
 							program->currentPlayers[4] = &player5;
 						}
@@ -1862,14 +1918,26 @@ BOOL CALLBACK directXClass::startDialog (HWND hwnd, UINT msg, WPARAM wParam, LPA
 					}
 					if (player6TypeAIClosedHuman == 1) {
 						if (player6ShipClass == 0) {
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO18), WM_GETTEXT, 256, (LPARAM)wszBuff);
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO17), WM_GETTEXT, 256, (LPARAM)wszBuff3);
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO16), WM_GETTEXT, 256, (LPARAM)wszBuff2);
+
 							player6 = shipBuilder(STANDARD, AI, 6, hwnd, wszBuff, wszBuff2, wszBuff3);
 							program->currentPlayers[5] = &player6;
 						}
 						if (player6ShipClass == 1) {
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO18), WM_GETTEXT, 256, (LPARAM)wszBuff);
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO17), WM_GETTEXT, 256, (LPARAM)wszBuff3);
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO16), WM_GETTEXT, 256, (LPARAM)wszBuff2);
+
 							player6 = shipBuilder(LIGHT, AI, 6, hwnd, wszBuff, wszBuff2, wszBuff3);
 							program->currentPlayers[5] = &player6;
 						}
 						if (player6ShipClass == 2) {
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO18), WM_GETTEXT, 256, (LPARAM)wszBuff);
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO17), WM_GETTEXT, 256, (LPARAM)wszBuff3);
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO16), WM_GETTEXT, 256, (LPARAM)wszBuff2);
+
 							player6 = shipBuilder(HEAVY, AI, 6, hwnd, wszBuff, wszBuff2, wszBuff3);
 							program->currentPlayers[5] = &player6;
 						}
@@ -1879,14 +1947,26 @@ BOOL CALLBACK directXClass::startDialog (HWND hwnd, UINT msg, WPARAM wParam, LPA
 					}
 					if (player7TypeAIClosedHuman == 1) {
 						if (player7ShipClass == 0) {
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO21), WM_GETTEXT, 256, (LPARAM)wszBuff);
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO20), WM_GETTEXT, 256, (LPARAM)wszBuff3);
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO19), WM_GETTEXT, 256, (LPARAM)wszBuff2);
+
 							player7 = shipBuilder(STANDARD, AI, 7, hwnd, wszBuff, wszBuff2, wszBuff3);
 							program->currentPlayers[6] = &player7;
 						}
 						if (player7ShipClass == 1) {
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO21), WM_GETTEXT, 256, (LPARAM)wszBuff);
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO20), WM_GETTEXT, 256, (LPARAM)wszBuff3);
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO19), WM_GETTEXT, 256, (LPARAM)wszBuff2);
+
 							player7 = shipBuilder(LIGHT, AI, 7, hwnd, wszBuff, wszBuff2, wszBuff3);
 							program->currentPlayers[6] = &player7;
 						}
 						if (player7ShipClass == 2) {
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO21), WM_GETTEXT, 256, (LPARAM)wszBuff);
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO20), WM_GETTEXT, 256, (LPARAM)wszBuff3);
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO19), WM_GETTEXT, 256, (LPARAM)wszBuff2);
+
 							player7 = shipBuilder(HEAVY, AI, 7, hwnd, wszBuff, wszBuff2, wszBuff3);
 							program->currentPlayers[6] = &player7;
 						}
@@ -1896,14 +1976,26 @@ BOOL CALLBACK directXClass::startDialog (HWND hwnd, UINT msg, WPARAM wParam, LPA
 					}
 					if (player8TypeAIClosedHuman == 1) {
 						if (player8ShipClass == 0) {
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO24), WM_GETTEXT, 256, (LPARAM)wszBuff);
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO23), WM_GETTEXT, 256, (LPARAM)wszBuff3);
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO22), WM_GETTEXT, 256, (LPARAM)wszBuff2);
+
 							player8 = shipBuilder(STANDARD, AI, 8, hwnd, wszBuff, wszBuff2, wszBuff3);
 							program->currentPlayers[7] = &player8;
 						}
 						if (player8ShipClass == 1) {
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO24), WM_GETTEXT, 256, (LPARAM)wszBuff);
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO23), WM_GETTEXT, 256, (LPARAM)wszBuff3);
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO22), WM_GETTEXT, 256, (LPARAM)wszBuff2);
+
 							player8 = shipBuilder(LIGHT, AI, 8, hwnd, wszBuff, wszBuff2, wszBuff3);
 							program->currentPlayers[7] = &player8;
 						}
 						if (player8ShipClass == 2) {
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO24), WM_GETTEXT, 256, (LPARAM)wszBuff);
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO23), WM_GETTEXT, 256, (LPARAM)wszBuff3);
+							SendMessage(GetDlgItem(hwnd,IDC_COMBO22), WM_GETTEXT, 256, (LPARAM)wszBuff2);
+
 							player8 = shipBuilder(HEAVY, AI, 8, hwnd, wszBuff, wszBuff2, wszBuff3);
 							program->currentPlayers[7] = &player8;
 						}

@@ -4,6 +4,5 @@
 #include "input.h"
 #include "point.h"
 #include "meshStruct.h"
-#include "boundingBox.h"
 
 #endif
