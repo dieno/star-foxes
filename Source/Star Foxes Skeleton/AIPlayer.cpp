@@ -4,11 +4,132 @@
 
 using namespace std;
 
-// Sets the behaviour of the AI: Flee, attack, wander, seek.
-void AIPlayer::SetBehaviour(EBehaviour beh)
+void FSM::setCurrentState(EState _state)
 {
-   _behave = beh;   
+   currentState = _state;   
 }
+
+
+string FSM::getCurrentStateName()
+{
+	switch(currentState){
+		case FLEE:
+			return "FSM // Current State: Fleeing";
+			break;
+		case WAND:
+			return "FSM // Current State: Wandering";
+			break;
+		case ATCK:
+			return "FSM // Current State: Attacking";
+			break;
+		case SEEK:
+			return "FSM // Current State: Seeking";
+			break;
+		default:
+			return "FSM // ERROR - Unable to evaluate current state";
+	}
+}
+
+EState FSM::getCurrentState() 
+{
+	return currentState;
+}
+
+float FSM::evalDistToTarget(D3DXVECTOR3 target, D3DXVECTOR3 origin)
+{
+	float dist;
+	D3DXVECTOR3 res;
+	res = target - origin;
+	dist = sqrt(res.x*res.x + res.y*res.y + res.z*res.z);
+   
+   res.x /= dist; // need to do this reflection first
+   res.y /= dist; // Setting univector from this ship to enemy position.
+   res.z /= dist;
+
+   return dist;
+}
+
+
+/*
+	Call appropriate evaluation function depending on current state.
+*/
+D3DXVECTOR3 FSM::eval()
+{
+	std::list<MainPlayerClass*> players;
+	float shortestDist = 100; //the radar / 'sight' distance the AI can detect
+	float currDist;
+
+	for (std::list<MainPlayerClass*>::const_iterator pi = players.begin(); pi != players.end(); ++pi)
+	{
+		/*
+		if((*pi) != NULL && (*pi)->getInd()) {
+			currDist = evalDistToTarget((*pi)->getPosition(), gamestate->getPlayer(getControllerComp());
+			if(currDist < shortestDist) {
+				shortestDist = currDist;
+			}
+		}  
+		*/
+	}
+
+	/*
+	switch(currentState){
+		case FLEE:
+			evalFlee();
+			break;
+		case WAND:
+			evalWander();
+			break;
+		case ATCK:
+			evalAttack();
+			break;
+		case SEEK:
+			evalSeek();
+			break;
+	}
+	*/
+	D3DXVECTOR3 tmp;
+	return tmp;
+}
+
+/*
+	Evaluate gamestate and determine transition (if any) when current state is FLEE. 
+*/
+D3DXVECTOR3 FSM::evalFlee()
+{
+	D3DXVECTOR3 tmp;
+	return tmp;
+}
+
+/*
+	Evaluate gamestate and determine transition (if any) when current state is WAND. 
+*/
+D3DXVECTOR3 FSM::evalWander()
+{
+	D3DXVECTOR3 tmp;
+	return tmp;
+}
+
+/*
+	Evaluate gamestate and determine transition (if any) when current state is ATCK. 
+*/
+D3DXVECTOR3 FSM::evalAttack()
+{
+	D3DXVECTOR3 tmp;
+	return tmp;
+}
+
+/*
+	Evaluate gamestate and determine transition (if any) when current state is SEEK. 
+*/
+D3DXVECTOR3 FSM::evalSeek()
+{
+	D3DXVECTOR3 tmp;
+	return tmp;
+}
+
+
+//------------------------------------------------------------
+
 
 // Sets the x and y bounds in which the AI can move around.
 // Always set bounds of movement of AI by calling this function, otherwise it won't move.
@@ -32,38 +153,32 @@ void AIPlayer::SetBounds(D3DXVECTOR3 pos)
 
 // Heart of the AI. Updates AI behaviour.
 // TODO: Behaviour evaluator to evaluate what behaviour to activate.
-void AIPlayer::Update(HWND hWnd, D3DXVECTOR3 targetpos, float timeDelta)
+void AIPlayer::Update(float timeDelta)
 {
+	D3DXVECTOR3 target = _fsm.eval();
+   HWND hWnd = _fsm.getGameState()->getHWND();
    
-   Move(hWnd, FWRD, NULL); // AI has constant forward movement
-   //shoot(timeDelta);
-   D3DXVECTOR3 meToTarget;
-   float dist;
-   GetMeToPosVector(&targetpos, &meToTarget, &dist);
-   Shoot(&getDirectionVector(), &meToTarget, &timeDelta);
-   //static int height;
-   /*switch(_behave)
-   {
-   case FLEE:
-      Flee(hWnd, pos);
-      break;
-   case SEEK:
-	  Seek(pos);
-	  break;
-   default:
-      Wander(hWnd);
-      break;
-   }*/
    if(KeepInBounds(hWnd))
    { 
-      //down(false);
-      //Flee(hWnd, pos);
-      //Wander(hWnd);
-      Seek(targetpos);
+	   switch(_fsm.getCurrentState())
+	   {
+		case FLEE:
+			Flee(hWnd, target);
+			break;
+		case WAND:
+			Wander(hWnd);
+			break;
+		case ATCK:
+			//Attack();
+			break;
+		case SEEK:
+			Seek(target);
+			break;
+	   }
    }
+
    MainPlayerClass::Update(timeDelta);
-   //Update(
-   //Wander(hWnd);
+
 }
 
 // Returns true if the ship is inside the bounds.
@@ -106,20 +221,16 @@ void AIPlayer::Wander(HWND hWnd)
    bool thing = false;
 
    if(_mv->count <= 0 )
-   {
-      this->down(false);
-      this->up(false);
-      this->right(false);
-      this->left(false);
+   {  
       _mv->count = std::rand() % 20;
       _mv->dir =  std::rand() % 12;
       if(_mv->dir > 8)
          _mv->dir = 8;
-      if(_mv->dir == FWRD )
+      if(_mv->dir == UP )
          _mv->count *= 5;
    }   
 
-   Move(hWnd, _mv->dir, NULL);
+   Move(hWnd, _mv->dir, &thing);
    _mv->count--;
 }
 
@@ -127,6 +238,8 @@ void AIPlayer::Wander(HWND hWnd)
 // param pos: the location in screen to flee from.
 void AIPlayer::Flee(HWND hWnd, D3DXVECTOR3 pos)
 {
+   float x = pos.x - getPositionX();
+   float y = pos.y - getPositionY();
    // getting vector from this ship position to enemy position.
    D3DXVECTOR3 vpos = D3DXVECTOR3(pos.x - getPositionVector().x,
       pos.y - getPositionVector().y,
@@ -192,25 +305,22 @@ EDir AIPlayer::Move(HWND hWnd, int dir, bool *outbound)
    case RGHT: //3
       this->right(true);//this->right(0.05f);
       return RGHT;
-   case UPRGHT: //4
+   case UPRGHT:
       Move(hWnd, UP, NULL);
       Move(hWnd, RGHT, NULL);
       return UPRGHT;
-   case UPLEFT: //5
+   case UPLEFT:
       Move(hWnd, UP, NULL);
       Move(hWnd, LFT, NULL);
       return UPLEFT;
-   case DWNRGHT: //6
+   case DWNRGHT:
       Move(hWnd, DWN, NULL);
       Move(hWnd, RGHT, NULL);
       return DWNRGHT;
-   case DWNLFT: //7
+   case DWNLFT:
       Move(hWnd, DWN, NULL);
       Move(hWnd, LFT, NULL);
       return DWNLFT;
-   case FWRD: //8
-      this->boost(true);
-      return FWRD;
    default:
       left(false);
       right(false);
@@ -303,6 +413,7 @@ void AIPlayer::Rotate2DvectorYZ(D3DXVECTOR3* pV2, float angle)
 	return;
 }
 
+/*
 void AIPlayer::SeekIra(D3DXVECTOR3 enemyPos) {
 
    float x = getPositionVector().x;//getPositionX();
@@ -325,18 +436,9 @@ void AIPlayer::SeekIra(D3DXVECTOR3 enemyPos) {
       //this->left(false);
 		//directXClass::SetError(TEXT("SEEK: Moving [right] | from %f | to %f"), x, enemyPos.x);  
 	}
-   
-	if((enemyPos.y > y) && (offset)) {
-		this->down(true);//this->bankDown(0.02f);
-      //this->up(false);
-		//directXClass::SetError(TEXT("SEEK: Moving [down] | from %f | to %f"), z, enemyPos.z);  
-	} else if((enemyPos.y < y) && (offset)){
-		this->up(true);	//this->bankUp(0.02f);	
-		//this->down(false);
-      //directXClass::SetError(TEXT("SEEK: Moving [up] | from %f | to %f"), z, enemyPos.z);  
-	}
 
 }
+*/
 
 // Straightens the ship setting it with an slight up-direction.
 bool AIPlayer::StraightenUp()
@@ -386,12 +488,18 @@ bool AIPlayer::StraightenDown()
    }
 }
 
-void AIPlayer::Shoot(D3DXVECTOR3* mydir, D3DXVECTOR3* target, float* timeDelta)
+void AIPlayer::Shoot(D3DXVECTOR3 target, float* timeDelta)
 {
-   D3DXVECTOR3 diff = *mydir - *target;
-   if(abs(diff.x) < _shootArea.x && 
-      abs(diff.y) < _shootArea.y)
-      MainPlayerClass::shoot(*timeDelta);
+	D3DXVECTOR3 dist;
+	float fDist;
+	GetMeToPosVector(&target, &dist, &fDist);
+
+	D3DXVECTOR3	comp = getPositionVector();
+    D3DXVECTOR3 diff = comp - dist;
+
+    if(abs(diff.x) < _shootArea.x && abs(diff.y) < _shootArea.y) {
+       MainPlayerClass::shoot(*timeDelta);
+	}
 }
 
 // Gets a vector from this AI position to the position given in loc.

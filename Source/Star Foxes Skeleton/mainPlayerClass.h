@@ -147,7 +147,7 @@ public:
 		return id;
 	}
 
-	int setID(int newID) {
+	void setID(int newID) {
 		id = newID;
 	}
    
