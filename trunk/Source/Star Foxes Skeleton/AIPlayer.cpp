@@ -62,18 +62,23 @@ D3DXVECTOR3 FSM::eval()
 	std::list<MainPlayerClass*> players;
 	float shortestDist = 100; //the radar / 'sight' distance the AI can detect
 	float currDist;
+	int targetIdx;
+	D3DXVECTOR3 target;
 
 	for (std::list<MainPlayerClass*>::const_iterator pi = players.begin(); pi != players.end(); ++pi)
 	{
-
+		//Search through enemies until one is found within range. Begin seeking target.
 		if((*pi) != NULL && ((*pi)->getID() != getMasterIdx())) {
 			currDist = evalDistToTarget((*pi)->getPosition(), gamestate->getPlayer(getMasterIdx()).getPosition());
 			if(currDist < shortestDist) {
 				shortestDist = currDist;
+				targetIdx = (*pi)->getID();
+				setCurrentState(SEEK);
 			}
-		}  
-		
+		}  		
 	}
+
+	target = gamestate->getPlayer(targetIdx).getPosition();
 
 	/*
 	switch(currentState){
@@ -91,8 +96,8 @@ D3DXVECTOR3 FSM::eval()
 			break;
 	}
 	*/
-	D3DXVECTOR3 tmp;
-	return tmp;
+	
+	return target;
 }
 
 /*
