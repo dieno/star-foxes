@@ -18,16 +18,16 @@ string FSM::getCurrentStateName()
 {
 	switch(currentState){
 		case FLEE:
-			return "FSM // Current State: Fleeing";
+			return string("FSM // Current State: Fleeing");
 			break;
 		case WAND:
-			return "FSM // Current State: Wandering";
+			return string("FSM // Current State: Wandering");
 			break;
 		case ATCK:
-			return "FSM // Current State: Attacking";
+			return string("FSM // Current State: Attacking");
 			break;
 		case SEEK:
-			return "FSM // Current State: Seeking";
+			return string("FSM // Current State: Seeking");
 			break;
 		default:
 			return "FSM // ERROR - Unable to evaluate current state";
@@ -61,6 +61,8 @@ D3DXVECTOR3 FSM::eval()
 {
 	D3DXVECTOR3 target;
 	
+	directXClass::SetError(TEXT("FSM // Evaluating game state..."));
+
 	switch(currentState){
 		case FLEE:
 			target = evalFlee();
@@ -93,12 +95,27 @@ D3DXVECTOR3 FSM::evalFlee()
 */
 D3DXVECTOR3 FSM::evalWander()
 {
+	directXClass::SetError(TEXT("FSM // Evaluating WAND state..."));
+
 	std::list<MainPlayerClass*> players;
 	float shortestDist = RADAR_RADIUS; //the radar / 'sight' distance the AI can detect
 	float currDist;
 	int targetIdx;
 	D3DXVECTOR3 target;
+    MainPlayerClass* ePlayer;
+	int i = 0;
 
+ 	for (i = 0; i < 8; i++) {
+		if( ((ePlayer = gamestate->getPlayer(i)) != NULL) && (ePlayer->getID() != getMasterIdx())) {
+			currDist = evalDistToTarget(ePlayer->getPosition(), gamestate->getPlayer(getMasterIdx())->getPosition());
+			if(currDist < shortestDist) {
+				shortestDist = currDist;
+				targetIdx = ePlayer->getID();
+				setCurrentState(SEEK);
+			}
+		}
+	}
+	/*
 	for (std::list<MainPlayerClass*>::const_iterator pi = players.begin(); pi != players.end(); ++pi)
 	{
 		//Search through enemies until one is found within range. Begin seeking target.
@@ -111,10 +128,10 @@ D3DXVECTOR3 FSM::evalWander()
 			}
 		}  		
 	}
+	*/
 
-	targetIdx = 0;
    if(getCurrentState() == SEEK) {
-		target = gamestate->getPlayer(targetIdx).getPosition();
+		target = gamestate->getPlayer(targetIdx)->getPosition();
 	}
 
 	return target;
@@ -126,6 +143,8 @@ D3DXVECTOR3 FSM::evalWander()
 */
 D3DXVECTOR3 FSM::evalAttack()
 {
+	directXClass::SetError(TEXT("FSM // Evaluating ATCK state..."));
+
 	std::list<MainPlayerClass*> players;
 	float shortestDist = RADAR_RADIUS; //the radar / 'sight' distance the AI can detect
 	bool isShootingRange = false;
@@ -133,32 +152,32 @@ D3DXVECTOR3 FSM::evalAttack()
 	int targetIdx;
 	int lastTargetIdx;
 	D3DXVECTOR3 target;
+	MainPlayerClass* ePlayer;
+	int i = 0;
 
-	for (std::list<MainPlayerClass*>::const_iterator pi = players.begin(); pi != players.end(); ++pi)
-	{
-		//Search through enemies until one is found within range. Begin seeking target.
-		if((*pi) != NULL && ((*pi)->getID() != getMasterIdx())) {
-			shortestDist = evalDistToTarget((*pi)->getPosition(), gamestate->getPlayer(getMasterIdx()).getPosition());
+	for (int i = 0; i < 8; i++) {
+		if( ((ePlayer = gamestate->getPlayer(i)) != NULL) && (ePlayer->getID() != getMasterIdx())) {
+			shortestDist = evalDistToTarget(ePlayer->getPosition(), gamestate->getPlayer(getMasterIdx())->getPosition());
 			if(shortestDist < RADAR_RADIUS) {
-				targetIdx = (*pi)->getID();
+				targetIdx = ePlayer->getID();
 				if((shortestDist <= SHOOT_RANGE) && 
-					(gamestate->getPlayer(targetIdx).getShipCurrentHealth() 
-					< gamestate->getPlayer(lastTargetIdx).getShipCurrentHealth())) {
+					(gamestate->getPlayer(targetIdx)->getShipCurrentHealth() 
+					< gamestate->getPlayer(lastTargetIdx)->getShipCurrentHealth())) {
 					isShootingRange = true;
 				}
 			}
-			lastTargetIdx = (*pi)->getID();
+			lastTargetIdx = ePlayer->getID();
 		} 		
 	}
 
 	if(shortestDist == RADAR_RADIUS) {
 		setCurrentState(WAND);
 	}else if(isShootingRange) {
-		target = gamestate->getPlayer(targetIdx).getPosition();
+		target = gamestate->getPlayer(targetIdx)->getPosition();
 	}
 	else {
 		setCurrentState(SEEK);
-		target = gamestate->getPlayer(targetIdx).getPosition();
+		target = gamestate->getPlayer(targetIdx)->getPosition();
 	}
 
 	return target;
@@ -169,20 +188,23 @@ D3DXVECTOR3 FSM::evalAttack()
 */
 D3DXVECTOR3 FSM::evalSeek()
 {
+	directXClass::SetError(TEXT("FSM // Evaluating SEEK state..."));
+
 	std::list<MainPlayerClass*> players;
 	float shortestDist = RADAR_RADIUS; //the radar / 'sight' distance the AI can detect
 	float currDist;
 	int targetIdx;
 	D3DXVECTOR3 target;
+	MainPlayerClass* ePlayer;
+	int i = 0;
 
-	for (std::list<MainPlayerClass*>::const_iterator pi = players.begin(); pi != players.end(); ++pi)
-	{
-		//Search through enemies until one is found within range. Begin seeking target.
-		if((*pi) != NULL && ((*pi)->getID() != getMasterIdx())) {
-			currDist = evalDistToTarget((*pi)->getPosition(), gamestate->getPlayer(getMasterIdx()).getPosition());
+	//Search through enemies until one is found within range. Begin seeking target.
+	for (int i = 0; i < 8; i++) {
+		if( ((ePlayer = gamestate->getPlayer(i)) != NULL) && (ePlayer->getID() != getMasterIdx())) {
+			currDist = evalDistToTarget(ePlayer->getPosition(), gamestate->getPlayer(getMasterIdx())->getPosition());
 			if(currDist < shortestDist) {
 				shortestDist = currDist;
-				targetIdx = (*pi)->getID();
+				targetIdx = ePlayer->getID();
 			}
 		}  		
 	}
@@ -191,10 +213,10 @@ D3DXVECTOR3 FSM::evalSeek()
 		setCurrentState(WAND);
 	} else if(shortestDist <= SHOOT_RANGE) {
 		setCurrentState(ATCK);
-		target = gamestate->getPlayer(targetIdx).getPosition();
+		target = gamestate->getPlayer(targetIdx)->getPosition();
 	}
 	else {
-		target = gamestate->getPlayer(targetIdx).getPosition();
+		target = gamestate->getPlayer(targetIdx)->getPosition();
 	}
 
 	return target;
@@ -234,9 +256,7 @@ void AIPlayer::Update(float timeDelta)
 
    if(KeepInBounds(hWnd))
    { 
-      //Seek(target);
-      
-	   switch(_fsm.getCurrentState())
+	  switch(_fsm.getCurrentState())
 	   {
 		case FLEE:
 			Flee(hWnd, target);
@@ -250,7 +270,7 @@ void AIPlayer::Update(float timeDelta)
 		case SEEK:
 			Seek(target);
 			break;
-	   }
+	  }
    }
 
    MainPlayerClass::Update(timeDelta);

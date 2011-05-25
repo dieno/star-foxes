@@ -17,7 +17,7 @@ public:
 	void updateGameState(HWND hWnd, MainPlayerClass *enemy[]);
 
 	//Returns player at specified index.
-	MainPlayerClass getPlayer(int idx);
+	MainPlayerClass* getPlayer(int idx);
 
 	//Returns hWnd
 	HWND getHWND();

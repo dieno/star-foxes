@@ -7,8 +7,8 @@ void GameState::updateGameState(HWND hWnd, MainPlayerClass* enemy[]) {
 	}
 }
 
-MainPlayerClass GameState::getPlayer(int idx) {
-	return *players[idx];
+MainPlayerClass* GameState::getPlayer(int idx) {
+	return players[idx];
 }
 
 HWND GameState::getHWND() {
