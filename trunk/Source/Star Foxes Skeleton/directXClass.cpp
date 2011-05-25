@@ -301,6 +301,8 @@ int directXClass::GameInit(){
 	mainTerrain.SetMtrlColor(D3DXCOLOR(0.0f, 0.1f, 0.0f, 0.0f), D3DXCOLOR(0.0f, 0.1f, 0.0f, 0.0f), D3DXCOLOR(0, 0.1f, 0.0f, 0.0f));
 	mainTerrain.setupBuildings();
 
+	
+
 	static D3DMATERIAL9* mat1 = new D3DMATERIAL9;
 	/*dummyAI2 = StandardShipClass(g_pMesh, mat1, g_pMeshTextures, 1, g_pDevice);
 	static AIPlayer ai1 = AIPlayer(dummyAI2, name, 0, 1, &program->_gamestate, 8);
@@ -690,16 +692,22 @@ int directXClass::Render(){
 				currentPlayers[i]->drawSelf();
 			}
 		}
+
+		
 		//player2.drawSelf();
 		//SetupMatrices(true);
      
-		drawCubes();
+		//drawCubes();
+		
+		
+
       _chat.RenderChat();
-      
-/*      for (std::list<AIPlayer*>::const_iterator ci = _aiPlayer.begin(); ci != _aiPlayer.end(); ++ci)
+      /*
+      for (std::list<AIPlayer*>::const_iterator ci = _aiPlayer.begin(); ci != _aiPlayer.end(); ++ci)
       {
          (*ci)->drawSelf();
-      }		*/
+      }	*/
+		
 		// End the scene
         
         
@@ -1548,10 +1556,9 @@ bool directXClass::KeyDownChat(WPARAM wParam, HWND hWnd)
          return true;
       }
    }
-
+   
    return false;
 }
-
 //-----------------------------------------------------------------------------
 // Name: Cleanup()
 // Desc: Releases all previously initialized objects

@@ -4,6 +4,7 @@
 #include "directXHeader.h"
 #include "gamecore.h"
 #include "projectile.h"
+#include "boundingBox.h"
 
 #define Y_AXIS_INVERTED false
 #define SHOOT_SPEED 0.1f
@@ -38,6 +39,7 @@ public:
 		blinkStartTime(0),
 		isBlinkedOut(false){
          IniVectors();
+		 shipBound = boundingBox(this->g_pMesh, g_pDevice);
       }
 
 	MainShipClass(PMESHSTRUCT meshStruct, LPDIRECT3DDEVICE9 newg_pDevice):
@@ -68,6 +70,7 @@ public:
 		blinkStartTime(0),
 		isBlinkedOut(false){
          IniVectors();
+		 shipBound = boundingBox(this->g_pMesh, g_pDevice);
       }
 
 	MainShipClass():
@@ -291,6 +294,11 @@ public:
 		g_pMeshMaterials2 = newMat;
    }
 
+   boundingBox getBound()
+   {
+	   return shipBound;
+   }
+
 private:
 	static float afterburnerSpeed_;
 	int currentHealth;
@@ -365,6 +373,8 @@ private:
 	float blinkStartTime;
 	bool isBlinkedOut;
 
+	boundingBox shipBound;
+	
 };
 
 #endif

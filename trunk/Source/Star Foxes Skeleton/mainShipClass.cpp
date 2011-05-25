@@ -186,6 +186,7 @@ void MainShipClass::updateWorldMatrix()
 	D3DXMatrixTranslation(&mTranslate, vPosition_.x, vPosition_.y, vPosition_.z);
 
 	mWorld_ = mScale * mTransposedRotate * mTranslate;//mScale * mRotate ;
+
 }
 
 void MainShipClass::setupWorld() 
@@ -193,6 +194,8 @@ void MainShipClass::setupWorld()
 	updateWorldMatrix();
 
 	g_pDevice->SetTransform(D3DTS_WORLD, &mWorld_);
+	this->getBound().drawNodes(mWorld_);
+
 	D3DXMatrixIdentity(&mWorld_);
 }
 
