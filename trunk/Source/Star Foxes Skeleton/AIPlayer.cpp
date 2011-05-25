@@ -63,7 +63,7 @@ D3DXVECTOR3 FSM::eval()
 	
 	directXClass::SetError(TEXT("FSM // Evaluating game state..."));
 
-	switch(currentState){
+	/*switch(currentState){
 		case FLEE:
 			target = evalFlee();
 			break;
@@ -76,7 +76,9 @@ D3DXVECTOR3 FSM::eval()
 		case SEEK:
 			target = evalSeek();
 			break;
-	}
+	}*/
+   currentState = SEEK;
+   target = gamestate->getPlayer(0)->getPosition();
 		
 	return target;
 }
@@ -144,7 +146,7 @@ D3DXVECTOR3 FSM::evalWander()
 D3DXVECTOR3 FSM::evalAttack()
 {
 	directXClass::SetError(TEXT("FSM // Evaluating ATCK state..."));
-
+   /*
 	std::list<MainPlayerClass*> players;
 	float shortestDist = RADAR_RADIUS; //the radar / 'sight' distance the AI can detect
 	bool isShootingRange = false;
@@ -180,7 +182,8 @@ D3DXVECTOR3 FSM::evalAttack()
 		target = gamestate->getPlayer(targetIdx)->getPosition();
 	}
 
-	return target;
+	return target;*/
+   return D3DXVECTOR3(0, 0, 0);
 }
 
 /*
@@ -454,22 +457,69 @@ void AIPlayer::Seek(D3DXVECTOR3 enemyPos) {
       right(false);
    }
    
-   //calculating vertical rotation
-   d2.z = d2.z;
-   d2.y = -d2.y;
-   angle = atan2(getDirectionVector().y, getDirectionVector().z);
-   Rotate2DvectorYZ(&d2, angle);
-   
-   angle2 = atan2(0, 1.0f) - atan2(d2.y, d2.z);
-   if(angle2 > off)
-      down(true);
-   else if(angle2 < -off)
-      up(true);
+   float offy = 0.01f;
+   float yy = d.y - getDirectionVector().y;
+   if(yy > offy)
+      if(getUpVector().y > 0)
+         down(true);
+      else
+         up(true);
+   else if(yy < -offy)
+      if(getUpVector().y > 0)
+         up(true);
+      else
+         down(true);
    else
    {
       up(false);
       down(false);
    }
+   //calculating vertical rotation
+   //d2.z = -d2.z;
+   //d2.y = -d2.y;
+   /*angle = atan2(getDirectionVector().z, getDirectionVector().y);
+   Rotate2DvectorYZ(&d2, -angle);
+   
+   
+   angle2 = atan2(d2.z, d2.y) - atan2(0, 1.0f);
+   if(angle2 > off)
+     // if(getUpVector().y > 0)
+      //   down(true);
+     // else
+         up(true);
+      //else
+         //down(true);
+   else if(angle2 < -off)
+      {//if(getUpVector().y > 0)
+         down(true);
+     // else
+       //  up(true);
+      //else
+      //up(true);
+      }
+   else
+   {
+      up(false);
+      down(false);
+   }*/
+   /*
+      if(angle2 > off)
+      //if(getUpVector().y > 0)
+         up(true);
+      //else
+         //down(true);
+   else if(angle2 < -off)
+      {//if(getUpVector().y > 0)
+         down(true);
+      //else
+      //up(true);
+      }
+   else
+   {
+      up(false);
+      down(false);
+   }
+*/
 }
 
 // Rotates the X and Z of the vector to the given angle.
@@ -489,11 +539,11 @@ void AIPlayer::Rotate2DvectorXZ(D3DXVECTOR3* pV2, float angle)
 void AIPlayer::Rotate2DvectorYZ(D3DXVECTOR3* pV2, float angle)
 {
 	// use local variables to find transformed components
-	float Vx1 = cosf(angle)*pV2->z - sinf(angle)*pV2->y;
-	float Vy1 = sinf(angle)*pV2->z + cosf(angle)*pV2->y;
+	float Vx1 = cosf(angle)*pV2->y - sinf(angle)*pV2->z;
+	float Vy1 = sinf(angle)*pV2->y + cosf(angle)*pV2->z;
 	// store results thru the pointer
-	pV2->z = Vx1;
-	pV2->y = Vy1;
+	pV2->y = Vx1;
+	pV2->z = Vy1;
 
 	return;
 }
