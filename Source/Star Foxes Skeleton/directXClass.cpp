@@ -2087,7 +2087,7 @@ BOOL CALLBACK directXClass::startDialog (HWND hwnd, UINT msg, WPARAM wParam, LPA
 					}
 					program->player1 = *program->currentPlayers[0];
 					program->currentPlayers[0] = &program->player1;
-					program->_gamestate.updateGameState(program->g_hWndMain, program->currentPlayers, 8);
+					program->_gamestate.updateGameState(program->g_hWndMain, program->currentPlayers);
 					program->menuSelect = 2;
 					program->updateCameraTarget();
 					program->camera.reset();

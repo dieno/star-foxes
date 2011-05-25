@@ -1,9 +1,8 @@
 #include "gamestate.h"
 
-void GameState::updateGameState(HWND hWnd, MainPlayerClass* enemy[], int numberOfPlayers) {
+void GameState::updateGameState(HWND hWnd, MainPlayerClass* enemy[]) {
 	hWnd_ = hWnd;
-	numberOfPlayers = numberOfPlayers;
-	for (int index = 0; index < numberOfPlayers; index++) {
+	for (int index = 0; index < 8; index++) {
 		players[index] = enemy[index];
 	}
 }

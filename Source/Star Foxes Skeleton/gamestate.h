@@ -10,24 +10,17 @@ class GameState
 private:
 	MainPlayerClass *players[8];
 	HWND hWnd_;
-	int numberOfPlayers_;
 
 public:
 
 	//Take in relevant game variables and update them within this object.
-	void updateGameState(HWND hWnd, MainPlayerClass *enemy[], int numberOfPlayers);
+	void updateGameState(HWND hWnd, MainPlayerClass *enemy[]);
 
 	//Returns player at specified index.
 	MainPlayerClass getPlayer(int idx);
 
 	//Returns hWnd
 	HWND getHWND();
-
-	//getsNumberOfPlayers
-	int getNumberOfPlayers() 
-	{
-		return numberOfPlayers_;
-	}
 };
 
 #endif

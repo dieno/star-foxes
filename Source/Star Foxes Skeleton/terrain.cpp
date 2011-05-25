@@ -15,7 +15,7 @@ void Terrain::renderSelf() {
 		// Draw the mesh subset
 		g_pMesh->DrawSubset( i );
 	}
-	for(int i = 0; i < 17; i++)
+	for(int i = 0; i < 19; i++)
 	{
 		setupBuilding(*buildinglocations[i],*buildingscales[i],i);
 	}
@@ -202,6 +202,24 @@ void Terrain::setupBuildings()
 		buildingscales[16]->x = 140;
 		buildingscales[16]->y = 10;
 		buildingscales[16]->z = 10;
+		D3DXCreateBox(g_pDevice, 1, 1, 1, &buildingmesh[17], NULL);
+		buildinglocations[17] = new D3DXVECTOR3();
+		buildinglocations[17]->x = -100;
+		buildinglocations[17]->y = 30;
+		buildinglocations[17]->z = 20;
+		buildingscales[17] = new D3DXVECTOR3();
+		buildingscales[17]->x = 10;
+		buildingscales[17]->y = 60;
+		buildingscales[17]->z = 50;
+		D3DXCreateBox(g_pDevice, 1, 1, 1, &buildingmesh[18], NULL);
+		buildinglocations[18] = new D3DXVECTOR3();
+		buildinglocations[18]->x = 100;
+		buildinglocations[18]->y = 30;
+		buildinglocations[18]->z = 20;
+		buildingscales[18] = new D3DXVECTOR3();
+		buildingscales[18]->x = 10;
+		buildingscales[18]->y = 60;
+		buildingscales[18]->z = 50;
 	}
 }
 
