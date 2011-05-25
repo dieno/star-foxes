@@ -654,7 +654,28 @@ int directXClass::Render(){
 
 		D3DXMATRIX mView = camera.getViewMatrix();
 		g_pDevice->SetTransform(D3DTS_VIEW, &mView);
-
+       ///
+      LPD3DXLINE line;
+        float size = 0.1f;
+        //D3DXVECTOR2 loc(SCREEN_WIDTH/2, SCREEN_HEIGHT/2);
+        D3DXVECTOR3 loc(0.0f, 0.0f, 0.0f);
+        D3DXCreateLine(g_pDevice, &line);
+        D3DXVECTOR3 lines[] = 
+        {D3DXVECTOR3(loc.x, loc.y, loc.z), D3DXVECTOR3(loc.x + size, loc.y, loc.z),
+        D3DXVECTOR3(loc.x + size, loc.y, loc.z), D3DXVECTOR3(loc.x + size, loc.y + size, loc.z),
+        D3DXVECTOR3(loc.x + size, loc.y + size, loc.z), D3DXVECTOR3(loc.x, loc.y + size, loc.z),
+        D3DXVECTOR3(loc.x, loc.y + size, loc.z), D3DXVECTOR3(loc.x, loc.y, loc.z),
+        };
+        line->Begin();
+        //line->sett
+        D3DXMATRIX translate;
+        D3DXMatrixTranslation(&translate, -0.05f, 0.8f, 0.96f);
+        //g_pDevice->SetTransform( D3DTS_WORLD, &translate);   
+        line->SetWidth(5.5f);
+        line->DrawTransform(lines, 8, &translate, 0xFFFFFFFF);
+        line->End();
+        line->Release();
+        ////
 		mainTerrain.renderSelf();	
 		player1.drawSelf();
 		for (int i = 1; i < 8; i++) {
@@ -664,7 +685,7 @@ int directXClass::Render(){
 		}
 		//player2.drawSelf();
 		//SetupMatrices(true);
-
+     
 		drawCubes();
       _chat.RenderChat();
       
@@ -673,6 +694,8 @@ int directXClass::Render(){
          (*ci)->drawSelf();
       }		*/
 		// End the scene
+        
+        
 		g_pDevice->EndScene();
 	}
 	
@@ -1598,9 +1621,9 @@ void directXClass::setupCubes()
    float w = 0.05f;
    D3DXCreateBox(g_pDevice, w, 10, w, &cubemesh[0], NULL);
    D3DXCreateBox(g_pDevice, w, 10, w, &cubemesh[1], NULL);
-   D3DXCreateBox(g_pDevice, w, 12, w, &cubemesh[2], NULL);
-   D3DXCreateBox(g_pDevice, w, 10, w, &cubemesh[3], NULL);
-   D3DXCreateBox(g_pDevice, w, 12, w, &cubemesh[4], NULL);
+   D3DXCreateBox(g_pDevice, 10, w, w, &cubemesh[2], NULL);
+   D3DXCreateBox(g_pDevice, 10, w, w, &cubemesh[3], NULL);
+   D3DXCreateBox(g_pDevice, w, w, w, &cubemesh[4], NULL);
    //D3DXCreateLine(g_pDevice, w, 12, w, &cubemesh[4], NULL);
 
 	/*for(int i = 5; i < 100; ++i)
