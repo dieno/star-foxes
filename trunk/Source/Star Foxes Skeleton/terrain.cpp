@@ -221,6 +221,21 @@ void Terrain::setupBuildings()
 		buildingscales[18]->y = 60;
 		buildingscales[18]->z = 50;
 	}
+	for (int index = 0; index < 19; index++) {
+		D3DXVECTOR3 currentLoc = (*buildinglocations[index] * 0.25f) + D3DXVECTOR3(28,0,19);
+		D3DXVECTOR3 currentScale = (*buildingscales[index] * 0.25f);
+		for (int x = currentLoc.x-currentScale.x/2; x < currentLoc.x+currentScale.x/2; x++) {
+			for (int y = currentLoc.y-currentScale.y/2; y < currentLoc.y+currentScale.y/2; y++) {
+				for (int z = currentLoc.z-currentScale.z/2; z < currentLoc.z+currentScale.z/2; z++) {
+					grid[x][y][z] = 4;
+				}
+			}
+		}
+	}/*
+	for (int y = 0; y < 20; y++) {
+		directXClass::SetError(TEXT("Y: %d\n"), y);
+		showGrid(y);
+	}*/
 }
 
 void Terrain::setupBuilding(D3DXVECTOR3 _translate, D3DXVECTOR3 _scale, int index)
@@ -235,4 +250,13 @@ void Terrain::setupBuilding(D3DXVECTOR3 _translate, D3DXVECTOR3 _scale, int inde
     mat->Ambient= D3DXCOLOR(0.5f, 0.5f, 0.5f, 255.0f);
     g_pDevice->SetMaterial(mat);
 	buildingmesh[index]->DrawSubset(0);
+}
+
+void Terrain::showGrid(int y) {
+	for (int z = 0; z < 38; z++) {
+			for (int x = 0; x < 55; x++) {
+				directXClass::SetError(TEXT("%d"), grid[x][y][z]);
+			}
+		directXClass::SetError(TEXT("\n"));
+	}
 }

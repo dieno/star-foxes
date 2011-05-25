@@ -104,7 +104,6 @@ public:
 	radarRect(),
 	bgSurface(0),
 	menuSelect(0),
-	mainTerrain(),
 	dirLight(),
 	dirLightEnabled(true),
 	radarE(),
@@ -136,8 +135,10 @@ public:
 	GameState _gamestate;
 	static BOOL CALLBACK startDialog(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 	static MainPlayerClass shipBuilder(EShipType sType, EPlayerType pType, int pIdx, HWND hwnd, WCHAR wszBuff[256], WCHAR wszBuff2[1], WCHAR wszBuff3[2]);
-   static MainPlayerClass* shipBuilder2(EShipType sType, EPlayerType pType, int pIdx, HWND hwnd, WCHAR wszBuff[256], WCHAR wszBuff2[1], WCHAR wszBuff3[2]);
-
+    static MainPlayerClass* shipBuilder2(EShipType sType, EPlayerType pType, int pIdx, HWND hwnd, WCHAR wszBuff[256], WCHAR wszBuff2[1], WCHAR wszBuff3[2]);
+    static Terrain getMainTerrain() {
+	 	return mainTerrain;
+    }
    //Start networking stuff
    Client* GetClient();
    Server* GetServer();
@@ -167,7 +168,7 @@ private:
     void IniChat();
 	D3DLIGHT9 initDirectionalLight(D3DXVECTOR3* direction, D3DXCOLOR* color);
 	void setupLights();
-   bool KeyDownChat(WPARAM wParam, HWND hWnd);
+    bool KeyDownChat(WPARAM wParam, HWND hWnd);
 	point getMouseCoordinates();
 	static LPDIRECT3D9 g_pD3D;//COM object
 	static LPDIRECT3DDEVICE9 g_pDevice;//graphics device
@@ -235,8 +236,9 @@ private:
 	RECT radarRect;
 	LPDIRECT3DSURFACE9 bgSurface; //surface for working with the background
 	int menuSelect; // int for what menu item is currently selected
-   GameChat _chat;
-   Terrain mainTerrain; 
+    GameChat _chat;
+    static Terrain mainTerrain; 
+	boundingBox boundtemp;
 	Camera camera;
 	static float lastTime;
 	D3DLIGHT9 dirLight;

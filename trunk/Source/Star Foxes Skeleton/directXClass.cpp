@@ -15,6 +15,7 @@ float directXClass::lastTime = 0.0f;
 int directXClass::currentX = 0;
 int directXClass::currentY = 0;
 bool directXClass::waiting = true;
+Terrain directXClass::mainTerrain = Terrain();
 
 //deals with revaildating the window, and the basic window stuff
 long CALLBACK directXClass::WndProc(HWND hWnd, UINT uMessage, WPARAM wParam, LPARAM lParam){
@@ -268,7 +269,7 @@ void directXClass::SetError(wchar_t* szFormat, ...){
 	va_end(pArgList);
 
 	OutputDebugString(szBuffer);
-	OutputDebugString(TEXT("\n"));
+	//OutputDebugString(TEXT("\n"));
 	printf("error!!");
 }
 
