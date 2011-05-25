@@ -63,7 +63,7 @@ D3DXVECTOR3 FSM::eval()
 	
 	directXClass::SetError(TEXT("FSM // Evaluating game state..."));
 
-	/*switch(currentState){
+	switch(currentState){
 		case FLEE:
 			target = evalFlee();
 			break;
@@ -76,9 +76,9 @@ D3DXVECTOR3 FSM::eval()
 		case SEEK:
 			target = evalSeek();
 			break;
-	}*/
-   currentState = SEEK;
-   target = gamestate->getPlayer(0)->getPosition();
+	}
+  /* currentState = SEEK;
+   target = gamestate->getPlayer(0)->getPosition();*/
 		
 	return target;
 }
@@ -144,9 +144,9 @@ D3DXVECTOR3 FSM::evalWander()
 		-Attacks player closest and with the lowest HP of all targets in shooting range.
 */
 D3DXVECTOR3 FSM::evalAttack()
-{
+{/*
 	directXClass::SetError(TEXT("FSM // Evaluating ATCK state..."));
-   /*
+   
 	std::list<MainPlayerClass*> players;
 	float shortestDist = RADAR_RADIUS; //the radar / 'sight' distance the AI can detect
 	bool isShootingRange = false;
@@ -255,7 +255,7 @@ void AIPlayer::Update(float timeDelta)
 {
    D3DXVECTOR3 target = _fsm.eval();
    HWND hWnd = _fsm.getGameState()->getHWND();
-   //boost(true);
+   boost(true);
 
    if(KeepInBounds(hWnd))
    { 
@@ -457,7 +457,7 @@ void AIPlayer::Seek(D3DXVECTOR3 enemyPos) {
       right(false);
    }
    
-   float offy = 0.01f;
+   float offy = 0.1f;
    float yy = d.y - getDirectionVector().y;
    if(yy > offy)
       if(getUpVector().y > 0)
