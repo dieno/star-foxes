@@ -78,7 +78,9 @@ public:
 
 	void updateRotation(D3DXVECTOR3* vRotation);
 
-	D3DXVECTOR3 getPositionVector() {return playerShip_.getPositionVector();}
+	D3DXVECTOR3 getPositionVector() {
+		return playerShip_.getPositionVector();
+	}
 	D3DXVECTOR3 getDirectionVector() {return playerShip_.getDirectionVector();}
 	D3DXVECTOR3 getUpVector() {return playerShip_.getUpVector();}
 

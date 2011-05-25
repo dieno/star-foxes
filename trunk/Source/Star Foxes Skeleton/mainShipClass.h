@@ -128,7 +128,9 @@ public:
 		mWorld_ = newWorld_;
 	}
 
-	D3DXVECTOR3 getPositionVector() {return vPosition_;}
+	D3DXVECTOR3 getPositionVector() {
+		return vPosition_;
+	}
 
 	D3DXVECTOR3 getRotationVector() {return vRotation_;}
 
