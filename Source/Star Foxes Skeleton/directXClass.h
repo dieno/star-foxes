@@ -10,6 +10,7 @@
 
 #include "AIPlayer.h"
 #include "terrain.h"
+#include "boundingBox.h"
 #include "Networking\SocketExtras.h"
 #include "Networking\Text.h"
 #include "Networking\GameChat.h"
@@ -103,6 +104,7 @@ public:
 	bgSurface(0),
 	menuSelect(0),
 	mainTerrain(),
+	boundtemp(),
 	dirLight(),
 	dirLightEnabled(true),
 	radarE(),
@@ -217,6 +219,7 @@ private:
 	int menuSelect; // int for what menu item is currently selected
     GameChat _chat;
     Terrain mainTerrain; 
+	boundingBox boundtemp;
 	Camera camera;
 	static float lastTime;
 	D3DLIGHT9 dirLight;

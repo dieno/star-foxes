@@ -7,6 +7,7 @@
 #include <d3d9.h>
 #include <d3dx9.h>
 #include <D3dx9tex.h>
+#include <D3D9Types.h>
 #include <dinput.h>
 #include <Windows.h>
 #include <list>
