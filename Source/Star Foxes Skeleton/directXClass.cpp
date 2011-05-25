@@ -65,6 +65,12 @@ long CALLBACK directXClass::WndProc(HWND hWnd, UINT uMessage, WPARAM wParam, LPA
    case WM_KEYDOWN:
       program->KeyDownChat(wParam, hWnd);
       return 0;
+   case WM_SERVER:
+      program->OnServerSocketEvent(lParam, wParam, hWnd);
+      return 0;      
+   case WM_CLIENT:
+      program->OnClientSocketEvent(lParam, hWnd);
+      return 0;
 	default:
 		{
 			return DefWindowProc(hWnd, uMessage, wParam, lParam);
@@ -463,11 +469,6 @@ int directXClass::GameLoop(float timeDelta) {
 				menuSelect = 3;
 			}
 
-         //Networking: create server
-         if(input.get_keystate(DIK_P))
-         {
-
-         }
 
 			RenderMainMenu();
 		break;
@@ -1496,20 +1497,22 @@ bool directXClass::KeyDownChat(WPARAM wParam, HWND hWnd)
       {
          //_client.SendMsg(_chat.GetCurrentMsgC());
          const char *msg = _chat.GetCurrentMsgC();
-         _chat.AddMsgToHistory(msg);
+         //_chat.AddMsgToHistory(msg);
 
-         /**char netmsg[3];
+         char netmsg[3];
          int len = strlen(msg);
+         //sending txt msg char by char.
          for(int i = 0; i < len; i++)
          {
             char m[1] = {msg[i]};
-            //_msgt.CreateMsg(netmsg, MSG_TXT, &_clientID, m);
-            //client.SendMsg(netmsg);
+            _msgt.CreateMsg(netmsg, MSG_TXT, &_clientID, m);
+            _client.SendMsg(netmsg);
          }
+         //sending null to terminate txt msg.
          char m[1] = {NULL};
          _msgt.CreateMsg(netmsg, MSG_TXT, &_clientID, m);
          _client.SendMsg(netmsg);
-         **/
+         
          _chat.ClearCurrentMsg();
          //_chat.SendMsg();
          //_server.BroadcastMsg(_chat.GetCurrentMsg().c_str());
@@ -1532,12 +1535,13 @@ bool directXClass::KeyDownChat(WPARAM wParam, HWND hWnd)
       }
       if(wParam == 'P')
       {
-         //CreateServer(hWnd);
+         CreateServer(hWnd);
          _chat.AddMsgToHistory("Server Created!");
          return true;
       }
       if(wParam == 'L')
       {
+         CreateClient(hWnd, "localhost");
          //CreateClient(hWnd, "192.168.0.198");
          _chat.AddMsgToHistory("Client connected to server .198!");
          return true;
@@ -1545,7 +1549,7 @@ bool directXClass::KeyDownChat(WPARAM wParam, HWND hWnd)
       if(wParam == 'O')
       {
          //CreateClient(hWnd, "192.168.0.190");
-         ///CreateClient(hWnd, "localhost");
+         CreateClient(hWnd, "localhost");
          _chat.AddMsgToHistory("Client connected to server Localhost!");
          return true;
       }
@@ -1561,6 +1565,260 @@ bool directXClass::KeyDownChat(WPARAM wParam, HWND hWnd)
    
    return false;
 }
+
+//Networking: processing server socket message
+void directXClass::OnServerSocketEvent(LPARAM lParam, WPARAM wParam, HWND hWnd)
+{
+   //static int ii = 0;
+   static bool setID;
+   int* msgsize = new int;
+   //Game* game = (Game*)GetWindowLong(hWnd, 0);
+   //Server* server = game->GetServer();
+   //MsgTranslator* msgt = _msgt;
+   
+   switch(_server.OnSocketEvent(lParam, wParam, msgsize, hWnd))
+   {
+   case EV_ACCEPT:
+      {
+         _chat.AddMsgToHistory("Client connected!");       
+         char msg[10];
+         char id[10];
+         itoa(_server.GenID(), id, 10);
+         int size = _msgt.CreateMsg(msg, MSG_MSC, MSC_SETID, id);
+         //server->SendMsg(server->GetBackList(), msg, strlen(msg));
+         _server.SendMsg(_server.GetBacklist(), msg, size);
+         break;
+      }
+   case EV_CLOSE:
+      _chat.AddMsgToHistory("Client closed connection!");
+      break;
+   case EV_READ:
+      /*char msg[5];
+      
+      sprintf(msg, "%d", ii++);
+      int len = strlen(msg);
+      msg[len] = NULL;*/
+      int len;
+      const char* msg = (char*) malloc(128);
+      msg = _server.PopFrontMsg(&len);
+      //game->GetChat()->AddMsgToHistory(msg);
+      
+      _chat.AddMsgToHistory(msg);
+      _server.BroadcastMsg(msg, len);
+      break;
+   }
+}
+
+// Networking: processing client socket message.
+void directXClass::OnClientSocketEvent(LPARAM lParam, HWND hWnd)
+{
+   //Game* game = (Game*)GetWindowLong(hWnd, 0);
+   //Client* client = game->GetClient();
+   switch(_client.OnSocketEvent(lParam, hWnd))
+   {
+   case EV_READ:
+      {
+      //string str = client->PopRcvdMsg();
+      //MsgTranslator* msgt = game->GetMsgTranslator();      
+      _msgt.SetMsg(_client.PopRcvdMsg());
+
+      //msgt->TranslateMsg(client->PopRcvdMsg());
+      //const char* msg = msgt->GetMsg()->GetMsg();
+      
+      //game->GetChat()->AddMsgToHistory(msg);
+      ProcessMsg(_msgt.GetMsg(), hWnd);
+      //if(msg[3] == 'l')
+      //game->GetMeshes()->GetSelectedWorld()->KeyDown(VK_LEFT);
+      break;
+      }
+   case EV_SERVER_ERR:
+      _chat.AddMsgToHistory("Connection to server failed");
+      break;
+   case EV_CLOSE:
+			
+      break;
+   }
+}
+
+//Networking: processes network msgs
+void directXClass::ProcessMsg(Msg* msg, HWND hWnd)
+{
+   switch(msg->GetType())
+   {
+   case MSG_CMD:
+      //_chat.AddMsgToHistory("processing type cmd");
+      ProcessClientCmd(msg, hWnd);
+      break;   
+   case MSG_TXT:
+      ProcessTxt(msg);
+      break;
+   case MSG_MSC:
+      ProcessMsc(msg);
+      break;
+   }
+}
+
+// Processes miscelaneus messages.
+void directXClass::ProcessMsc(Msg *msg)
+{
+   switch(msg->GetCmd())
+   {
+   case MSC_SETID:
+      _clientID = msg->GetBody();
+      std::string str = "My ClientID is: ";
+      char n[2] = {_clientID, NULL};
+      str.append(n);
+      _chat.AddMsgToHistory(str);
+      break;
+   }
+}
+
+void directXClass::ProcessTxt(Msg* msg)
+{
+   static char m1[128];
+   static char m2[128];   
+   static int c1 = 0;
+   static int c2 = 0;
+
+   char* m;
+   int* c;
+
+   if(msg->GetCmd() == '1')
+   {
+      m = m1;
+      c = &c1;
+   }
+   else
+   {
+      m = m2;
+      c = &c2;
+   }
+
+   if(*c == 0)
+   {
+      m1[(*c)++] = msg->GetCmd();
+      m1[(*c)++] = ':';
+      m1[(*c)++] = ' ';
+   }
+
+   if(*c >= 127)
+      return;
+   
+   m1[(*c)++] = msg->GetBody();
+   if(msg->GetBody() == NULL)
+   {
+      _chat.AddMsgToHistory(m1);
+      *c = 0;
+   }
+}
+
+void directXClass::ProcessClientCmd(Msg* msg, HWND hWnd)
+{
+   //_chat.AddMsgToHistory("processing client key");
+/*   switch(msg->GetCmd())
+   {
+   case MV_LEFT:
+      //_clientID = msg->GetBody()[0];
+      GetMeshes()->GetSelectedWorld()->KeyDown(VK_LEFT);
+      break;
+   case MV_UP:
+      GetMeshes()->GetSelectedWorld()->KeyDown(VK_UP);
+      break;
+   case MV_DOWN:
+      GetMeshes()->GetSelectedWorld()->KeyDown(VK_DOWN);
+      break;
+   case MV_RITE:
+      GetMeshes()->GetSelectedWorld()->KeyDown(VK_RIGHT);
+      break;
+   case '':
+
+   }
+   */
+   const char x[1] = {msg->GetBody()};
+   int num = atoi(x);
+
+   /*if(num >= 2)
+   {
+      GetMeshes()->GetWorldByIndex(num)->KeyDown(msg->GetCmd());
+      return;
+   }
+
+   if(SwitchMeshCtrl(msg->GetCmd(), this))
+   {
+     // MessageBoxA(hWnd, "rec", "nothing", 0); 
+      return;
+   }
+   if(GetMeshes()->GetSelectedWorld()->KeyDown(msg->GetCmd()))*/
+      return;
+}
+
+
+//Networking: creating server
+bool directXClass::CreateServer(HWND hWnd)
+{
+   //Game* game = (Game*)GetWindowLong(hWnd, 0);
+   //directXClass *game = directXClass::program;
+   std::string* msg = new std::string[1];
+   ESocketError err;
+   Server* server = GetServer();
+   
+   if(!(err = server->IniServer(msg)) == ERR_NONE)
+   {
+   	MessageBoxA(hWnd,
+         msg->c_str(),
+			"Error!",
+			MB_ICONINFORMATION|MB_OK);
+      return false;
+   }
+
+   if(!(err = server->AsyncSelect(hWnd, WM_SERVER, msg)) == ERR_NONE)
+   {
+   	MessageBoxA(hWnd,
+         msg->c_str(),
+			"Error!",
+			MB_ICONINFORMATION|MB_OK);
+      return false;
+   }
+
+   return true;
+}
+
+//Networking: Create Client
+bool directXClass::CreateClient(HWND hWnd, char *hostip)
+{
+   std::string msg;
+   //Game* game = (Game*)GetWindowLong(hWnd, 0);
+   //Client* client = GetClient();
+   _client.SetHost(hostip);
+   if(_client.IniClientSocket(&msg) != ERR_NONE ||
+      _client.AsyncSelect(hWnd, WM_CLIENT, &msg) != ERR_NONE ||
+      _client.ConnectToHost(&msg) != ERR_NONE
+      )
+   {
+      _chat.AddMsgToHistory(msg.c_str());
+      /*MessageBox(hWnd,
+         msg.c_str(),
+		   "Critical Error",
+		   MB_ICONERROR);
+	   SendMessage(hWnd,WM_DESTROY,NULL,NULL);*/
+      return false;
+   }
+   return true;
+}
+
+//Networking: Gettting Server
+Server* directXClass::GetServer()
+{
+   return &_server;
+}
+
+Client* directXClass::GetClient()
+{
+   return &_client;
+}
+
+// End networking stuff
+
 //-----------------------------------------------------------------------------
 // Name: Cleanup()
 // Desc: Releases all previously initialized objects
