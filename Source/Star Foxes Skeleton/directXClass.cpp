@@ -483,11 +483,11 @@ int directXClass::GameLoop(float timeDelta) {
 			/*if(input.get_keystate(DIK_M))
 			{
 				currentPlayers[1]->takeHit(5);
-			}
+			}*/
 			if(input.get_keystate(DIK_N))
 			{
-				currentPlayers[1]->takeHit(-5);
-			}*/
+				currentPlayers[1]->takeHit(5);
+			}
 
 			for (int index = 0; index < 8; index++) {
 				if (currentPlayers[index] != NULL) {
@@ -498,6 +498,7 @@ int directXClass::GameLoop(float timeDelta) {
 							nullCount++;
 							if (index == 0) {
 								menuSelect = 0;
+								return 0;
 							}
 						}
 					}
@@ -792,14 +793,16 @@ int directXClass::RenderRadar()
 		SetError(TEXT("Couldn't get backbuffer in render radar"));
 	}
 
-	D3DXVECTOR3 *positionVectors[8];
+	D3DXVECTOR3 positionVectors[8];
 	D3DXVECTOR3 player1Pos = currentPlayers[0]->getPositionVector();
 
 	for (int index = 0; index < 8; index++) {
 		if (currentPlayers[index] != NULL) {
-			positionVectors[index] = &currentPlayers[index]->getPositionVector();
+			positionVectors[index] = currentPlayers[index]->getPositionVector();
+			positionVectors[index] -= player1Pos;
+			positionVectors[index] += D3DXVECTOR3(540,0,400);
 		} else {
-			positionVectors[index] = NULL;
+			positionVectors[index] = D3DXVECTOR3(0,0,0);
 		}
 	}
 
