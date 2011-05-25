@@ -44,8 +44,8 @@ ESocketEvent Client::OnSocketEvent(LPARAM lParam, HWND hWnd)
 				(char*)_tmpmsg,
 				3,
 				0);
-         if(_tmpmsg[1] == '2')
-            MessageBoxA(hWnd, "clientrec", "nothing", 0);
+         //if(_tmpmsg[1] == '2')
+         //   MessageBoxA(hWnd, "clientrec", "nothing", 0);
          //_tmpmsg[inDataLength] = NULL;
          //_tmpmsg[inDataLength+1] = NULL;
          szSize = inDataLength;
