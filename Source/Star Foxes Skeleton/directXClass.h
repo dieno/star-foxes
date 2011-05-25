@@ -132,9 +132,10 @@ public:
 	GameState _gamestate;
 	static BOOL CALLBACK startDialog(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 	static MainPlayerClass shipBuilder(EShipType sType, EPlayerType pType, int pIdx, HWND hwnd, WCHAR wszBuff[256], WCHAR wszBuff2[1], WCHAR wszBuff3[2]);
-   static MainPlayerClass* shipBuilder2(MainPlayerClass* player, EShipType sType, EPlayerType pType, int pIdx, HWND hwnd, WCHAR wszBuff[256], WCHAR wszBuff2[1], WCHAR wszBuff3[2]);
+   static MainPlayerClass* shipBuilder2(EShipType sType, EPlayerType pType, int pIdx, HWND hwnd, WCHAR wszBuff[256], WCHAR wszBuff2[1], WCHAR wszBuff3[2]);
 
 private:
+   static void IniPlayerLocation(MainPlayerClass* player, float px, float py, float pz, float rx, float ry, float rz);
 	void drawLine(float startX, float startY, float endX, float endY, LPDIRECT3DSURFACE9 pBackSurf);
 	void inputCommands(float timeDelta);
 	void setupCubes();
