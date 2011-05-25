@@ -174,7 +174,17 @@ int WINAPI directXClass::WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, P
 
 	r=LoadBitmapToSurface(TEXT("radar.bmp"), &radarSurface, g_pDevice);
 	if(FAILED(r)){
-		SetError(TEXT("could not load multiplayer menu item bitmap surface"));
+		SetError(TEXT("could not load radar bitmap surface"));
+	}
+
+	r=LoadBitmapToSurface(TEXT("radarE.bmp"), &radarE, g_pDevice);
+	if(FAILED(r)){
+		SetError(TEXT("could not load radarE bitmap surface"));
+	}
+
+	r=LoadBitmapToSurface(TEXT("radarA.bmp"), &radarA, g_pDevice);
+	if(FAILED(r)){
+		SetError(TEXT("could not load radarA bitmap surface"));
 	}
 
 	lastTime = (float) timeGetTime();
@@ -634,9 +644,6 @@ int directXClass::Render(){
 	r=D3DXLoadSurfaceFromSurface(pBackSurf, NULL, NULL, pSurface, NULL, NULL, D3DX_FILTER_TRIANGLE,0);
 	if(FAILED(r))
 		SetError(TEXT("did not copy surface"));
-	pBackSurf->LockRect(&Locked, 0, 0);
-	PrintFrameRate(0, 0, TRUE, D3DCOLOR_ARGB(255,255,0,255), (DWORD*)Locked.pBits, Locked.Pitch);
-	pBackSurf->UnlockRect();
 	pBackSurf->Release();//release lock
 	
 	pBackSurf = 0;
@@ -704,6 +711,9 @@ int directXClass::Render(){
 	if(FAILED(r)){
 		SetError(TEXT("Couldn't get backbuffer"));
 	}
+	pBackSurf->LockRect(&Locked, 0, 0);
+	PrintFrameRate(0, 0, TRUE, D3DCOLOR_ARGB(255,255,0,255), (DWORD*)Locked.pBits, Locked.Pitch);
+	pBackSurf->UnlockRect();
 
 	r=D3DXLoadSurfaceFromSurface(pBackSurf, NULL, &healthRect, healthSurface, NULL, NULL, D3DX_FILTER_TRIANGLE,0);
 	if(FAILED(r))
@@ -716,7 +726,7 @@ int directXClass::Render(){
 	pBackSurf->Release();//release lock
 	
 	pBackSurf = 0;
-
+	RenderRadar();
 	g_pDevice->Present(NULL, NULL, NULL, NULL);//swap over buffer to primary surface
 	return S_OK;
 }
@@ -765,8 +775,41 @@ int directXClass::RenderMainMenu(){
 	return S_OK;
 }
 
-int directXClass::RenderRadar(D3DXVECTOR3 shipLocations[])
+int directXClass::RenderRadar()
 {
+	HRESULT r;
+	LPDIRECT3DSURFACE9 pBackSurf = 0;
+	r=g_pDevice->GetBackBuffer(0,0,D3DBACKBUFFER_TYPE_MONO, &pBackSurf);
+	if(FAILED(r)){
+		SetError(TEXT("Couldn't get backbuffer in render radar"));
+	}
+
+	D3DXVECTOR3 *positionVectors[8];
+	D3DXVECTOR3 player1Pos = currentPlayers[0]->getPositionVector();
+
+	for (int index = 0; index < 8; index++) {
+		if (currentPlayers[index] != NULL) {
+			positionVectors[index] = &currentPlayers[index]->getPositionVector();
+		} else {
+			positionVectors[index] = NULL;
+		}
+	}
+
+	int rangeX = 600-480-8;
+	int rangeY = 460-340-8;
+
+	player1Loc.bottom = 550;
+	player1Loc.left = 390;
+	player1Loc.right = 410;
+	player1Loc.top = 540;
+
+	r=D3DXLoadSurfaceFromSurface(pBackSurf, NULL, &player1Loc, radarA, NULL, NULL, D3DX_FILTER_TRIANGLE,0);
+	if(FAILED(r))
+		SetError(TEXT("did not copy surface radarA"));
+
+	pBackSurf->Release();//release lock
+	
+	pBackSurf = 0;
 	return S_OK;
 }
 
