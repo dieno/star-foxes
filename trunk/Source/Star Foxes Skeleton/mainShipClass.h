@@ -37,7 +37,8 @@ public:
 		thrustAmount_(0.0f),
 		projectileList(),
 		blinkStartTime(0),
-		isBlinkedOut(false){
+		isBlinkedOut(false),
+		blinkState(0){
          IniVectors();
 		 shipBound = boundingBox(this->g_pMesh, g_pDevice);
       }
@@ -68,7 +69,8 @@ public:
 		thrustAmount_(0.0f),
 		projectileList(),
 		blinkStartTime(0),
-		isBlinkedOut(false){
+		isBlinkedOut(false),
+		blinkState(0){
          IniVectors();
 		 shipBound = boundingBox(this->g_pMesh, g_pDevice);
       }
@@ -374,6 +376,7 @@ private:
 	
 	float blinkStartTime;
 	bool isBlinkedOut;
+	int blinkState;
 
 	boundingBox shipBound;
 	

@@ -35,8 +35,20 @@ void MainShipClass::renderSelf() {
 
 void MainShipClass::Update(float timeDelta)
 {
-	if (timeGetTime() - blinkStartTime > 100.0f) {
+	if (blinkState != 0 && timeGetTime() - blinkStartTime > 100.0f) {
 		isBlinkedOut = false;
+		blinkStartTime = timeGetTime();
+		blinkState == 1;
+		//directXClass::SetError(TEXT("end blink!"));
+	} else if (blinkState == 1 && timeGetTime() - blinkStartTime > 100.0f) {
+		isBlinkedOut = true;
+		blinkStartTime = timeGetTime();
+		blinkState == 2;
+		//directXClass::SetError(TEXT("end blink!"));
+	} else if (blinkState == 2 && timeGetTime() - blinkStartTime > 100.0f) {
+		isBlinkedOut = false;
+		//blinkStartTime = timeGetTime();
+		blinkState == 0;
 		//directXClass::SetError(TEXT("end blink!"));
 	}
 	//directXClass::SetError(TEXT("curTime: %f startTime: %f"), timeGetTime(), blinkStartTime);
@@ -336,6 +348,7 @@ void MainShipClass::startBlinking() {
 	if(!isBlinkedOut) {
 		blinkStartTime = timeGetTime();
 		isBlinkedOut = true;
+		blinkState = 8;
 		//directXClass::SetError(TEXT("start blink!"));
 	}
 }

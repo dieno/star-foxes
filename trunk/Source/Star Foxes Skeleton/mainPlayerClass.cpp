@@ -122,6 +122,7 @@ void MainPlayerClass::bankRight(float value)
 }
 
 bool MainPlayerClass::takeHit(int damageTaken) {
+	startBlinking();
 	playerShip_.setCurrentHealth(playerShip_.getCurrentHealth() - damageTaken);
 	if(playerShip_.getCurrentHealth() <= 0) {
 		isAlive = false;
