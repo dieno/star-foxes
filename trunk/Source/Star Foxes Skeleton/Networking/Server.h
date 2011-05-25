@@ -1,9 +1,12 @@
-#pragma once
+//#pragma once
 //#ifndef SOCKETEXTRAS
 //#define SOCKETEXTRAS
 //#include "SocketExtras.h"
 #include "../directXClass.h"
 //#endif
+
+#ifndef GAMESERVER
+#define GAMESERVER
 
 class Server
 {
@@ -41,3 +44,5 @@ public:
    Server();
    ~Server(void);
 };
+
+#endif

@@ -1,9 +1,11 @@
-#pragma once
+//#pragma once
 #include "../directXClass.h"
 //#include <std::string.h>
 //#include <Windows.h>
 //using namespace std;
 
+#ifndef MSGTRANSLATOR
+#define MSGTRANSLATOR
 enum EMSG_TYPE
 {
    MSG_CMD = '0',
@@ -78,3 +80,5 @@ public:
    MsgTranslator(void);
    ~MsgTranslator(void);
 };
+
+#endif
