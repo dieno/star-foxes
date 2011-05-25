@@ -461,6 +461,13 @@ int directXClass::GameLoop(float timeDelta) {
 			{
 				menuSelect = 3;
 			}
+
+         //Networking: create server
+         if(input.get_keystate(DIK_P))
+         {
+
+         }
+
 			RenderMainMenu();
 		break;
 
@@ -508,17 +515,7 @@ int directXClass::GameLoop(float timeDelta) {
 			}
 			if (nullCount >= 7) {
 				menuSelect = 0;
-			}
-			if(input.get_keystate(DIK_Q))
-			{
-				menuSelect = 0;
-			}
-
-			
-			if(input.get_keystate(DIK_Q))
-			{
-				menuSelect = 0;
-			}
+			}		
 
 			updateCameraTarget();
 			camera.Update(timeDelta);
@@ -572,6 +569,7 @@ int directXClass::GameLoop(float timeDelta) {
 			//_aiplayer1.bankLeft(0.01f);
 			//player2.(0.01f);
             Render();
+
 		break;
 
 		// In Multiplayer game, currently the same as single player as there
