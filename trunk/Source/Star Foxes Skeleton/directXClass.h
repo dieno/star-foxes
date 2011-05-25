@@ -10,7 +10,6 @@
 
 #include "AIPlayer.h"
 #include "terrain.h"
-#include "boundingBox.h"
 #include "Networking\SocketExtras.h"
 #include "Networking\Text.h"
 #include "Networking\GameChat.h"
@@ -106,7 +105,6 @@ public:
 	bgSurface(0),
 	menuSelect(0),
 	mainTerrain(),
-	boundtemp(),
 	dirLight(),
 	dirLightEnabled(true),
 	radarE(),
@@ -140,9 +138,25 @@ public:
 	static MainPlayerClass shipBuilder(EShipType sType, EPlayerType pType, int pIdx, HWND hwnd, WCHAR wszBuff[256], WCHAR wszBuff2[1], WCHAR wszBuff3[2]);
    static MainPlayerClass* shipBuilder2(EShipType sType, EPlayerType pType, int pIdx, HWND hwnd, WCHAR wszBuff[256], WCHAR wszBuff2[1], WCHAR wszBuff3[2]);
 
+   //Start networking stuff
+   Client* GetClient();
+   Server* GetServer();
+   //End networking stuff
 private:
+   //Start Networking stuff
    Server _server;
    Client _client;
+   MsgTranslator _msgt;
+   char _clientID;
+   void OnServerSocketEvent(LPARAM lParam, WPARAM wParam, HWND hWnd);
+   void OnClientSocketEvent(LPARAM lParam, HWND hWnd);
+   bool CreateServer(HWND hWnd);
+   bool CreateClient(HWND hWnd, char *hostip);
+   void ProcessMsg(Msg* msg, HWND hWnd);
+   void ProcessMsc(Msg *msg);
+   void ProcessTxt(Msg* msg);
+   void ProcessClientCmd(Msg* msg, HWND hWnd);
+   //End networking stuff
    static void IniPlayerLocation(MainPlayerClass* player, float px, float py, float pz, float rx, float ry, float rz);
 	void drawLine(float startX, float startY, float endX, float endY, LPDIRECT3DSURFACE9 pBackSurf);
 	void inputCommands(float timeDelta);
@@ -221,9 +235,8 @@ private:
 	RECT radarRect;
 	LPDIRECT3DSURFACE9 bgSurface; //surface for working with the background
 	int menuSelect; // int for what menu item is currently selected
-    GameChat _chat;
-    Terrain mainTerrain; 
-	boundingBox boundtemp;
+   GameChat _chat;
+   Terrain mainTerrain; 
 	Camera camera;
 	static float lastTime;
 	D3DLIGHT9 dirLight;
