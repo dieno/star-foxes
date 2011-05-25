@@ -15,6 +15,8 @@
 #include "Networking\Text.h"
 #include "Networking\GameChat.h"
 #include "Networking\MsgTranslator.h"
+#include "Networking\Server.h"
+#include "Networking\Client.h"
 #include "Camera.h"
 #include "projectile.h"
 #include "gamestate.h"
@@ -139,6 +141,8 @@ public:
    static MainPlayerClass* shipBuilder2(EShipType sType, EPlayerType pType, int pIdx, HWND hwnd, WCHAR wszBuff[256], WCHAR wszBuff2[1], WCHAR wszBuff3[2]);
 
 private:
+   Server _server;
+   Client _client;
    static void IniPlayerLocation(MainPlayerClass* player, float px, float py, float pz, float rx, float ry, float rz);
 	void drawLine(float startX, float startY, float endX, float endY, LPDIRECT3DSURFACE9 pBackSurf);
 	void inputCommands(float timeDelta);
