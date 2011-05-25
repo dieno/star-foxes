@@ -31,7 +31,7 @@ void Client::SetHost(char *hostip)
 }
 
 // Processes the socket events for this client.
-ESocketEvent Client::OnSocketEvent(LPARAM lParam)
+ESocketEvent Client::OnSocketEvent(LPARAM lParam, HWND hWnd)
 {
 	if(WSAGETSELECTERROR(lParam))
 		return EV_SERVER_ERR;
@@ -44,7 +44,8 @@ ESocketEvent Client::OnSocketEvent(LPARAM lParam)
 				(char*)_tmpmsg,
 				3,
 				0);
-
+         if(_tmpmsg[1] == '2')
+            MessageBoxA(hWnd, "clientrec", "nothing", 0);
          //_tmpmsg[inDataLength] = NULL;
          //_tmpmsg[inDataLength+1] = NULL;
          szSize = inDataLength;
@@ -89,7 +90,7 @@ void Client::Shutdown()
 }
 
 // Initializes the socket for the client.
-ESocketError Client::IniClientSocket(string* msg)
+ESocketError Client::IniClientSocket(std::string* msg)
 {
    WSADATA WsaDat;
    int nResult=WSAStartup(MAKEWORD(2,2),&WsaDat);
@@ -110,7 +111,7 @@ ESocketError Client::IniClientSocket(string* msg)
 }
 
 // Attaches the Socket events of this client to the respective window HWND.
-ESocketError Client::AsyncSelect(HWND hWnd, UINT wm, string* msg)
+ESocketError Client::AsyncSelect(HWND hWnd, UINT wm, std::string* msg)
 {
    int nResult=WSAAsyncSelect(Socket, hWnd, wm, (FD_CLOSE|FD_READ));
    if(nResult)
@@ -123,7 +124,7 @@ ESocketError Client::AsyncSelect(HWND hWnd, UINT wm, string* msg)
 }
 
 // Connects the client to the host.
-ESocketError Client::ConnectToHost(string *msg)
+ESocketError Client::ConnectToHost(std::string *msg)
 {
 	// Resolve IP address for hostname
 	struct hostent *host;
@@ -168,7 +169,7 @@ Client::Client(void)
    //char* name = (char*)malloc(1024);
    //char* name2 = (char*)malloc(1024);
    _id = (char*) malloc(128);
-   _itoa(rand() % 100 + 1, _id, time(NULL));
+   itoa(rand() % 100 + 1, _id, time(NULL));
    //_id = "me";
    InitializeObject();
 }
