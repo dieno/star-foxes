@@ -104,7 +104,9 @@ public:
 	menuSelect(0),
 	mainTerrain(),
 	dirLight(),
-	dirLightEnabled(true){}
+	dirLightEnabled(true),
+	radarE(),
+	radarA(){}
 	int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pstrCmdLine, int iCmdShow);
 	static long CALLBACK WndProc(HWND hWnd, UINT uMessage, WPARAM wParam, LPARAM lParam);
 	static directXClass *program;
@@ -120,7 +122,7 @@ public:
 	HRESULT LoadAlphabet( wchar_t* strPathName, int LetterWidth, int LetterHeight );
 	int Render();
 	int RenderMainMenu();
-	int RenderRadar(D3DXVECTOR3 shipLocations[]);
+	int RenderRadar();
 	int UpdateHUD();
 	void FrameCount();
 	HRESULT UnloadAlphabet();
@@ -224,6 +226,9 @@ private:
 	HWND hwndDialog;
 	static bool waiting;
 	MainPlayerClass *currentPlayers[8];
+	LPDIRECT3DSURFACE9 radarE;
+	LPDIRECT3DSURFACE9 radarA;
+	RECT player1Loc;
     //MsgTranslator _msgt;
 };
 #endif
