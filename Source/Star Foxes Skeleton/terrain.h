@@ -17,7 +17,18 @@ public:
 		translateYMesh1(0),
 		translateXMesh1(0),
 		translateZMesh1(0),
-		g_pDevice(newg_pDevice){}
+		g_pDevice(newg_pDevice){
+			for(int x = 0; x < 55; x++) {
+				for(int y = 0; y < 20; y++) {
+					for(int z = 0; z < 38; z++) {
+						grid[x][y][z] = 0;
+						if (y == 0) {
+							grid[x][y][z] = 4;
+						}
+					}
+				}
+			}
+		}
 
 	Terrain(PMESHSTRUCT meshStruct, LPDIRECT3DDEVICE9 newg_pDevice):
 		g_pMesh(meshStruct->g_pMesh),
@@ -30,7 +41,18 @@ public:
 		translateYMesh1(0),
 		translateXMesh1(0),
 		translateZMesh1(0),
-		g_pDevice(newg_pDevice){}
+		g_pDevice(newg_pDevice){
+			for(int x = 0; x < 55; x++) {
+				for(int y = 0; y < 20; y++) {
+					for(int z = 0; z < 38; z++) {
+						grid[x][y][z] = 0;
+						if (y == 0) {
+							grid[x][y][z] = 4;
+						}
+					}
+				}
+			}
+		}
 
 	Terrain():
 		g_pMesh(NULL),
@@ -118,7 +140,8 @@ public:
 	float getRotationAboutZ() {
 		return rotationAboutZMesh1;
 	}
-
+	
+	short grid[55][20][38];
 	void setupBuildings();
 	D3DXVECTOR3 *buildinglocations[256];
 	D3DXVECTOR3 *buildingscales[256];
@@ -126,6 +149,7 @@ public:
 private:
 	void setupWorld();
 	void setupBuilding(D3DXVECTOR3 _translate, D3DXVECTOR3 _scale, int index);
+	void showGrid(int y);
 	LPD3DXMESH              g_pMesh; // Our mesh object in sysmem
 	D3DMATERIAL9*           g_pMeshMaterials; // Materials for our mesh
 	LPDIRECT3DTEXTURE9*     g_pMeshTextures; // Textures for our mesh
@@ -138,7 +162,6 @@ private:
 	float translateZMesh1;
 	LPDIRECT3DDEVICE9 g_pDevice;
 	ID3DXMesh *buildingmesh[256];
-	
 };
 
 #endif
