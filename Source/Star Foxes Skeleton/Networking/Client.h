@@ -1,11 +1,14 @@
-#pragma once
+//#pragma once
 #include "../directXClass.h"
 //#include "SocketExtras.h"
 #include "time.h"
 //#include <std::string>
 #include <stdio.h>
 //#include <std::list>
-using namespace std;
+//using namespace std;
+
+#ifndef GAMECLIENT
+#define GAMECLIENT
 
 class Client
 {
@@ -27,7 +30,7 @@ public:
    void PushRcvdMsg(char *);
    int getLastMsgSize();
    char* PopRcvdMsg();
-   ESocketEvent OnSocketEvent(LPARAM lParam);
+   ESocketEvent OnSocketEvent(LPARAM lParam, HWND hWnd);
    void SetHost(char *hostip);
    void Shutdown();
    void SendMsg(char msg[]);
@@ -39,3 +42,5 @@ public:
    Client(void);
    ~Client(void);
 };
+
+#endif
