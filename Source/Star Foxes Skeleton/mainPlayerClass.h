@@ -73,6 +73,7 @@ public:
 	void shoot(float timeDelta) {playerShip_.shoot(timeDelta);}
    //virtual void Update(HWND hWnd, D3DXVECTOR3 pos, float timeDelta){};
 	virtual void Update(float timeDelta);
+   virtual void Start(){};
 
 	void updatePosition(float timeDelta); //put movement in here!
 
