@@ -121,19 +121,19 @@ int WINAPI directXClass::WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, P
 	UpdateWindow(hWnd);
 	
 	if(FAILED(GameInit())){;//initialize Game
-		SetError(TEXT("Initialization Failed\n"));
+		SetError(TEXT("Initialization Failed"));
 		GameShutdown();
 		return E_FAIL;
 	}
 	
 	r=LoadBitmapToSurface(bitmapName, &pSurface, g_pDevice);
 	if(FAILED(r)){
-		SetError(TEXT("could not load background bitmap surface\n"));
+		SetError(TEXT("could not load background bitmap surface"));
 	}
 
 	r=LoadBitmapToSurface(TEXT("stars.bmp"), &bgSurface, g_pDevice);
 	if(FAILED(r)){
-		SetError(TEXT("could not load main menu background surface\n"));
+		SetError(TEXT("could not load main menu background surface"));
 	}
 
 	singlePlayerSurface = 0;
@@ -145,7 +145,7 @@ int WINAPI directXClass::WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, P
 
 	r=LoadBitmapToSurface(TEXT("SinglePlayer.bmp"), &singlePlayerSurface, g_pDevice);
 	if(FAILED(r)){
-		SetError(TEXT("could not load singleplayer menu item bitmap surface\n"));
+		SetError(TEXT("could not load singleplayer menu item bitmap surface"));
 	}
 
 	multiPlayerSurface = 0;
@@ -157,7 +157,7 @@ int WINAPI directXClass::WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, P
 
 	r=LoadBitmapToSurface(TEXT("MultiPlayer.bmp"), &multiPlayerSurface, g_pDevice);
 	if(FAILED(r)){
-		SetError(TEXT("could not load multiplayer menu item bitmap surface\n"));
+		SetError(TEXT("could not load multiplayer menu item bitmap surface"));
 	}
 
 	healthSurface = 0;
@@ -169,7 +169,7 @@ int WINAPI directXClass::WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, P
 
 	r=LoadBitmapToSurface(TEXT("health.bmp"), &healthSurface, g_pDevice);
 	if(FAILED(r)){
-		SetError(TEXT("could not load multiplayer menu item bitmap surface\n"));
+		SetError(TEXT("could not load multiplayer menu item bitmap surface"));
 	}
 
 	radarSurface = 0;
@@ -181,17 +181,17 @@ int WINAPI directXClass::WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, P
 
 	r=LoadBitmapToSurface(TEXT("radar.bmp"), &radarSurface, g_pDevice);
 	if(FAILED(r)){
-		SetError(TEXT("could not load radar bitmap surface\n"));
+		SetError(TEXT("could not load radar bitmap surface"));
 	}
 
 	r=LoadBitmapToSurface(TEXT("radarE.bmp"), &radarE, g_pDevice);
 	if(FAILED(r)){
-		SetError(TEXT("could not load radarE bitmap surface\n"));
+		SetError(TEXT("could not load radarE bitmap surface"));
 	}
 
 	r=LoadBitmapToSurface(TEXT("radarA.bmp"), &radarA, g_pDevice);
 	if(FAILED(r)){
-		SetError(TEXT("could not load radarA bitmap surface\n"));
+		SetError(TEXT("could not load radarA bitmap surface"));
 	}
 
 	lastTime = (float) timeGetTime();
@@ -206,19 +206,8 @@ int WINAPI directXClass::WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, P
 		else{
 			float currTime = (float) timeGetTime();
 			float timeDelta = (currTime - lastTime) * 0.001f; // get elapsed time since last update in seconds
-			/*if(_IamServer)
-         {*/
-            if(timeDelta > 0.02f)
-            { // Networking: Added sync
-               GameLoop(timeDelta);
-               lastTime = currTime;
-            }
-        /* }
-         else
-         {*/
-            //GameLoop(timeDelta);
-            //lastTime = currTime;
-         //}
+			GameLoop(timeDelta);
+			lastTime = currTime;
 		}
 	}
 	GameShutdown();// clean up the game
@@ -237,7 +226,7 @@ int directXClass::InitDirect3DDevice(HWND hWndTarget, int Width, int Height, BOO
 	ZeroMemory(&d3dpp, sizeof(D3DPRESENT_PARAMETERS));
 	r = pD3D->GetAdapterDisplayMode(D3DADAPTER_DEFAULT, &d3ddm);
 	if(FAILED(r)){
-		SetError(TEXT("Could not get display adapter information\n"));
+		SetError(TEXT("Could not get display adapter information"));
 		return E_FAIL;
 	}
 
@@ -257,7 +246,7 @@ int directXClass::InitDirect3DDevice(HWND hWndTarget, int Width, int Height, BOO
 	
 	r=pD3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hWndTarget, D3DCREATE_SOFTWARE_VERTEXPROCESSING, &d3dpp, ppDevice);
 	if(FAILED(r)){
-		SetError(TEXT("Could not create the render device\n"));
+		SetError(TEXT("Could not create the render device"));
 		return E_FAIL;
 	}
 	
@@ -297,13 +286,13 @@ int directXClass::GameInit(){
 	g_pD3D = Direct3DCreate9(D3D_SDK_VERSION);//COM object
 
 	if(g_pD3D == NULL){
-		SetError(TEXT("Could not create IDirect3D9 object\n"));
+		SetError(TEXT("Could not create IDirect3D9 object"));
 		return E_FAIL;
 	}
 	
 	r = InitDirect3DDevice(g_hWndMain, SCREEN_WIDTH, SCREEN_HEIGHT, WINDOWED, D3DFMT_X8R8G8B8, g_pD3D, &g_pDevice);
 	if(FAILED(r)){//FAILED is a macro that returns false if return value is a failure - safer than using value itself
-		SetError(TEXT("Initialization of the device failed\n"));
+		SetError(TEXT("Initialization of the device failed"));
 		return E_FAIL;
 	}
 	
@@ -371,7 +360,7 @@ int directXClass::GameInit(){
 	//player2 = MainPlayerClass("Dummy",0, 1, dummyAI); */
    
 	if(FAILED(r)){//FAILED is a macro that returns false if return value is a failure - safer than using value itself
-		SetError(TEXT("Initialization of the device failed\n"));
+		SetError(TEXT("Initialization of the device failed"));
 		return E_FAIL;
 	}
 
@@ -387,7 +376,6 @@ int directXClass::GameInit(){
 
 //the game loop, renders, counts frames, and quits on esc key down
 int directXClass::GameLoop(float timeDelta) {
-   _timeDelta = timeDelta;
 	int nullCount = 0;
 	FrameCount();
 	
@@ -487,40 +475,11 @@ int directXClass::GameLoop(float timeDelta) {
 
 		// In Singleplayer game
 		case 2:
-			{
-			/* WORD vkCode = 0x36; // '6'
-			INPUT keyEvent = {0};
-			keyEvent.type = INPUT_KEYBOARD;
-			keyEvent.ki.wVk = vkCode;
-			keyEvent.ki.wScan = MapVirtualKeyEx(vkCode, 0, (HKL)0xf0010413);
-			SendInput(1, &keyEvent, sizeof(keyEvent));*/
-			/* if(_IamServer)
-			{
-				//Sleep(5);
-				_msgt.CreateMsg(_netmsg, MSG_MSC, MSC_INIFRAME, "0");
-				_server.BroadcastMsg(_netmsg, 3);
-			}
-			if(_IamClient) 
-				if(!_iniframe) { 
-					WORD vkCode = 0x36; // '6'
-					INPUT keyEvent = {0};
-					keyEvent.type = INPUT_KEYBOARD;
-					keyEvent.ki.wVk = vkCode;
-					keyEvent.ki.wScan = MapVirtualKeyEx(vkCode, 0, (HKL)0xf0010413);
-					SendInput(1, &keyEvent, sizeof(keyEvent));
-					return 0;
-				}; //sync start of frame*/
-         
-
 			inputCommands(timeDelta);
 
-			if(!_IamServer && !_IamClient)
-			{
-			}
-			//if(!_IamClient)
 			player1.Update(timeDelta);
 
-			/*if(input.get_keystate(DIK_M))
+			if(input.get_keystate(DIK_M))
 			{
 				player1.takeHit(5);
 			}
@@ -528,28 +487,21 @@ int directXClass::GameLoop(float timeDelta) {
 			{
 				///player1.takeHit(-5);
 				player1.startBlinking();
-			}*/
+			}
 
 			/*if(input.get_keystate(DIK_M))
 			{
 				currentPlayers[1]->takeHit(5);
 			}*/
-			/*if(input.get_keystate(DIK_N))
+			if(input.get_keystate(DIK_N))
 			{
 				currentPlayers[1]->takeHit(5);
-			}*/
-
-			if(input.get_keystate(DIK_Q))
-			{
-				menuSelect = 0;
-				return 0;
 			}
 
 			for (int index = 0; index < 8; index++) {
 				if (currentPlayers[index] != NULL) {
 					if (currentPlayers[index]->getShipCurrentHealth() < 0 ) {
 						currentPlayers[index]->reduceLives();
-						IniPlayerLocation(currentPlayers[index], 0,50,0,0,0,0);
 						if (currentPlayers[index]->getLives() <= 0) {
 							currentPlayers[index] = NULL;
 							nullCount++;
@@ -559,11 +511,11 @@ int directXClass::GameLoop(float timeDelta) {
 							}
 						}
 					}
-				} if (currentPlayers[index] ==  NULL || currentPlayers[index]->getTeamNum() == player1.getTeamNum()) {
+				} else {
 					nullCount++;
 				}
 			}
-			if (nullCount >= 8) {
+			if (nullCount >= 7) {
 				menuSelect = 0;
 			}		
 
@@ -572,7 +524,7 @@ int directXClass::GameLoop(float timeDelta) {
 
 			
 
-			//Check to see if any of the players are colliding with buildings
+			//Check to see if any of the players/projectiles are colliding with buildings
 			for (int playerIndex = 0; playerIndex < 8; playerIndex++)
 			{
 				if (currentPlayers[playerIndex] != NULL) 
@@ -582,6 +534,20 @@ int directXClass::GameLoop(float timeDelta) {
 						if(boundingBox::checkCollision(currentPlayers[playerIndex]->GetShip()->getPositionVector(), mainTerrain.buildingBounds[buildingIndex]))
 						{
 							currentPlayers[playerIndex]->takeHit(1);
+						}
+
+						std::list<Projectile>::iterator it = currentPlayers[playerIndex]->GetShip()->projectileList.begin();
+
+						while(it != currentPlayers[playerIndex]->GetShip()->projectileList.end())
+						{
+							for(int buildingIndex = 0; buildingIndex < 19; buildingIndex++)
+							{
+								if(boundingBox::checkCollision((it->getPosition() + currentPlayers[playerIndex]->GetShip()->getPositionVector()), mainTerrain.buildingBounds[buildingIndex]))
+								{
+									it->setTimeToLive(0);
+								}
+							}
+							++it;
 						}
 					}
 				} 
@@ -599,48 +565,43 @@ int directXClass::GameLoop(float timeDelta) {
 							
 						if(boundingBox::checkCollision(it->getPosition(), currentPlayers[playerIndex]->GetShip()->getBound()))
 						{
-							currentPlayers[playerIndex]->takeHit(1);
+							
 						}
 						++it;
 					}
 				} 
 			}
 
-			//Check to see if any of the projectiles are colliding with buildings
-			for (int playerIndex = 0; playerIndex < 8; playerIndex++)
-			{
-				if (currentPlayers[playerIndex] != NULL) 
-				{	
-						std::list<Projectile>::iterator it = currentPlayers[playerIndex]->GetShip()->projectileList.begin();
-
-						while(it != currentPlayers[playerIndex]->GetShip()->projectileList.end())
-						{
-							for(int buildingIndex = 0; buildingIndex < 19; buildingIndex++)
-							{
-								if(boundingBox::checkCollision(it->getPosition(), mainTerrain.buildingBounds[buildingIndex]))
-								{
-									directXClass::SetError(TEXT("you shot a building\n"));
-								}
-							}
-							++it;
-						}
-					
-				} 
-			}
 			updateCameraTarget();
 			camera.Update(timeDelta);//reset();
 			UpdateHUD();
 
-			for (int i = 1; i < 8; i++)
+         for (int i = 1; i < 8; i++)
 			{
 				if (program->currentPlayers[i] != NULL) {
 					program->currentPlayers[i]->Update(timeDelta);
 				}
 			}
+
+			//directXClass::SetError(TEXT("p1: %f"), player1.getPositionZ());
+/*			for (std::list<AIPlayer*>::const_iterator ci = _aiPlayer.begin(); ci != _aiPlayer.end(); ++ci)
+			{
+				//directXClass::SetError(TEXT("p1: %f"), player1.getRotation().z); 
+				//(*ci)->bankLeft(0.01f);
+				//MessageBoxA(g_hWndMain, "hi", "hilo", 0);
+				(*ci)->Update(timeDelta);
+            //(*ci)->updatePosition(timeDelta);
+				//(*ci)->bankUp(0.04f);
+				// (*ci)->updateRotation();
+				//(*ci)->updatePosition();
+            
+			}*/
+			//_aiPlayer.front()->bankLeft(0.01f);
+			//_aiplayer1.bankLeft(0.01f);
+			//player2.(0.01f);
             Render();
-            _iniframe = false;
-            }
-			break;
+
+		break;
 
 		// In Multiplayer game, currently the same as single player as there
 		// is currently no difference
@@ -671,12 +632,6 @@ int directXClass::GameLoop(float timeDelta) {
 	return S_OK;
 }
 
-//Networking: Starts AI altogether.
-/*int directXClass::StartAIs()
-{
-   for()
-}*/
-
 //runs when game ends, cleans up everything used by the game
 int directXClass::GameShutdown(){
 	cleanupCubes();
@@ -700,7 +655,7 @@ int directXClass::Render(){
 	LPDIRECT3DSURFACE9 pBackSurf = 0;
 
 	if(!g_pDevice){
-		SetError(TEXT("Cannot render because there is no devic\n"));
+		SetError(TEXT("Cannot render because there is no device"));
 		return E_FAIL;
 	}
 
@@ -715,12 +670,12 @@ int directXClass::Render(){
 	//get pointer to backbuffer
 	r=g_pDevice->GetBackBuffer(0,0,D3DBACKBUFFER_TYPE_MONO, &pBackSurf);
 	if(FAILED(r)){
-		SetError(TEXT("Couldn't get backbuffer\n"));
+		SetError(TEXT("Couldn't get backbuffer"));
 	}
 	
 	r=D3DXLoadSurfaceFromSurface(pBackSurf, NULL, NULL, pSurface, NULL, NULL, D3DX_FILTER_TRIANGLE,0);
 	if(FAILED(r))
-		SetError(TEXT("did not copy surface\n"));
+		SetError(TEXT("did not copy surface"));
 	pBackSurf->Release();//release lock
 	
 	pBackSurf = 0;
@@ -792,7 +747,7 @@ int directXClass::Render(){
 	//get pointer to backbuffer for HUD
 	r=g_pDevice->GetBackBuffer(0,0,D3DBACKBUFFER_TYPE_MONO, &pBackSurf);
 	if(FAILED(r)){
-		SetError(TEXT("Couldn't get backbuffer\n"));
+		SetError(TEXT("Couldn't get backbuffer"));
 	}
 	pBackSurf->LockRect(&Locked, 0, 0);
 	PrintFrameRate(0, 0, TRUE, D3DCOLOR_ARGB(255,255,0,255), (DWORD*)Locked.pBits, Locked.Pitch);
@@ -800,11 +755,11 @@ int directXClass::Render(){
 
 	r=D3DXLoadSurfaceFromSurface(pBackSurf, NULL, &healthRect, healthSurface, NULL, NULL, D3DX_FILTER_TRIANGLE,0);
 	if(FAILED(r))
-		SetError(TEXT("did not copy surface health\n"));
+		SetError(TEXT("did not copy surface health"));
 
 	r=D3DXLoadSurfaceFromSurface(pBackSurf, NULL, &radarRect, radarSurface, NULL, NULL, D3DX_FILTER_TRIANGLE,0);
 	if(FAILED(r))
-		SetError(TEXT("did not copy surface radar\n"));
+		SetError(TEXT("did not copy surface health"));
 
 	pBackSurf->Release();//release lock
 	
@@ -820,7 +775,7 @@ int directXClass::RenderMainMenu(){
 	
 
 	if(!g_pDevice){
-		SetError(TEXT("Cannot render because there is no device\n"));
+		SetError(TEXT("Cannot render because there is no device"));
 		return E_FAIL;
 	}
 	//clear the display arera with colour black, ignore stencil buffer
@@ -832,12 +787,12 @@ int directXClass::RenderMainMenu(){
 	//get pointer to backbuffer
 	r=g_pDevice->GetBackBuffer(0,0,D3DBACKBUFFER_TYPE_MONO, &pBackSurf);
 	if(FAILED(r)){
-		SetError(TEXT("Couldn't get backbuffer\n"));
+		SetError(TEXT("Couldn't get backbuffer"));
 	}
 	
 	r=D3DXLoadSurfaceFromSurface(pBackSurf, NULL, NULL, bgSurface, NULL, NULL, D3DX_FILTER_TRIANGLE,0);
 	if(FAILED(r))
-		SetError(TEXT("did not copy surface main menu background\n"));
+		SetError(TEXT("did not copy surface main menu background"));
 
 	pBackSurf->LockRect(&Locked, 0, 0);
 	PrintFrameRate(0, 0, TRUE, D3DCOLOR_ARGB(255,255,0,255), (DWORD*)Locked.pBits, Locked.Pitch);
@@ -845,11 +800,11 @@ int directXClass::RenderMainMenu(){
 
 	r=D3DXLoadSurfaceFromSurface(pBackSurf, NULL, &singlePlayer, singlePlayerSurface, NULL, NULL, D3DX_FILTER_TRIANGLE,0);
 	if(FAILED(r))
-		SetError(TEXT("did not copy surface single player\n"));
+		SetError(TEXT("did not copy surface single player"));
 
 	r=D3DXLoadSurfaceFromSurface(pBackSurf, NULL, &multiPlayer, multiPlayerSurface, NULL, NULL, D3DX_FILTER_TRIANGLE,0);
 	if(FAILED(r))
-		SetError(TEXT("did not copy surface multi player\n"));
+		SetError(TEXT("did not copy surface multi player"));
 
 	pBackSurf->Release();//release lock
 	
@@ -864,7 +819,7 @@ int directXClass::RenderRadar()
 	LPDIRECT3DSURFACE9 pBackSurf = 0;
 	r=g_pDevice->GetBackBuffer(0,0,D3DBACKBUFFER_TYPE_MONO, &pBackSurf);
 	if(FAILED(r)){
-		SetError(TEXT("Couldn't get backbuffer in render radar\n"));
+		SetError(TEXT("Couldn't get backbuffer in render radar"));
 	}
 
 	D3DXVECTOR3 positionVectors[8];
@@ -890,7 +845,7 @@ int directXClass::RenderRadar()
 
 	r=D3DXLoadSurfaceFromSurface(pBackSurf, NULL, &player1Loc, radarA, NULL, NULL, D3DX_FILTER_TRIANGLE,0);
 	if(FAILED(r))
-		SetError(TEXT("did not copy surface radarA\n"));
+		SetError(TEXT("did not copy surface radarA"));
 
 	pBackSurf->Release();//release lock
 	
@@ -913,7 +868,7 @@ int directXClass::LoadBitmapToSurface(wchar_t* PathName, LPDIRECT3DSURFACE9* ppS
 
 	hBitmap = (HBITMAP)LoadImage(NULL, PathName, IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
 	if(hBitmap == NULL){
-		SetError(TEXT("Unable to load bitmap\n"));
+		SetError(TEXT("Unable to load bitmap"));
 		return E_FAIL;
 	}
 
@@ -924,13 +879,13 @@ int directXClass::LoadBitmapToSurface(wchar_t* PathName, LPDIRECT3DSURFACE9* ppS
 	r =	pDevice->CreateOffscreenPlainSurface(Bitmap.bmWidth,Bitmap.bmHeight,D3DFMT_X8R8G8B8,D3DPOOL_SCRATCH,ppSurface,NULL);
 
 	if(FAILED(r)){
-		SetError(TEXT("Unable to create surface for bitmap load\n"));
+		SetError(TEXT("Unable to create surface for bitmap load"));
 		return E_FAIL;
 	}
 	//load bitmap onto surface
 	r = D3DXLoadSurfaceFromFile(*ppSurface, NULL, NULL, PathName, NULL, D3DX_DEFAULT, 0, NULL);
 	if(FAILED(r)){
-		SetError(TEXT("Unable to load file to surface\n"));
+		SetError(TEXT("Unable to load file to surface"));
 		return E_FAIL;
 	}
 
@@ -1017,7 +972,7 @@ void directXClass::PrintChar( int x, int y, char Character, BOOL bTransparent,
 	r = g_pAlphabetSurface->LockRect( &LockedAlphabet, 0, D3DLOCK_READONLY  );
 	if( FAILED( r ) )
 	{
-		SetError(TEXT("Couldnt lock alphabet surface for PrintChar()\n"));
+		SetError(TEXT("Couldnt lock alphabet surface for PrintChar()"));
 		return;
 	}
 	
@@ -1083,7 +1038,7 @@ HRESULT directXClass::LoadAlphabet( wchar_t* strPathName, int LetterWidth, int L
 	r = LoadBitmapToSurface( strPathName, &g_pAlphabetSurface, g_pDevice );
 	if( FAILED( r ) )
 	{
-		SetError(TEXT("Unable to load alphabet bitmap\n"));
+		SetError(TEXT("Unable to load alphabet bitmap"));
 		return E_FAIL;
 	}
 
@@ -1117,7 +1072,7 @@ void directXClass::FrameCount(){
 	QueryPerformanceCounter((LARGE_INTEGER*)&NewCount);
 
 	if( NewCount == 0)
-		SetError(TEXT("The system does not support high resolution timing\n"));
+		SetError(TEXT("The system does not support high resolution timing"));
 
 	g_FrameCount++;
 
@@ -1153,7 +1108,7 @@ HRESULT directXClass::InitTiming(){
 	QueryPerformanceFrequency((LARGE_INTEGER*)&g_Frequency);
 
 	if(g_Frequency == 0){
-		SetError(TEXT("The system does not support high resolution timing\n"));
+		SetError(TEXT("The system does not support high resolution timing"));
 		return E_FAIL;
 	}
 
@@ -1226,7 +1181,7 @@ VOID directXClass::SetupMatrices(bool mesh1Active)
     // the aspect ratio, and the near and far clipping planes (which define at
     // what distances geometry should be no longer be rendered).
     D3DXMATRIXA16 matProj;
-    D3DXMatrixPerspectiveFovLH( &matProj, D3DX_PI/4, (FLOAT)SCREEN_WIDTH / (FLOAT)SCREEN_HEIGHT, 1.0f, 220.0f );
+    D3DXMatrixPerspectiveFovLH( &matProj, D3DX_PI/4, (FLOAT)SCREEN_WIDTH / (FLOAT)SCREEN_HEIGHT, 1.0f, 100.0f );
     g_pDevice->SetTransform( D3DTS_PROJECTION, &matProj );
 }
 
@@ -1609,17 +1564,15 @@ bool directXClass::KeyDownChat(WPARAM wParam, HWND hWnd)
       }
       if(wParam == 'P')
       {
-         if(CreateServer(hWnd))
-            _chat.AddMsgToHistory("Server Created!");
-         else
-            _chat.AddMsgToHistory("Server Failed!");
+         CreateServer(hWnd);
+         _chat.AddMsgToHistory("Server Created!");
          return true;
       }
       if(wParam == 'L')
       {
          CreateClient(hWnd, "localhost");
          //CreateClient(hWnd, "192.168.0.198");
-         _chat.AddMsgToHistory("Client connected to server localhost!");
+         _chat.AddMsgToHistory("Client connected to server .198!");
          return true;
       }
       if(wParam == 'O')
@@ -1739,22 +1692,13 @@ void directXClass::ProcessMsc(Msg *msg)
 {
    switch(msg->GetCmd())
    {
-   case MSC_SETID:{
+   case MSC_SETID:
       _clientID = msg->GetBody();
       std::string str = "My ClientID is: ";
       char n[2] = {_clientID, NULL};
       str.append(n);
       _chat.AddMsgToHistory(str);
-                  }
       break;
-   case MSC_INIFRAME:
-      _iniframe = true;
-      break;
-   default:
-      //std::string str; 
-      char a[2] = {msg->GetBody(), NULL};
-      //str.append(a);
-      _chat.AddMsgToHistory(a);
    }
 }
 
@@ -1822,56 +1766,6 @@ void directXClass::ProcessClientCmd(Msg* msg, HWND hWnd)
    const char x[1] = {msg->GetBody()};
    int num = atoi(x);
 
-   switch(msg->GetBody())
-   {
-   case 'A': { // go left
-      player1.right(false);
-      player1.left(true);
-      //player1.Update(0.03f);
-      /*std::string a; char e[2] = {msg->GetCmd(), NULL};
-      a.append("A: ");
-      a.append(e);
-      _chat.AddMsgToHistory(a);*/
-             }
-             break;
-   case 'D': //go right
-      player1.left(false);
-      player1.right(true);      
-      //player1.Update(0.03f);
-      //_chat.AddMsgToHistory("D PRESSED");
-      break;
-   case 'X': //stops horizontal rotation
-      player1.right(false);
-      player1.left(false);
-      //player1.Update(_timeDelta);
-      //_chat.AddMsgToHistory("X PRESSED");
-      break;
-   case 'W': // go down
-      player1.up(false);
-      player1.down(true);
-      //player1.Update(0.03f);
-      break;
-   case 'S': // go up
-      player1.down(false);
-      player1.up(true);
-      //player1.Update(0.03f);
-      break;
-   case 'Z': //stops vertical rotation
-      player1.up(false);
-      player1.down(false);
-      //player1.Update(0.03f);
-      break;      
-   case '!': // boost on
-      player1.boost(true);
-      break;
-   case '@': // boost off
-      player1.boost(false);
-      break;
-   case 'F': // boost off
-      player1.shoot(_timeDelta);
-      break;
-   }
-   //player1.Update(_timeDelta);
    /*if(num >= 2)
    {
       GetMeshes()->GetWorldByIndex(num)->KeyDown(msg->GetCmd());
@@ -1884,17 +1778,15 @@ void directXClass::ProcessClientCmd(Msg* msg, HWND hWnd)
       return;
    }
    if(GetMeshes()->GetSelectedWorld()->KeyDown(msg->GetCmd()))*/
-   return;
+      return;
 }
 
 
 //Networking: creating server
-//Return true if server creation successful.
 bool directXClass::CreateServer(HWND hWnd)
 {
    //Game* game = (Game*)GetWindowLong(hWnd, 0);
    //directXClass *game = directXClass::program;
-   _IamServer = false;
    std::string* msg = new std::string[1];
    ESocketError err;
    Server* server = GetServer();
@@ -1916,15 +1808,13 @@ bool directXClass::CreateServer(HWND hWnd)
 			MB_ICONINFORMATION|MB_OK);
       return false;
    }
-   _IamServer = true;
+
    return true;
 }
 
 //Networking: Create Client
-//Returns true if client connected to server successfully
 bool directXClass::CreateClient(HWND hWnd, char *hostip)
 {
-   _IamClient = false;
    std::string msg;
    //Game* game = (Game*)GetWindowLong(hWnd, 0);
    //Client* client = GetClient();
@@ -1942,7 +1832,6 @@ bool directXClass::CreateClient(HWND hWnd, char *hostip)
 	   SendMessage(hWnd,WM_DESTROY,NULL,NULL);*/
       return false;
    }
-   _IamClient = true;
    return true;
 }
 
@@ -1997,109 +1886,39 @@ D3DXMATRIX directXClass::Translate(const float dx, const float dy, const float d
     return ret;
 }    // End of Translate
 
-// Input commands for ship controls.
-// Networking: Modified to send LAN command msgs
 void directXClass::inputCommands(float timeDelta)
 {
-   static bool offsenth = false; // Networking: not send too many horizont off msgs.
-   static bool offsentv = false; // Networking: not send too many vertical off msgs.
-   static bool offsentb = false; // Networking: not send too many boost off msgs.
-   static int count = 48;
-
-   /*if(input.get_keystate(DIK_Z))
-   {
-      char c[1] = {count++};
-      if(count % 58 == 0)
-         count = 48;
-      _msgt.CreateMsg(_netmsg, MSG_MSC, "Z", c);
-      _client.SendMsg(_netmsg);
-      return;
-   }*/
-
 	if(input.get_keystate(DIK_A))
 	{
-      if(_IamClient){
-         /*char c[1] = {count++};
-         if(count % 58 == 0)
-            count = 48;*/
-         _msgt.CreateMsg(_netmsg, MSG_CMD, &_clientID, "A");
-         _client.SendMsg(_netmsg);
-         offsenth = false; 
-      } else {
-		   player1.right(false);
-		   player1.left(true);
-      }
+		player1.right(false);
+		player1.left(true);
 	}
 	else if(input.get_keystate(DIK_D))
 	{
-      if(_IamClient){
-         _msgt.CreateMsg(_netmsg, MSG_CMD, &_clientID, "D");         
-         _client.SendMsg(_netmsg);
-         offsenth = false;
-      } else {
-		   player1.left(false);
-		   player1.right(true);
-      }
+		player1.left(false);
+		player1.right(true);
 	}
 	else
 	{
-      if(_IamClient){
-         if(!offsenth)
-         {
-            _msgt.CreateMsg(_netmsg, MSG_CMD, &_clientID, "X");
-            _client.SendMsg(_netmsg);
-         }
-         offsenth = true;
-      } else {
-		   player1.right(false);
-		   player1.left(false);
-      }
+		player1.right(false);
+		player1.left(false);
 	}
+
 	
 	if(input.get_keystate(DIK_W))
 	{
-      if(_IamClient)
-      {
-         offsentv = false;
-         _msgt.CreateMsg(_netmsg, MSG_CMD, &_clientID, "W");
-         _client.SendMsg(_netmsg);
-      }
-      else
-      {
-		   player1.up(false);
-		   player1.down(true);
-      }
+		player1.up(false);
+		player1.down(true);
 	}
 	else if(input.get_keystate(DIK_S))
 	{
-      if(_IamClient)
-      {
-         offsentv = false;
-         _msgt.CreateMsg(_netmsg, MSG_CMD, &_clientID, "S");
-         _client.SendMsg(_netmsg);
-      }
-      else
-      {
-		   player1.down(false);
-		   player1.up(true);
-      }
+		player1.down(false);
+		player1.up(true);
 	}
 	else
 	{
-      if(_IamClient)
-      {
-         if(!offsentv)
-         {
-            _msgt.CreateMsg(_netmsg, MSG_CMD, &_clientID, "Z");
-            _client.SendMsg(_netmsg);
-         }
-         offsentv = true;
-      }
-      else
-      {
-		   player1.up(false);
-		   player1.down(false);
-      }
+		player1.up(false);
+		player1.down(false);
 	}
 
 	if(input.get_keystate(DIK_M) && !player1.gethasShot())
@@ -2122,39 +1941,15 @@ void directXClass::inputCommands(float timeDelta)
 
 	if(input.get_keystate(DIK_SPACE))
 	{
-      if(_IamClient)
-      {
-         _msgt.CreateMsg(_netmsg, MSG_CMD, &_clientID, "!");
-         _client.SendMsg(_netmsg);
-         offsentb = false;
-      }
-      else
-		   player1.boost(true);
+		player1.boost(true);
 	}
 	else
 	{
-      if(_IamClient)
-      {
-         if(!offsentb)
-         {
-            _msgt.CreateMsg(_netmsg, MSG_CMD, &_clientID, "@");
-            _client.SendMsg(_netmsg);
-         }
-         offsentb = true;
-      }
-      else
-         player1.boost(false);
-
+		player1.boost(false);
 	}
 
 	if(input.get_keystate(DIK_F))
 	{
-      if(_IamClient)
-      {
-         _msgt.CreateMsg(_netmsg, MSG_CMD, &_clientID, "F");
-         _client.SendMsg(_netmsg);
-      }
-      else
 		player1.shoot(timeDelta);
 	}
 }
@@ -2408,29 +2203,31 @@ BOOL CALLBACK directXClass::startDialog (HWND hwnd, UINT msg, WPARAM wParam, LPA
 		case WM_COMMAND:
 			switch(LOWORD(wParam)) {
 				case IDOK:
-					//Setting player 1
+               //Setting player 1
 					if (player1TypeAIClosedHuman == 0) {
-						SendMessage(GetDlgItem(hwnd,IDC_COMBO3), WM_GETTEXT, 256, (LPARAM)wszBuff);
+                  SendMessage(GetDlgItem(hwnd,IDC_COMBO3), WM_GETTEXT, 256, (LPARAM)wszBuff);
 						SendMessage(GetDlgItem(hwnd,IDC_COMBO2), WM_GETTEXT, 256, (LPARAM)wszBuff3);
 						SendMessage(GetDlgItem(hwnd,IDC_COMBO1), WM_GETTEXT, 256, (LPARAM)wszBuff2);
 						if (player1ShipClass == 0) {
 							player1 = shipBuilder(STANDARD, HUMAN, 1, hwnd, wszBuff, wszBuff2, wszBuff3);
+							program->currentPlayers[0] = &player1;
 						}
 						if (player1ShipClass == 1) {
 							player1 = shipBuilder(LIGHT, HUMAN, 1, hwnd, wszBuff, wszBuff2, wszBuff3);
+							program->currentPlayers[0] = &player1;
 						}
 						if (player1ShipClass == 2) {
 							player1 = shipBuilder(HEAVY, HUMAN, 1, hwnd, wszBuff, wszBuff2, wszBuff3);
+							program->currentPlayers[0] = &player1;
 						}
-						IniPlayerLocation(&player1, 0, 70, -30, 0, 0, 0);
-						program->currentPlayers[0] = &player1;
 					}
-					//Setting player 2
+			      //Setting player 2
 					if (player2TypeAIClosedHuman == 1) {
 					   SendMessage(GetDlgItem(hwnd,IDC_COMBO6), WM_GETTEXT, 256, (LPARAM)wszBuff);
 					   SendMessage(GetDlgItem(hwnd,IDC_COMBO5), WM_GETTEXT, 256, (LPARAM)wszBuff3);
 					   SendMessage(GetDlgItem(hwnd,IDC_COMBO4), WM_GETTEXT, 256, (LPARAM)wszBuff2);
-					if (player2ShipClass == 0) {
+                  if (player2ShipClass == 0) {
+                     //player2 = (MainPlayerClass*)malloc(sizeof(AIPlayer));
 							player2 = shipBuilder2(STANDARD, AI, 2, hwnd, wszBuff, wszBuff2, wszBuff3);
 						}
 						if (player2ShipClass == 1) {
@@ -2439,18 +2236,23 @@ BOOL CALLBACK directXClass::startDialog (HWND hwnd, UINT msg, WPARAM wParam, LPA
 						if (player2ShipClass == 2) {
 							player2 = shipBuilder2(HEAVY, AI, 2, hwnd, wszBuff, wszBuff2, wszBuff3);
 						}
-						IniPlayerLocation(player2, 0, 10, 50, D3DX_PI, 0, 0);
-						program->currentPlayers[1] = player2;
+                     /*player2->GetShip()->SetPosition(0, 10, 50);
+	                  player2->GetShip()->SetRotation(D3DX_PI, 0, 0);
+	                  player2->GetShip()->Update(2);
+	                  player2->GetShip()->SetRotation(0, 0, 0);
+	                  player2->SetBounds(NULL);*/
+                     IniPlayerLocation(player2, 0, 10, 50, D3DX_PI, 0, 0);
+							program->currentPlayers[1] = player2;
 					}
 					if (player2TypeAIClosedHuman == 2) {
 						program->currentPlayers[1] = NULL;
 					}
-					//Setting player 3.
+               //Setting player 3.
 					if (player3TypeAIClosedHuman == 1) {
 						SendMessage(GetDlgItem(hwnd,IDC_COMBO9), WM_GETTEXT, 256, (LPARAM)wszBuff);
 						SendMessage(GetDlgItem(hwnd,IDC_COMBO8), WM_GETTEXT, 256, (LPARAM)wszBuff3);
 						SendMessage(GetDlgItem(hwnd,IDC_COMBO7), WM_GETTEXT, 256, (LPARAM)wszBuff2);
-					if (player3ShipClass == 0) {		
+                  if (player3ShipClass == 0) {		
 							player3 = shipBuilder2(STANDARD, AI, 3, hwnd, wszBuff, wszBuff2, wszBuff3);
 						}
 						if (player3ShipClass == 1) {
@@ -2460,19 +2262,19 @@ BOOL CALLBACK directXClass::startDialog (HWND hwnd, UINT msg, WPARAM wParam, LPA
 							player3 = shipBuilder2(HEAVY, AI, 3, hwnd, wszBuff, wszBuff2, wszBuff3);
 							
 						}
-						IniPlayerLocation(player3, -30, 10, -40, -D3DX_PI/2, 0, 0);
-						program->currentPlayers[2] = player3;
+                  IniPlayerLocation(player3, -10, 10, 50, D3DX_PI, 0, 0);
+                  program->currentPlayers[2] = player3;
 					}
 					if (player3TypeAIClosedHuman == 2) {
 						program->currentPlayers[2] = NULL;
 					}
 
-					//Setting player 4
+               //Setting player 4
 					if (player4TypeAIClosedHuman == 1) {
 						SendMessage(GetDlgItem(hwnd,IDC_COMBO12), WM_GETTEXT, 256, (LPARAM)wszBuff);
 						SendMessage(GetDlgItem(hwnd,IDC_COMBO11), WM_GETTEXT, 256, (LPARAM)wszBuff3);
 						SendMessage(GetDlgItem(hwnd,IDC_COMBO10), WM_GETTEXT, 256, (LPARAM)wszBuff2);
-					if (player4ShipClass == 0) {
+                  if (player4ShipClass == 0) {
 							player4 = shipBuilder2(STANDARD, AI, 4, hwnd, wszBuff, wszBuff2, wszBuff3);
 						}
 						if (player3ShipClass == 1) {							
@@ -2482,13 +2284,13 @@ BOOL CALLBACK directXClass::startDialog (HWND hwnd, UINT msg, WPARAM wParam, LPA
 							player4 = shipBuilder2(HEAVY, AI, 4, hwnd, wszBuff, wszBuff2, wszBuff3);
 							
 						}
-						IniPlayerLocation(player4, 0, 50, 60, D3DX_PI, 0, 0);
-						program->currentPlayers[3] = player4;
+                  IniPlayerLocation(player4, 10, 10, 50, D3DX_PI, 0, 0);
+                  program->currentPlayers[3] = player4;
 					}
 					if (player4TypeAIClosedHuman == 2) {
 						program->currentPlayers[3] = NULL;
 					}
-					//Setting player 5
+               //Setting player 5
 					if (player5TypeAIClosedHuman == 1) {
 						SendMessage(GetDlgItem(hwnd,IDC_COMBO15), WM_GETTEXT, 256, (LPARAM)wszBuff);
 						SendMessage(GetDlgItem(hwnd,IDC_COMBO14), WM_GETTEXT, 256, (LPARAM)wszBuff3);
@@ -2503,18 +2305,18 @@ BOOL CALLBACK directXClass::startDialog (HWND hwnd, UINT msg, WPARAM wParam, LPA
 						if (player5ShipClass == 2) {
 							player5 = shipBuilder2(HEAVY, AI, 5, hwnd, wszBuff, wszBuff2, wszBuff3);							
 						}
-						IniPlayerLocation(player5, 30, 10, -40, D3DX_PI/2, 0, 0);
-						program->currentPlayers[4] = player5;
+                  IniPlayerLocation(player5, 0, 10, 50, D3DX_PI, 0, 0);
+                  program->currentPlayers[4] = player5;
 					}
 					if (player5TypeAIClosedHuman == 2) {
 						program->currentPlayers[4] = NULL;
 					}
-					//Setting player 6
+               //Setting player 6
 					if (player6TypeAIClosedHuman == 1) {
 						SendMessage(GetDlgItem(hwnd,IDC_COMBO18), WM_GETTEXT, 256, (LPARAM)wszBuff);
 						SendMessage(GetDlgItem(hwnd,IDC_COMBO17), WM_GETTEXT, 256, (LPARAM)wszBuff3);
 						SendMessage(GetDlgItem(hwnd,IDC_COMBO16), WM_GETTEXT, 256, (LPARAM)wszBuff2);
-						if (player6ShipClass == 0) {
+                  if (player6ShipClass == 0) {
 							player6 = shipBuilder2(STANDARD, AI, 6, hwnd, wszBuff, wszBuff2, wszBuff3);
 						}
 						if (player6ShipClass == 1) {
@@ -2523,18 +2325,18 @@ BOOL CALLBACK directXClass::startDialog (HWND hwnd, UINT msg, WPARAM wParam, LPA
 						if (player6ShipClass == 2) {
 							player6 = shipBuilder2(HEAVY, AI, 6, hwnd, wszBuff, wszBuff2, wszBuff3);						
 						}
-						IniPlayerLocation(player6, 60, 10, 30, D3DX_PI/2, 0, 0);
-						program->currentPlayers[5] = player6;                  
+                  IniPlayerLocation(player6, 0, 10, 50, D3DX_PI, 0, 0);
+                  program->currentPlayers[5] = player6;                  
 					}
 					if (player6TypeAIClosedHuman == 2) {
 						program->currentPlayers[5] = NULL;
 					}
-					//Setting player 7
+               //Setting player 7
 					if (player7TypeAIClosedHuman == 1) {
-						SendMessage(GetDlgItem(hwnd,IDC_COMBO21), WM_GETTEXT, 256, (LPARAM)wszBuff);
+                  SendMessage(GetDlgItem(hwnd,IDC_COMBO21), WM_GETTEXT, 256, (LPARAM)wszBuff);
 						SendMessage(GetDlgItem(hwnd,IDC_COMBO20), WM_GETTEXT, 256, (LPARAM)wszBuff3);
 						SendMessage(GetDlgItem(hwnd,IDC_COMBO19), WM_GETTEXT, 256, (LPARAM)wszBuff2);						
-						if (player7ShipClass == 0) {							
+                  if (player7ShipClass == 0) {							
 							player7 = shipBuilder2(STANDARD, AI, 7, hwnd, wszBuff, wszBuff2, wszBuff3);
 						}
 						if (player7ShipClass == 1) {
@@ -2543,18 +2345,18 @@ BOOL CALLBACK directXClass::startDialog (HWND hwnd, UINT msg, WPARAM wParam, LPA
 						if (player7ShipClass == 2) {						
 							player7 = shipBuilder2(HEAVY, AI, 7, hwnd, wszBuff, wszBuff2, wszBuff3);
 						}
-						IniPlayerLocation(player7, 0, 50, -60, 0, 0, 0);
-						program->currentPlayers[6] = player7;
+                  IniPlayerLocation(player7, 0, 10, 50, D3DX_PI, 0, 0);
+                  program->currentPlayers[6] = player7;
 					}
 					if (player7TypeAIClosedHuman == 2) {
 						program->currentPlayers[6] = NULL;
 					}
-					//Setting player 8.
+               //Setting player 8.
 					if (player8TypeAIClosedHuman == 1) {
-						SendMessage(GetDlgItem(hwnd,IDC_COMBO24), WM_GETTEXT, 256, (LPARAM)wszBuff);
+                  SendMessage(GetDlgItem(hwnd,IDC_COMBO24), WM_GETTEXT, 256, (LPARAM)wszBuff);
 						SendMessage(GetDlgItem(hwnd,IDC_COMBO23), WM_GETTEXT, 256, (LPARAM)wszBuff3);
 						SendMessage(GetDlgItem(hwnd,IDC_COMBO22), WM_GETTEXT, 256, (LPARAM)wszBuff2);						
-						if (player8ShipClass == 0) {
+                  if (player8ShipClass == 0) {
 							player8 = shipBuilder2(STANDARD, AI, 8, hwnd, wszBuff, wszBuff2, wszBuff3);
 						}
 						if (player8ShipClass == 1) {
@@ -2563,14 +2365,14 @@ BOOL CALLBACK directXClass::startDialog (HWND hwnd, UINT msg, WPARAM wParam, LPA
 						if (player8ShipClass == 2) {
 							player8 = shipBuilder2(HEAVY, AI, 8, hwnd, wszBuff, wszBuff2, wszBuff3);						
 						}
-						IniPlayerLocation(player8, -60, 10, 30, -D3DX_PI/2, 0, 0);
-						program->currentPlayers[7] = player8;
+                  IniPlayerLocation(player8, 0, 10, 50, D3DX_PI, 0, 0);
+	               program->currentPlayers[7] = player8;
 					}
 					if (player8TypeAIClosedHuman == 2) {
 						program->currentPlayers[7] = NULL;
 					}
 
-					//Setting projectiles.
+               //Setting projectiles.
 					for (int i = 0; i < 8; i++)
 					{
 						if (program->currentPlayers[i] != NULL) {
@@ -2793,7 +2595,7 @@ BOOL CALLBACK directXClass::startDialog (HWND hwnd, UINT msg, WPARAM wParam, LPA
 void directXClass::IniPlayerLocation(MainPlayerClass* player, float px, float py, float pz,
    float rx, float ry, float rz)
 {
-	player->GetShip()->SetPosition(px, py, pz);
+   player->GetShip()->SetPosition(px, py, pz);
 	player->GetShip()->SetRotation(rx, ry, rz);
 	player->GetShip()->Update(2);
 	player->GetShip()->SetRotation(0, 0, 0);
