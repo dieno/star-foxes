@@ -526,6 +526,13 @@ int directXClass::GameLoop(float timeDelta) {
 				currentPlayers[1]->takeHit(5);
 			}
 
+			
+			if(input.get_keystate(DIK_Q))
+			{
+				menuSelect = 0;
+				return 0;
+			}
+
 			for (int index = 0; index < 8; index++) {
 				if (currentPlayers[index] != NULL) {
 					if (currentPlayers[index]->getShipCurrentHealth() < 0 ) {
@@ -2604,10 +2611,10 @@ BOOL CALLBACK directXClass::startDialog (HWND hwnd, UINT msg, WPARAM wParam, LPA
 					SendMessage(GetDlgItem(hwnd,IDC_RADIO16), BM_CLICK, NULL, NULL);
 					player3ShipClass = 0;
 					return TRUE;
-				/*case IDC_RADI017:
-					SendMessage(GetDlgItem(hwnd,IDC_RADIO17), BM_CLICK, NULL, NULL);
+				case 1040:
+					SendMessage(GetDlgItem(hwnd,1040), BM_CLICK, NULL, NULL);
 					player3ShipClass = 1;
-					return TRUE;*/
+					return TRUE;
 				case IDC_RADIO18:
 					SendMessage(GetDlgItem(hwnd,IDC_RADIO18), BM_CLICK, NULL, NULL);
 					player3ShipClass = 2;
