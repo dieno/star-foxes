@@ -336,7 +336,7 @@ void Terrain::setupBuilding(D3DXVECTOR3 _translate, D3DXVECTOR3 _scale, int inde
 		scale(2,2) = buildingscalesEdges[index][index2]->z;
 		g_pDevice->SetTransform(D3DTS_WORLD, &(scale * translate));
 		D3DMATERIAL9* mat = new D3DMATERIAL9();
-		mat->Ambient= D3DXCOLOR(0.0f, 1.0f, 0.0f, 255.0f);
+		mat->Ambient= D3DXCOLOR(0.01f, 0.01f, 0.01f, 255.0f);
 		g_pDevice->SetMaterial(mat);
 		buildingmeshEdges[index][index2]->DrawSubset(0);
 	}

@@ -264,7 +264,7 @@ private:
 	MainPlayerClass *currentPlayers[8];
 	LPDIRECT3DSURFACE9 radarE;
 	LPDIRECT3DSURFACE9 radarA;
-	RECT player1Loc;
+	RECT radarPlayers[8];
     //MsgTranslator _msgt;
 };
 #endif
