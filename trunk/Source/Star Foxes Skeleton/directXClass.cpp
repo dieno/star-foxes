@@ -512,11 +512,11 @@ int directXClass::GameLoop(float timeDelta) {
 							}
 						}
 					}
-				} else {
+				} if (currentPlayers[index] == NULL || currentPlayers[index]->getTeamNum() == currentPlayers[0]->getTeamNum()) {
 					nullCount++;
 				}
 			}
-			if (nullCount >= 7) {
+			if (nullCount >= 8) {
 				menuSelect = 0;
 			}		
 
