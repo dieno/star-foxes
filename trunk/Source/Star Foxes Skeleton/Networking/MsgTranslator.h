@@ -22,8 +22,8 @@ enum ECOMMAND
    MV_DOWN = VK_DOWN,
 
    //MISC
-   MSC_SETID  ='i'
-
+   MSC_SETID  ='i', // set client id
+   MSC_INIFRAME = 's' // sync frames
    //TEXT
 };
 /*
