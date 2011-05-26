@@ -298,7 +298,7 @@ void MainShipClass::boost(bool active)
 void MainShipClass::loadProjectile(LPD3DXMESH mesh, D3DMATERIAL9* meshMat, LPDIRECT3DTEXTURE9* meshTex, DWORD meshNumMat)
 {
 	g_pMesh2 = mesh; 
-	g_pMeshMaterials2 = meshMat; 
+	g_pMeshMaterials2 = g_pMeshMaterials; 
 	g_pMeshTextures2 = meshTex; 
 	g_dwNumMaterials2 = meshNumMat; 
 }
