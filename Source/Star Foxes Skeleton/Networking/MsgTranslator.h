@@ -23,7 +23,8 @@ enum ECOMMAND
 
    //MISC
    MSC_SETID  ='i', // set client id
-   MSC_INIFRAME = 's' // sync frames
+   MSC_INIFRAME = 's', // sync frames
+   MSC_STARTGAME = 't' // sync frames
    //TEXT
 };
 /*
@@ -52,7 +53,7 @@ public:
    int CmpBody(char* msg);
    char GetType();
    char GetCmd();
-   char* GetID();
+   char GetID();
    ECOMMAND GetCommand();
    char GetBody();
    Msg(char* msg, int sztype, int szid, int szmsg);
