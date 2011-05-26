@@ -49,10 +49,10 @@ void Terrain::setupBuildings()
 {
 	for(int i = 0; i < 1; i++)
 	{
-		D3DXCreateBox(g_pDevice, 10, 15, 10, &buildingmesh[i], NULL);
+		D3DXCreateBox(g_pDevice, 10, 20, 10, &buildingmesh[i], NULL);
 		buildinglocations[i] = new D3DXVECTOR3();
 		buildinglocations[i]->x = 0;
-		buildinglocations[i]->y = 25;
+		buildinglocations[i]->y = 40;
 		buildinglocations[i]->z = 10;
 		buildingscales[i] = new D3DXVECTOR3();
 		buildingscales[i]->x = 1;
