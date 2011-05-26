@@ -634,7 +634,7 @@ int directXClass::GameLoop(float timeDelta) {
 			//_aiplayer1.bankLeft(0.01f);
 			//player2.(0.01f);
             Render();
-
+            }
 		break;
 
 		// In Multiplayer game, currently the same as single player as there
@@ -1738,11 +1738,12 @@ void directXClass::ProcessMsc(Msg *msg)
    switch(msg->GetCmd())
    {
    case MSC_SETID:
-      _clientID = msg->GetBody();
+     { _clientID = msg->GetBody();
       std::string str = "My ClientID is: ";
       char n[2] = {_clientID, NULL};
       str.append(n);
       _chat.AddMsgToHistory(str);
+     }
       break;
    case MSC_INIFRAME:
       _iniframe = true;
