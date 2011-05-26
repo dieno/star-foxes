@@ -43,7 +43,7 @@ void boundingBox::drawNodes(D3DXMATRIX world, D3DXVECTOR3 position)
 		D3DXMATRIX axistranslate = directXClass::Translate(axis_objectBounds[i].x, axis_objectBounds[i].y, axis_objectBounds[i].z);
 		g_pDevice->SetTransform(D3DTS_WORLD, &axistranslate);
 		g_pDevice->SetMaterial(axisMat);
-		boundingmesh[(i + 8)]->DrawSubset(0);
+		//boundingmesh[(i + 8)]->DrawSubset(0);
 	}
 	g_pDevice->SetTransform(D3DTS_WORLD, &(world));
 }

@@ -598,6 +598,7 @@ int directXClass::GameLoop(float timeDelta) {
 								if(boundingBox::checkCollision((it->getPosition() + currentPlayers[playerIndex]->GetShip()->getPositionVector()), currentPlayers[shotPlayerIndex]->GetShip()->getBound()))
 								{
 									currentPlayers[shotPlayerIndex]->takeHit(currentPlayers[shotPlayerIndex]->GetShip()->getDamagePerShot());
+									it->setTimeToLive(0);
 								}
 							}
 						}
@@ -875,22 +876,23 @@ int directXClass::RenderRadar()
 			positionVectors[index] = currentPlayers[index]->getPositionVector();
 			positionVectors[index] -= player1Pos;
 			positionVectors[index] += D3DXVECTOR3(540,0,400);
+			radarPlayers[index].bottom = positionVectors[index].z + 10;
+			radarPlayers[index].top = positionVectors[index].z - 10;
+			radarPlayers[index].left = positionVectors[index].x - 10;
+			radarPlayers[index].right = positionVectors[index].x + 10;
+
+			int rangeX = 600-480-8;
+			int rangeY = 460-340-8;
+
+			r=D3DXLoadSurfaceFromSurface(pBackSurf, NULL, &radarPlayers[index], radarA, NULL, NULL, D3DX_FILTER_TRIANGLE,0);
+			if(FAILED(r))
+				SetError(TEXT("did not copy surface radarA"));
 		} else {
 			positionVectors[index] = D3DXVECTOR3(0,0,0);
 		}
 	}
 
-	int rangeX = 600-480-8;
-	int rangeY = 460-340-8;
-
-	player1Loc.bottom = 550;
-	player1Loc.left = 390;
-	player1Loc.right = 410;
-	player1Loc.top = 540;
-
-	r=D3DXLoadSurfaceFromSurface(pBackSurf, NULL, &player1Loc, radarA, NULL, NULL, D3DX_FILTER_TRIANGLE,0);
-	if(FAILED(r))
-		SetError(TEXT("did not copy surface radarA"));
+	
 
 	pBackSurf->Release();//release lock
 	
