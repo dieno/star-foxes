@@ -206,6 +206,22 @@ public:
 
    void SetRotation(float x, float y, float z) ;
 
+	void setShipSpawnLocationRotation(D3DXVECTOR3 spawnLoc, D3DXVECTOR3 spawnRot) {
+		playerShip_.setSpawnLocationRotation(spawnLoc, spawnRot);
+	}
+
+	D3DXVECTOR3 getShipSpawnLocation() {
+		return playerShip_.getSpawnLocation();
+	}
+
+	D3DXVECTOR3 getShipSpawnRotation() {
+		return playerShip_.getSpawnRotation();
+	}
+
+	void respawn() {
+		playerShip_.respawnShip();
+	}
+
 private:
 	//Player's  name (Bob, Bill, Bojangles, etc)
 	std::wstring playerName_;
