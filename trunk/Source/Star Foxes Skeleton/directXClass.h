@@ -171,6 +171,7 @@ private:
 	void ProcessClientCmd(Msg* msg, HWND hWnd);
 	//End networking stuff
 	static void IniPlayerLocation(MainPlayerClass* player, float px, float py, float pz, float rx, float ry, float rz);
+	static void RespawnPlayer(MainPlayerClass* player);
 	void drawLine(float startX, float startY, float endX, float endY, LPDIRECT3DSURFACE9 pBackSurf);
 	void inputCommands(float timeDelta);
 	void setupCubes();
