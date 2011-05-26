@@ -376,6 +376,7 @@ int directXClass::GameInit(){
 
 //the game loop, renders, counts frames, and quits on esc key down
 int directXClass::GameLoop(float timeDelta) {
+   _timeDelta = timeDelta;
 	int nullCount = 0;
 	FrameCount();
 	
@@ -475,9 +476,19 @@ int directXClass::GameLoop(float timeDelta) {
 
 		// In Singleplayer game
 		case 2:
+      {/* WORD vkCode = 0x36; // '6'
+      INPUT keyEvent = {0};
+      keyEvent.type = INPUT_KEYBOARD;
+      keyEvent.ki.wVk = vkCode;
+      keyEvent.ki.wScan = MapVirtualKeyEx(vkCode, 0, (HKL)0xf0010413);
+      SendInput(1, &keyEvent, sizeof(keyEvent));*/
+         if(_IamClient) while(!_iniframe) {}; //sync start of frame
+         _iniframe = false;
+
 			inputCommands(timeDelta);
 
-			player1.Update(timeDelta);
+         if(!_IamClient)
+			   player1.Update(0.025f);
 
 			if(input.get_keystate(DIK_M))
 			{
@@ -607,7 +618,7 @@ int directXClass::GameLoop(float timeDelta) {
 			//_aiplayer1.bankLeft(0.01f);
 			//player2.(0.01f);
             Render();
-
+            }
 		break;
 
 		// In Multiplayer game, currently the same as single player as there
@@ -1571,15 +1582,17 @@ bool directXClass::KeyDownChat(WPARAM wParam, HWND hWnd)
       }
       if(wParam == 'P')
       {
-         CreateServer(hWnd);
-         _chat.AddMsgToHistory("Server Created!");
+         if(CreateServer(hWnd))
+            _chat.AddMsgToHistory("Server Created!");
+         else
+            _chat.AddMsgToHistory("Server Failed!");
          return true;
       }
       if(wParam == 'L')
       {
          CreateClient(hWnd, "localhost");
          //CreateClient(hWnd, "192.168.0.198");
-         _chat.AddMsgToHistory("Client connected to server .198!");
+         _chat.AddMsgToHistory("Client connected to server localhost!");
          return true;
       }
       if(wParam == 'O')
@@ -1699,13 +1712,22 @@ void directXClass::ProcessMsc(Msg *msg)
 {
    switch(msg->GetCmd())
    {
-   case MSC_SETID:
+   case MSC_SETID:{
       _clientID = msg->GetBody();
       std::string str = "My ClientID is: ";
       char n[2] = {_clientID, NULL};
       str.append(n);
       _chat.AddMsgToHistory(str);
+                  }
       break;
+   case MSC_INIFRAME:
+      _iniframe = true;
+      break;
+   default:
+      //std::string str; 
+      char a[2] = {msg->GetBody(), NULL};
+      //str.append(a);
+      _chat.AddMsgToHistory(a);
    }
 }
 
@@ -1773,6 +1795,56 @@ void directXClass::ProcessClientCmd(Msg* msg, HWND hWnd)
    const char x[1] = {msg->GetBody()};
    int num = atoi(x);
 
+   switch(msg->GetBody())
+   {
+   case 'A': { // go left
+      player1.right(false);
+      player1.left(true);
+      //player1.Update(0.03f);
+      /*std::string a; char e[2] = {msg->GetCmd(), NULL};
+      a.append("A: ");
+      a.append(e);
+      _chat.AddMsgToHistory(a);*/
+             }
+             break;
+   case 'D': //go right
+      player1.left(false);
+      player1.right(true);      
+      //player1.Update(0.03f);
+      //_chat.AddMsgToHistory("D PRESSED");
+      break;
+   case 'X': //stops horizontal rotation
+      player1.right(false);
+      player1.left(false);
+      //player1.Update(_timeDelta);
+      //_chat.AddMsgToHistory("X PRESSED");
+      break;
+   case 'W': // go down
+      player1.up(false);
+      player1.down(true);
+      //player1.Update(0.03f);
+      break;
+   case 'S': // go up
+      player1.down(false);
+      player1.up(true);
+      //player1.Update(0.03f);
+      break;
+   case 'Z': //stops vertical rotation
+      player1.up(false);
+      player1.down(false);
+      //player1.Update(0.03f);
+      break;      
+   case '!': // boost on
+      player1.boost(true);
+      break;
+   case '@': // boost off
+      player1.boost(false);
+      break;
+   case 'F': // boost off
+      player1.shoot(_timeDelta);
+      break;
+   }
+   //player1.Update(_timeDelta);
    /*if(num >= 2)
    {
       GetMeshes()->GetWorldByIndex(num)->KeyDown(msg->GetCmd());
@@ -1785,15 +1857,17 @@ void directXClass::ProcessClientCmd(Msg* msg, HWND hWnd)
       return;
    }
    if(GetMeshes()->GetSelectedWorld()->KeyDown(msg->GetCmd()))*/
-      return;
+   return;
 }
 
 
 //Networking: creating server
+//Return true if server creation successful.
 bool directXClass::CreateServer(HWND hWnd)
 {
    //Game* game = (Game*)GetWindowLong(hWnd, 0);
    //directXClass *game = directXClass::program;
+   _IamServer = false;
    std::string* msg = new std::string[1];
    ESocketError err;
    Server* server = GetServer();
@@ -1815,13 +1889,15 @@ bool directXClass::CreateServer(HWND hWnd)
 			MB_ICONINFORMATION|MB_OK);
       return false;
    }
-
+   _IamServer = true;
    return true;
 }
 
 //Networking: Create Client
+//Returns true if client connected to server successfully
 bool directXClass::CreateClient(HWND hWnd, char *hostip)
 {
+   _IamClient = false;
    std::string msg;
    //Game* game = (Game*)GetWindowLong(hWnd, 0);
    //Client* client = GetClient();
@@ -1839,6 +1915,7 @@ bool directXClass::CreateClient(HWND hWnd, char *hostip)
 	   SendMessage(hWnd,WM_DESTROY,NULL,NULL);*/
       return false;
    }
+   _IamClient = true;
    return true;
 }
 
@@ -1893,39 +1970,109 @@ D3DXMATRIX directXClass::Translate(const float dx, const float dy, const float d
     return ret;
 }    // End of Translate
 
+// Input commands for ship controls.
+// Networking: Modified to send LAN command msgs
 void directXClass::inputCommands(float timeDelta)
 {
+   static bool offsenth = false; // Networking: not send too many horizont off msgs.
+   static bool offsentv = false; // Networking: not send too many vertical off msgs.
+   static bool offsentb = false; // Networking: not send too many boost off msgs.
+   static int count = 48;
+
+   /*if(input.get_keystate(DIK_Z))
+   {
+      char c[1] = {count++};
+      if(count % 58 == 0)
+         count = 48;
+      _msgt.CreateMsg(_netmsg, MSG_MSC, "Z", c);
+      _client.SendMsg(_netmsg);
+      return;
+   }*/
+
 	if(input.get_keystate(DIK_A))
 	{
-		player1.right(false);
-		player1.left(true);
+      if(_IamClient){
+         /*char c[1] = {count++};
+         if(count % 58 == 0)
+            count = 48;*/
+         _msgt.CreateMsg(_netmsg, MSG_CMD, &_clientID, "A");
+         _client.SendMsg(_netmsg);
+         offsenth = false; 
+      } else {
+		   player1.right(false);
+		   player1.left(true);
+      }
 	}
 	else if(input.get_keystate(DIK_D))
 	{
-		player1.left(false);
-		player1.right(true);
+      if(_IamClient){
+         _msgt.CreateMsg(_netmsg, MSG_CMD, &_clientID, "D");         
+         _client.SendMsg(_netmsg);
+         offsenth = false;
+      } else {
+		   player1.left(false);
+		   player1.right(true);
+      }
 	}
 	else
 	{
-		player1.right(false);
-		player1.left(false);
+      if(_IamClient){
+         if(!offsenth)
+         {
+            _msgt.CreateMsg(_netmsg, MSG_CMD, &_clientID, "X");
+            _client.SendMsg(_netmsg);
+         }
+         offsenth = true;
+      } else {
+		   player1.right(false);
+		   player1.left(false);
+      }
 	}
-
 	
 	if(input.get_keystate(DIK_W))
 	{
-		player1.up(false);
-		player1.down(true);
+      if(_IamClient)
+      {
+         offsentv = false;
+         _msgt.CreateMsg(_netmsg, MSG_CMD, &_clientID, "W");
+         _client.SendMsg(_netmsg);
+      }
+      else
+      {
+		   player1.up(false);
+		   player1.down(true);
+      }
 	}
 	else if(input.get_keystate(DIK_S))
 	{
-		player1.down(false);
-		player1.up(true);
+      if(_IamClient)
+      {
+         offsentv = false;
+         _msgt.CreateMsg(_netmsg, MSG_CMD, &_clientID, "S");
+         _client.SendMsg(_netmsg);
+      }
+      else
+      {
+		   player1.down(false);
+		   player1.up(true);
+      }
 	}
 	else
 	{
-		player1.up(false);
-		player1.down(false);
+      if(_IamClient)
+      {
+         if(!offsentv)
+         {
+            _msgt.CreateMsg(_netmsg, MSG_CMD, &_clientID, "Z");
+            _client.SendMsg(_netmsg);
+         }
+         offsentv = true;
+      }
+      else
+      {
+		   player1.up(false);
+		   player1.down(false);
+      }
 	}
 
 	if(input.get_keystate(DIK_M) && !player1.gethasShot())
@@ -1948,15 +2095,39 @@ void directXClass::inputCommands(float timeDelta)
 
 	if(input.get_keystate(DIK_SPACE))
 	{
-		player1.boost(true);
+      if(_IamClient)
+      {
+         _msgt.CreateMsg(_netmsg, MSG_CMD, &_clientID, "!");
+         _client.SendMsg(_netmsg);
+         offsentb = false;
+      }
+      else
+		   player1.boost(true);
 	}
 	else
 	{
-		player1.boost(false);
+      if(_IamClient)
+      {
+         if(!offsentb)
+         {
+            _msgt.CreateMsg(_netmsg, MSG_CMD, &_clientID, "@");
+            _client.SendMsg(_netmsg);
+         }
+         offsentb = true;
+      }
+      else
+         player1.boost(false);
+
 	}
 
 	if(input.get_keystate(DIK_F))
 	{
+      if(_IamClient)
+      {
+         _msgt.CreateMsg(_netmsg, MSG_CMD, &_clientID, "F");
+         _client.SendMsg(_netmsg);
+      }
+      else
 		player1.shoot(timeDelta);
 	}
 }
