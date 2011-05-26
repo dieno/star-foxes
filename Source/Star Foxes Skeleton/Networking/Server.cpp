@@ -191,7 +191,7 @@ Server::Server(int maxclients)
 // Constructor: initializes server with max number of clients of 2.
 Server::Server()
 {   
-   Initialize(2);
+   Initialize(8);
 }
 
 // Sends a string msg to all the clients.
