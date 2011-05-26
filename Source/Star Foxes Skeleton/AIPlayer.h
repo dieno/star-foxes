@@ -86,7 +86,9 @@ private:
    FSM _fsm;
    bool KeepInBounds(HWND hWnd);
    D3DXVECTOR3 _shootArea;
+   bool _boosting;
 public:
+   void Start();
    PMovement _mv;   
    bool StraightenUp();
    bool StraightenDown();
