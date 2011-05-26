@@ -147,17 +147,17 @@ public:
    //Start networking stuff
    Client* GetClient();
    Server* GetServer();
+   Client _client;
+   MsgTranslator _msgt;
+   bool _IamClient;
+   bool _IamServer;
+   Server _server; 
    //End networking stuff
 private:
    //Start Networking stuff
    bool _iniframe; // synchronizes frames
    float _timeDelta;
-   char _netmsg[3]; // Temporarily saves msgs to be sent by clients
-   bool _IamClient;
-   bool _IamServer;
-   Server _server;
-   Client _client;
-   MsgTranslator _msgt;
+   char _netmsg[3]; // Temporarily saves msgs to be sent by clients    
    char _clientID;
    void OnServerSocketEvent(LPARAM lParam, WPARAM wParam, HWND hWnd);
    void OnClientSocketEvent(LPARAM lParam, HWND hWnd);
