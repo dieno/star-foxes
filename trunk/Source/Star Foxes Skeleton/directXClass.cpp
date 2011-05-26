@@ -206,8 +206,19 @@ int WINAPI directXClass::WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, P
 		else{
 			float currTime = (float) timeGetTime();
 			float timeDelta = (currTime - lastTime) * 0.001f; // get elapsed time since last update in seconds
-			GameLoop(timeDelta);
-			lastTime = currTime;
+			/*if(_IamServer)
+         {*/
+            if(timeDelta > 0.02f)
+            { // Networking: Added sync
+               GameLoop(timeDelta);
+               lastTime = currTime;
+            }
+        /* }
+         else
+         {*/
+            //GameLoop(timeDelta);
+            //lastTime = currTime;
+         //}
 		}
 	}
 	GameShutdown();// clean up the game
@@ -482,13 +493,28 @@ int directXClass::GameLoop(float timeDelta) {
       keyEvent.ki.wVk = vkCode;
       keyEvent.ki.wScan = MapVirtualKeyEx(vkCode, 0, (HKL)0xf0010413);
       SendInput(1, &keyEvent, sizeof(keyEvent));*/
-         if(_IamClient) while(!_iniframe) {}; //sync start of frame
-         _iniframe = false;
+        /* if(_IamServer)
+         {
+            //Sleep(5);
+            _msgt.CreateMsg(_netmsg, MSG_MSC, MSC_INIFRAME, "0");
+            _server.BroadcastMsg(_netmsg, 3);
+         }
+         if(_IamClient) 
+            if(!_iniframe) { 
+            WORD vkCode = 0x36; // '6'
+            INPUT keyEvent = {0};
+            keyEvent.type = INPUT_KEYBOARD;
+            keyEvent.ki.wVk = vkCode;
+            keyEvent.ki.wScan = MapVirtualKeyEx(vkCode, 0, (HKL)0xf0010413);
+            SendInput(1, &keyEvent, sizeof(keyEvent));
+               return 0;
+            }; //sync start of frame*/
+         
 
 			inputCommands(timeDelta);
 
-         if(!_IamClient)
-			   player1.Update(0.025f);
+         //if(!_IamClient)
+			   player1.Update(timeDelta);
 
 			if(input.get_keystate(DIK_M))
 			{
@@ -618,6 +644,7 @@ int directXClass::GameLoop(float timeDelta) {
 			//_aiplayer1.bankLeft(0.01f);
 			//player2.(0.01f);
             Render();
+            _iniframe = false;
             }
 		break;
 
