@@ -121,19 +121,19 @@ int WINAPI directXClass::WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, P
 	UpdateWindow(hWnd);
 	
 	if(FAILED(GameInit())){;//initialize Game
-		SetError(TEXT("Initialization Failed"));
+		SetError(TEXT("Initialization Failed\n"));
 		GameShutdown();
 		return E_FAIL;
 	}
 	
 	r=LoadBitmapToSurface(bitmapName, &pSurface, g_pDevice);
 	if(FAILED(r)){
-		SetError(TEXT("could not load background bitmap surface"));
+		SetError(TEXT("could not load background bitmap surface\n"));
 	}
 
 	r=LoadBitmapToSurface(TEXT("stars.bmp"), &bgSurface, g_pDevice);
 	if(FAILED(r)){
-		SetError(TEXT("could not load main menu background surface"));
+		SetError(TEXT("could not load main menu background surface\n"));
 	}
 
 	singlePlayerSurface = 0;
@@ -145,7 +145,7 @@ int WINAPI directXClass::WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, P
 
 	r=LoadBitmapToSurface(TEXT("SinglePlayer.bmp"), &singlePlayerSurface, g_pDevice);
 	if(FAILED(r)){
-		SetError(TEXT("could not load singleplayer menu item bitmap surface"));
+		SetError(TEXT("could not load singleplayer menu item bitmap surface\n"));
 	}
 
 	multiPlayerSurface = 0;
@@ -157,7 +157,7 @@ int WINAPI directXClass::WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, P
 
 	r=LoadBitmapToSurface(TEXT("MultiPlayer.bmp"), &multiPlayerSurface, g_pDevice);
 	if(FAILED(r)){
-		SetError(TEXT("could not load multiplayer menu item bitmap surface"));
+		SetError(TEXT("could not load multiplayer menu item bitmap surface\n"));
 	}
 
 	healthSurface = 0;
@@ -169,7 +169,7 @@ int WINAPI directXClass::WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, P
 
 	r=LoadBitmapToSurface(TEXT("health.bmp"), &healthSurface, g_pDevice);
 	if(FAILED(r)){
-		SetError(TEXT("could not load multiplayer menu item bitmap surface"));
+		SetError(TEXT("could not load multiplayer menu item bitmap surface\n"));
 	}
 
 	radarSurface = 0;
@@ -181,17 +181,17 @@ int WINAPI directXClass::WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, P
 
 	r=LoadBitmapToSurface(TEXT("radar.bmp"), &radarSurface, g_pDevice);
 	if(FAILED(r)){
-		SetError(TEXT("could not load radar bitmap surface"));
+		SetError(TEXT("could not load radar bitmap surface\n"));
 	}
 
 	r=LoadBitmapToSurface(TEXT("radarE.bmp"), &radarE, g_pDevice);
 	if(FAILED(r)){
-		SetError(TEXT("could not load radarE bitmap surface"));
+		SetError(TEXT("could not load radarE bitmap surface\n"));
 	}
 
 	r=LoadBitmapToSurface(TEXT("radarA.bmp"), &radarA, g_pDevice);
 	if(FAILED(r)){
-		SetError(TEXT("could not load radarA bitmap surface"));
+		SetError(TEXT("could not load radarA bitmap surface\n"));
 	}
 
 	lastTime = (float) timeGetTime();
@@ -237,7 +237,7 @@ int directXClass::InitDirect3DDevice(HWND hWndTarget, int Width, int Height, BOO
 	ZeroMemory(&d3dpp, sizeof(D3DPRESENT_PARAMETERS));
 	r = pD3D->GetAdapterDisplayMode(D3DADAPTER_DEFAULT, &d3ddm);
 	if(FAILED(r)){
-		SetError(TEXT("Could not get display adapter information"));
+		SetError(TEXT("Could not get display adapter information\n"));
 		return E_FAIL;
 	}
 
@@ -257,7 +257,7 @@ int directXClass::InitDirect3DDevice(HWND hWndTarget, int Width, int Height, BOO
 	
 	r=pD3D->CreateDevice(D3DADAPTER_DEFAULT, D3DDEVTYPE_HAL, hWndTarget, D3DCREATE_SOFTWARE_VERTEXPROCESSING, &d3dpp, ppDevice);
 	if(FAILED(r)){
-		SetError(TEXT("Could not create the render device"));
+		SetError(TEXT("Could not create the render device\n"));
 		return E_FAIL;
 	}
 	
@@ -297,13 +297,13 @@ int directXClass::GameInit(){
 	g_pD3D = Direct3DCreate9(D3D_SDK_VERSION);//COM object
 
 	if(g_pD3D == NULL){
-		SetError(TEXT("Could not create IDirect3D9 object"));
+		SetError(TEXT("Could not create IDirect3D9 object\n"));
 		return E_FAIL;
 	}
 	
 	r = InitDirect3DDevice(g_hWndMain, SCREEN_WIDTH, SCREEN_HEIGHT, WINDOWED, D3DFMT_X8R8G8B8, g_pD3D, &g_pDevice);
 	if(FAILED(r)){//FAILED is a macro that returns false if return value is a failure - safer than using value itself
-		SetError(TEXT("Initialization of the device failed"));
+		SetError(TEXT("Initialization of the device failed\n"));
 		return E_FAIL;
 	}
 	
@@ -371,7 +371,7 @@ int directXClass::GameInit(){
 	//player2 = MainPlayerClass("Dummy",0, 1, dummyAI); */
    
 	if(FAILED(r)){//FAILED is a macro that returns false if return value is a failure - safer than using value itself
-		SetError(TEXT("Initialization of the device failed"));
+		SetError(TEXT("Initialization of the device failed\n"));
 		return E_FAIL;
 	}
 
@@ -549,6 +549,7 @@ int directXClass::GameLoop(float timeDelta) {
 				if (currentPlayers[index] != NULL) {
 					if (currentPlayers[index]->getShipCurrentHealth() < 0 ) {
 						currentPlayers[index]->reduceLives();
+						IniPlayerLocation(currentPlayers[index], 0,50,0,0,0,0);
 						if (currentPlayers[index]->getLives() <= 0) {
 							currentPlayers[index] = NULL;
 							nullCount++;
@@ -618,7 +619,7 @@ int directXClass::GameLoop(float timeDelta) {
 							{
 								if(boundingBox::checkCollision(it->getPosition(), mainTerrain.buildingBounds[buildingIndex]))
 								{
-									directXClass::SetError(TEXT("you shot a building"));
+									directXClass::SetError(TEXT("you shot a building\n"));
 								}
 							}
 							++it;
@@ -699,7 +700,7 @@ int directXClass::Render(){
 	LPDIRECT3DSURFACE9 pBackSurf = 0;
 
 	if(!g_pDevice){
-		SetError(TEXT("Cannot render because there is no device"));
+		SetError(TEXT("Cannot render because there is no devic\n"));
 		return E_FAIL;
 	}
 
@@ -714,12 +715,12 @@ int directXClass::Render(){
 	//get pointer to backbuffer
 	r=g_pDevice->GetBackBuffer(0,0,D3DBACKBUFFER_TYPE_MONO, &pBackSurf);
 	if(FAILED(r)){
-		SetError(TEXT("Couldn't get backbuffer"));
+		SetError(TEXT("Couldn't get backbuffer\n"));
 	}
 	
 	r=D3DXLoadSurfaceFromSurface(pBackSurf, NULL, NULL, pSurface, NULL, NULL, D3DX_FILTER_TRIANGLE,0);
 	if(FAILED(r))
-		SetError(TEXT("did not copy surface"));
+		SetError(TEXT("did not copy surface\n"));
 	pBackSurf->Release();//release lock
 	
 	pBackSurf = 0;
@@ -791,7 +792,7 @@ int directXClass::Render(){
 	//get pointer to backbuffer for HUD
 	r=g_pDevice->GetBackBuffer(0,0,D3DBACKBUFFER_TYPE_MONO, &pBackSurf);
 	if(FAILED(r)){
-		SetError(TEXT("Couldn't get backbuffer"));
+		SetError(TEXT("Couldn't get backbuffer\n"));
 	}
 	pBackSurf->LockRect(&Locked, 0, 0);
 	PrintFrameRate(0, 0, TRUE, D3DCOLOR_ARGB(255,255,0,255), (DWORD*)Locked.pBits, Locked.Pitch);
@@ -799,11 +800,11 @@ int directXClass::Render(){
 
 	r=D3DXLoadSurfaceFromSurface(pBackSurf, NULL, &healthRect, healthSurface, NULL, NULL, D3DX_FILTER_TRIANGLE,0);
 	if(FAILED(r))
-		SetError(TEXT("did not copy surface health"));
+		SetError(TEXT("did not copy surface health\n"));
 
 	r=D3DXLoadSurfaceFromSurface(pBackSurf, NULL, &radarRect, radarSurface, NULL, NULL, D3DX_FILTER_TRIANGLE,0);
 	if(FAILED(r))
-		SetError(TEXT("did not copy surface health"));
+		SetError(TEXT("did not copy surface radar\n"));
 
 	pBackSurf->Release();//release lock
 	
@@ -819,7 +820,7 @@ int directXClass::RenderMainMenu(){
 	
 
 	if(!g_pDevice){
-		SetError(TEXT("Cannot render because there is no device"));
+		SetError(TEXT("Cannot render because there is no device\n"));
 		return E_FAIL;
 	}
 	//clear the display arera with colour black, ignore stencil buffer
@@ -831,12 +832,12 @@ int directXClass::RenderMainMenu(){
 	//get pointer to backbuffer
 	r=g_pDevice->GetBackBuffer(0,0,D3DBACKBUFFER_TYPE_MONO, &pBackSurf);
 	if(FAILED(r)){
-		SetError(TEXT("Couldn't get backbuffer"));
+		SetError(TEXT("Couldn't get backbuffer\n"));
 	}
 	
 	r=D3DXLoadSurfaceFromSurface(pBackSurf, NULL, NULL, bgSurface, NULL, NULL, D3DX_FILTER_TRIANGLE,0);
 	if(FAILED(r))
-		SetError(TEXT("did not copy surface main menu background"));
+		SetError(TEXT("did not copy surface main menu background\n"));
 
 	pBackSurf->LockRect(&Locked, 0, 0);
 	PrintFrameRate(0, 0, TRUE, D3DCOLOR_ARGB(255,255,0,255), (DWORD*)Locked.pBits, Locked.Pitch);
@@ -844,11 +845,11 @@ int directXClass::RenderMainMenu(){
 
 	r=D3DXLoadSurfaceFromSurface(pBackSurf, NULL, &singlePlayer, singlePlayerSurface, NULL, NULL, D3DX_FILTER_TRIANGLE,0);
 	if(FAILED(r))
-		SetError(TEXT("did not copy surface single player"));
+		SetError(TEXT("did not copy surface single player\n"));
 
 	r=D3DXLoadSurfaceFromSurface(pBackSurf, NULL, &multiPlayer, multiPlayerSurface, NULL, NULL, D3DX_FILTER_TRIANGLE,0);
 	if(FAILED(r))
-		SetError(TEXT("did not copy surface multi player"));
+		SetError(TEXT("did not copy surface multi player\n"));
 
 	pBackSurf->Release();//release lock
 	
@@ -863,7 +864,7 @@ int directXClass::RenderRadar()
 	LPDIRECT3DSURFACE9 pBackSurf = 0;
 	r=g_pDevice->GetBackBuffer(0,0,D3DBACKBUFFER_TYPE_MONO, &pBackSurf);
 	if(FAILED(r)){
-		SetError(TEXT("Couldn't get backbuffer in render radar"));
+		SetError(TEXT("Couldn't get backbuffer in render radar\n"));
 	}
 
 	D3DXVECTOR3 positionVectors[8];
@@ -889,7 +890,7 @@ int directXClass::RenderRadar()
 
 	r=D3DXLoadSurfaceFromSurface(pBackSurf, NULL, &player1Loc, radarA, NULL, NULL, D3DX_FILTER_TRIANGLE,0);
 	if(FAILED(r))
-		SetError(TEXT("did not copy surface radarA"));
+		SetError(TEXT("did not copy surface radarA\n"));
 
 	pBackSurf->Release();//release lock
 	
@@ -912,7 +913,7 @@ int directXClass::LoadBitmapToSurface(wchar_t* PathName, LPDIRECT3DSURFACE9* ppS
 
 	hBitmap = (HBITMAP)LoadImage(NULL, PathName, IMAGE_BITMAP, 0, 0, LR_LOADFROMFILE | LR_CREATEDIBSECTION);
 	if(hBitmap == NULL){
-		SetError(TEXT("Unable to load bitmap"));
+		SetError(TEXT("Unable to load bitmap\n"));
 		return E_FAIL;
 	}
 
@@ -923,13 +924,13 @@ int directXClass::LoadBitmapToSurface(wchar_t* PathName, LPDIRECT3DSURFACE9* ppS
 	r =	pDevice->CreateOffscreenPlainSurface(Bitmap.bmWidth,Bitmap.bmHeight,D3DFMT_X8R8G8B8,D3DPOOL_SCRATCH,ppSurface,NULL);
 
 	if(FAILED(r)){
-		SetError(TEXT("Unable to create surface for bitmap load"));
+		SetError(TEXT("Unable to create surface for bitmap load\n"));
 		return E_FAIL;
 	}
 	//load bitmap onto surface
 	r = D3DXLoadSurfaceFromFile(*ppSurface, NULL, NULL, PathName, NULL, D3DX_DEFAULT, 0, NULL);
 	if(FAILED(r)){
-		SetError(TEXT("Unable to load file to surface"));
+		SetError(TEXT("Unable to load file to surface\n"));
 		return E_FAIL;
 	}
 
@@ -1016,7 +1017,7 @@ void directXClass::PrintChar( int x, int y, char Character, BOOL bTransparent,
 	r = g_pAlphabetSurface->LockRect( &LockedAlphabet, 0, D3DLOCK_READONLY  );
 	if( FAILED( r ) )
 	{
-		SetError(TEXT("Couldnt lock alphabet surface for PrintChar()"));
+		SetError(TEXT("Couldnt lock alphabet surface for PrintChar()\n"));
 		return;
 	}
 	
@@ -1082,7 +1083,7 @@ HRESULT directXClass::LoadAlphabet( wchar_t* strPathName, int LetterWidth, int L
 	r = LoadBitmapToSurface( strPathName, &g_pAlphabetSurface, g_pDevice );
 	if( FAILED( r ) )
 	{
-		SetError(TEXT("Unable to load alphabet bitmap"));
+		SetError(TEXT("Unable to load alphabet bitmap\n"));
 		return E_FAIL;
 	}
 
@@ -1116,7 +1117,7 @@ void directXClass::FrameCount(){
 	QueryPerformanceCounter((LARGE_INTEGER*)&NewCount);
 
 	if( NewCount == 0)
-		SetError(TEXT("The system does not support high resolution timing"));
+		SetError(TEXT("The system does not support high resolution timing\n"));
 
 	g_FrameCount++;
 
@@ -1152,7 +1153,7 @@ HRESULT directXClass::InitTiming(){
 	QueryPerformanceFrequency((LARGE_INTEGER*)&g_Frequency);
 
 	if(g_Frequency == 0){
-		SetError(TEXT("The system does not support high resolution timing"));
+		SetError(TEXT("The system does not support high resolution timing\n"));
 		return E_FAIL;
 	}
 
