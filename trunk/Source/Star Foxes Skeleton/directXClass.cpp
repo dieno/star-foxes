@@ -516,7 +516,7 @@ int directXClass::GameLoop(float timeDelta) {
          //if(!_IamClient)
 			   player1.Update(timeDelta);
 
-			if(input.get_keystate(DIK_M))
+			/*if(input.get_keystate(DIK_M))
 			{
 				player1.takeHit(5);
 			}
@@ -524,16 +524,16 @@ int directXClass::GameLoop(float timeDelta) {
 			{
 				///player1.takeHit(-5);
 				player1.startBlinking();
-			}
+			}*/
 
 			/*if(input.get_keystate(DIK_M))
 			{
 				currentPlayers[1]->takeHit(5);
 			}*/
-			if(input.get_keystate(DIK_N))
+			/*if(input.get_keystate(DIK_N))
 			{
 				currentPlayers[1]->takeHit(5);
-			}
+			}*/
 
 			for (int index = 0; index < 8; index++) {
 				if (currentPlayers[index] != NULL) {
@@ -620,29 +620,12 @@ int directXClass::GameLoop(float timeDelta) {
 			camera.Update(timeDelta);//reset();
 			UpdateHUD();
 
-         for (int i = 1; i < 8; i++)
+			for (int i = 1; i < 8; i++)
 			{
 				if (program->currentPlayers[i] != NULL) {
 					program->currentPlayers[i]->Update(timeDelta);
 				}
 			}
-
-			//directXClass::SetError(TEXT("p1: %f"), player1.getPositionZ());
-/*			for (std::list<AIPlayer*>::const_iterator ci = _aiPlayer.begin(); ci != _aiPlayer.end(); ++ci)
-			{
-				//directXClass::SetError(TEXT("p1: %f"), player1.getRotation().z); 
-				//(*ci)->bankLeft(0.01f);
-				//MessageBoxA(g_hWndMain, "hi", "hilo", 0);
-				(*ci)->Update(timeDelta);
-            //(*ci)->updatePosition(timeDelta);
-				//(*ci)->bankUp(0.04f);
-				// (*ci)->updateRotation();
-				//(*ci)->updatePosition();
-            
-			}*/
-			//_aiPlayer.front()->bankLeft(0.01f);
-			//_aiplayer1.bankLeft(0.01f);
-			//player2.(0.01f);
             Render();
             _iniframe = false;
             }
@@ -2408,31 +2391,29 @@ BOOL CALLBACK directXClass::startDialog (HWND hwnd, UINT msg, WPARAM wParam, LPA
 		case WM_COMMAND:
 			switch(LOWORD(wParam)) {
 				case IDOK:
-               //Setting player 1
+					//Setting player 1
 					if (player1TypeAIClosedHuman == 0) {
-                  SendMessage(GetDlgItem(hwnd,IDC_COMBO3), WM_GETTEXT, 256, (LPARAM)wszBuff);
+						SendMessage(GetDlgItem(hwnd,IDC_COMBO3), WM_GETTEXT, 256, (LPARAM)wszBuff);
 						SendMessage(GetDlgItem(hwnd,IDC_COMBO2), WM_GETTEXT, 256, (LPARAM)wszBuff3);
 						SendMessage(GetDlgItem(hwnd,IDC_COMBO1), WM_GETTEXT, 256, (LPARAM)wszBuff2);
 						if (player1ShipClass == 0) {
 							player1 = shipBuilder(STANDARD, HUMAN, 1, hwnd, wszBuff, wszBuff2, wszBuff3);
-							program->currentPlayers[0] = &player1;
 						}
 						if (player1ShipClass == 1) {
 							player1 = shipBuilder(LIGHT, HUMAN, 1, hwnd, wszBuff, wszBuff2, wszBuff3);
-							program->currentPlayers[0] = &player1;
 						}
 						if (player1ShipClass == 2) {
 							player1 = shipBuilder(HEAVY, HUMAN, 1, hwnd, wszBuff, wszBuff2, wszBuff3);
-							program->currentPlayers[0] = &player1;
 						}
+						IniPlayerLocation(&player1, 0, 80, -10, 0, 0, 0);
+						program->currentPlayers[0] = &player1;
 					}
-			      //Setting player 2
+					//Setting player 2
 					if (player2TypeAIClosedHuman == 1) {
 					   SendMessage(GetDlgItem(hwnd,IDC_COMBO6), WM_GETTEXT, 256, (LPARAM)wszBuff);
 					   SendMessage(GetDlgItem(hwnd,IDC_COMBO5), WM_GETTEXT, 256, (LPARAM)wszBuff3);
 					   SendMessage(GetDlgItem(hwnd,IDC_COMBO4), WM_GETTEXT, 256, (LPARAM)wszBuff2);
-                  if (player2ShipClass == 0) {
-                     //player2 = (MainPlayerClass*)malloc(sizeof(AIPlayer));
+					if (player2ShipClass == 0) {
 							player2 = shipBuilder2(STANDARD, AI, 2, hwnd, wszBuff, wszBuff2, wszBuff3);
 						}
 						if (player2ShipClass == 1) {
@@ -2441,23 +2422,18 @@ BOOL CALLBACK directXClass::startDialog (HWND hwnd, UINT msg, WPARAM wParam, LPA
 						if (player2ShipClass == 2) {
 							player2 = shipBuilder2(HEAVY, AI, 2, hwnd, wszBuff, wszBuff2, wszBuff3);
 						}
-                     /*player2->GetShip()->SetPosition(0, 10, 50);
-	                  player2->GetShip()->SetRotation(D3DX_PI, 0, 0);
-	                  player2->GetShip()->Update(2);
-	                  player2->GetShip()->SetRotation(0, 0, 0);
-	                  player2->SetBounds(NULL);*/
-                     IniPlayerLocation(player2, 0, 10, 50, D3DX_PI, 0, 0);
-							program->currentPlayers[1] = player2;
+						IniPlayerLocation(player2, 0, 10, 50, D3DX_PI, 0, 0);
+						program->currentPlayers[1] = player2;
 					}
 					if (player2TypeAIClosedHuman == 2) {
 						program->currentPlayers[1] = NULL;
 					}
-               //Setting player 3.
+					//Setting player 3.
 					if (player3TypeAIClosedHuman == 1) {
 						SendMessage(GetDlgItem(hwnd,IDC_COMBO9), WM_GETTEXT, 256, (LPARAM)wszBuff);
 						SendMessage(GetDlgItem(hwnd,IDC_COMBO8), WM_GETTEXT, 256, (LPARAM)wszBuff3);
 						SendMessage(GetDlgItem(hwnd,IDC_COMBO7), WM_GETTEXT, 256, (LPARAM)wszBuff2);
-                  if (player3ShipClass == 0) {		
+					if (player3ShipClass == 0) {		
 							player3 = shipBuilder2(STANDARD, AI, 3, hwnd, wszBuff, wszBuff2, wszBuff3);
 						}
 						if (player3ShipClass == 1) {
@@ -2467,19 +2443,19 @@ BOOL CALLBACK directXClass::startDialog (HWND hwnd, UINT msg, WPARAM wParam, LPA
 							player3 = shipBuilder2(HEAVY, AI, 3, hwnd, wszBuff, wszBuff2, wszBuff3);
 							
 						}
-                  IniPlayerLocation(player3, -10, 10, 50, D3DX_PI, 0, 0);
-                  program->currentPlayers[2] = player3;
+						IniPlayerLocation(player3, -30, 10, -40, -D3DX_PI/2, 0, 0);
+						program->currentPlayers[2] = player3;
 					}
 					if (player3TypeAIClosedHuman == 2) {
 						program->currentPlayers[2] = NULL;
 					}
 
-               //Setting player 4
+					//Setting player 4
 					if (player4TypeAIClosedHuman == 1) {
 						SendMessage(GetDlgItem(hwnd,IDC_COMBO12), WM_GETTEXT, 256, (LPARAM)wszBuff);
 						SendMessage(GetDlgItem(hwnd,IDC_COMBO11), WM_GETTEXT, 256, (LPARAM)wszBuff3);
 						SendMessage(GetDlgItem(hwnd,IDC_COMBO10), WM_GETTEXT, 256, (LPARAM)wszBuff2);
-                  if (player4ShipClass == 0) {
+					if (player4ShipClass == 0) {
 							player4 = shipBuilder2(STANDARD, AI, 4, hwnd, wszBuff, wszBuff2, wszBuff3);
 						}
 						if (player3ShipClass == 1) {							
@@ -2489,13 +2465,13 @@ BOOL CALLBACK directXClass::startDialog (HWND hwnd, UINT msg, WPARAM wParam, LPA
 							player4 = shipBuilder2(HEAVY, AI, 4, hwnd, wszBuff, wszBuff2, wszBuff3);
 							
 						}
-                  IniPlayerLocation(player4, 10, 10, 50, D3DX_PI, 0, 0);
-                  program->currentPlayers[3] = player4;
+						IniPlayerLocation(player4, 0, 50, 60, D3DX_PI, 0, 0);
+						program->currentPlayers[3] = player4;
 					}
 					if (player4TypeAIClosedHuman == 2) {
 						program->currentPlayers[3] = NULL;
 					}
-               //Setting player 5
+					//Setting player 5
 					if (player5TypeAIClosedHuman == 1) {
 						SendMessage(GetDlgItem(hwnd,IDC_COMBO15), WM_GETTEXT, 256, (LPARAM)wszBuff);
 						SendMessage(GetDlgItem(hwnd,IDC_COMBO14), WM_GETTEXT, 256, (LPARAM)wszBuff3);
@@ -2510,18 +2486,18 @@ BOOL CALLBACK directXClass::startDialog (HWND hwnd, UINT msg, WPARAM wParam, LPA
 						if (player5ShipClass == 2) {
 							player5 = shipBuilder2(HEAVY, AI, 5, hwnd, wszBuff, wszBuff2, wszBuff3);							
 						}
-                  IniPlayerLocation(player5, 0, 10, 50, D3DX_PI, 0, 0);
-                  program->currentPlayers[4] = player5;
+						IniPlayerLocation(player5, 30, 10, -40, D3DX_PI/2, 0, 0);
+						program->currentPlayers[4] = player5;
 					}
 					if (player5TypeAIClosedHuman == 2) {
 						program->currentPlayers[4] = NULL;
 					}
-               //Setting player 6
+					//Setting player 6
 					if (player6TypeAIClosedHuman == 1) {
 						SendMessage(GetDlgItem(hwnd,IDC_COMBO18), WM_GETTEXT, 256, (LPARAM)wszBuff);
 						SendMessage(GetDlgItem(hwnd,IDC_COMBO17), WM_GETTEXT, 256, (LPARAM)wszBuff3);
 						SendMessage(GetDlgItem(hwnd,IDC_COMBO16), WM_GETTEXT, 256, (LPARAM)wszBuff2);
-                  if (player6ShipClass == 0) {
+						if (player6ShipClass == 0) {
 							player6 = shipBuilder2(STANDARD, AI, 6, hwnd, wszBuff, wszBuff2, wszBuff3);
 						}
 						if (player6ShipClass == 1) {
@@ -2530,18 +2506,18 @@ BOOL CALLBACK directXClass::startDialog (HWND hwnd, UINT msg, WPARAM wParam, LPA
 						if (player6ShipClass == 2) {
 							player6 = shipBuilder2(HEAVY, AI, 6, hwnd, wszBuff, wszBuff2, wszBuff3);						
 						}
-                  IniPlayerLocation(player6, 0, 10, 50, D3DX_PI, 0, 0);
-                  program->currentPlayers[5] = player6;                  
+						IniPlayerLocation(player6, 60, 10, 30, D3DX_PI/2, 0, 0);
+						program->currentPlayers[5] = player6;                  
 					}
 					if (player6TypeAIClosedHuman == 2) {
 						program->currentPlayers[5] = NULL;
 					}
-               //Setting player 7
+					//Setting player 7
 					if (player7TypeAIClosedHuman == 1) {
-                  SendMessage(GetDlgItem(hwnd,IDC_COMBO21), WM_GETTEXT, 256, (LPARAM)wszBuff);
+						SendMessage(GetDlgItem(hwnd,IDC_COMBO21), WM_GETTEXT, 256, (LPARAM)wszBuff);
 						SendMessage(GetDlgItem(hwnd,IDC_COMBO20), WM_GETTEXT, 256, (LPARAM)wszBuff3);
 						SendMessage(GetDlgItem(hwnd,IDC_COMBO19), WM_GETTEXT, 256, (LPARAM)wszBuff2);						
-                  if (player7ShipClass == 0) {							
+						if (player7ShipClass == 0) {							
 							player7 = shipBuilder2(STANDARD, AI, 7, hwnd, wszBuff, wszBuff2, wszBuff3);
 						}
 						if (player7ShipClass == 1) {
@@ -2550,18 +2526,18 @@ BOOL CALLBACK directXClass::startDialog (HWND hwnd, UINT msg, WPARAM wParam, LPA
 						if (player7ShipClass == 2) {						
 							player7 = shipBuilder2(HEAVY, AI, 7, hwnd, wszBuff, wszBuff2, wszBuff3);
 						}
-                  IniPlayerLocation(player7, 0, 10, 50, D3DX_PI, 0, 0);
-                  program->currentPlayers[6] = player7;
+						IniPlayerLocation(player7, 0, 50, -60, 0, 0, 0);
+						program->currentPlayers[6] = player7;
 					}
 					if (player7TypeAIClosedHuman == 2) {
 						program->currentPlayers[6] = NULL;
 					}
-               //Setting player 8.
+					//Setting player 8.
 					if (player8TypeAIClosedHuman == 1) {
-                  SendMessage(GetDlgItem(hwnd,IDC_COMBO24), WM_GETTEXT, 256, (LPARAM)wszBuff);
+						SendMessage(GetDlgItem(hwnd,IDC_COMBO24), WM_GETTEXT, 256, (LPARAM)wszBuff);
 						SendMessage(GetDlgItem(hwnd,IDC_COMBO23), WM_GETTEXT, 256, (LPARAM)wszBuff3);
 						SendMessage(GetDlgItem(hwnd,IDC_COMBO22), WM_GETTEXT, 256, (LPARAM)wszBuff2);						
-                  if (player8ShipClass == 0) {
+						if (player8ShipClass == 0) {
 							player8 = shipBuilder2(STANDARD, AI, 8, hwnd, wszBuff, wszBuff2, wszBuff3);
 						}
 						if (player8ShipClass == 1) {
@@ -2570,14 +2546,14 @@ BOOL CALLBACK directXClass::startDialog (HWND hwnd, UINT msg, WPARAM wParam, LPA
 						if (player8ShipClass == 2) {
 							player8 = shipBuilder2(HEAVY, AI, 8, hwnd, wszBuff, wszBuff2, wszBuff3);						
 						}
-                  IniPlayerLocation(player8, 0, 10, 50, D3DX_PI, 0, 0);
-	               program->currentPlayers[7] = player8;
+						IniPlayerLocation(player8, -60, 10, 30, -D3DX_PI/2, 0, 0);
+						program->currentPlayers[7] = player8;
 					}
 					if (player8TypeAIClosedHuman == 2) {
 						program->currentPlayers[7] = NULL;
 					}
 
-               //Setting projectiles.
+					//Setting projectiles.
 					for (int i = 0; i < 8; i++)
 					{
 						if (program->currentPlayers[i] != NULL) {
@@ -2800,7 +2776,7 @@ BOOL CALLBACK directXClass::startDialog (HWND hwnd, UINT msg, WPARAM wParam, LPA
 void directXClass::IniPlayerLocation(MainPlayerClass* player, float px, float py, float pz,
    float rx, float ry, float rz)
 {
-   player->GetShip()->SetPosition(px, py, pz);
+	player->GetShip()->SetPosition(px, py, pz);
 	player->GetShip()->SetRotation(rx, ry, rz);
 	player->GetShip()->Update(2);
 	player->GetShip()->SetRotation(0, 0, 0);
