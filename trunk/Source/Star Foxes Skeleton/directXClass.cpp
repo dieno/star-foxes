@@ -835,18 +835,44 @@ int directXClass::RenderRadar()
 		if (currentPlayers[index] != NULL) {
 			positionVectors[index] = currentPlayers[index]->getPositionVector();
 			positionVectors[index] -= player1Pos;
+			positionVectors[index].z *= -1;
 			positionVectors[index] += D3DXVECTOR3(540,0,400);
-			radarPlayers[index].bottom = positionVectors[index].z + 10;
-			radarPlayers[index].top = positionVectors[index].z - 10;
-			radarPlayers[index].left = positionVectors[index].x - 10;
-			radarPlayers[index].right = positionVectors[index].x + 10;
 
-			int rangeX = 600-480-8;
-			int rangeY = 460-340-8;
+			if(positionVectors[index].x > 591)
+			{
+				positionVectors[index].x = 591;
+			}
+			if(positionVectors[index].x < 489)
+			{
+				positionVectors[index].x = 489;
+			}
+			if(positionVectors[index].z < 349)
+			{
+				positionVectors[index].z = 349;
+			}
+			if(positionVectors[index].z > 451)
+			{
+				positionVectors[index].z = 451;
+			}
+				
+			radarPlayers[index].bottom = positionVectors[index].z + 5;
+			radarPlayers[index].top = positionVectors[index].z - 5;
+			radarPlayers[index].left = positionVectors[index].x - 5;
+			radarPlayers[index].right = positionVectors[index].x + 5;
 
-			r=D3DXLoadSurfaceFromSurface(pBackSurf, NULL, &radarPlayers[index], radarA, NULL, NULL, D3DX_FILTER_TRIANGLE,0);
-			if(FAILED(r))
-				SetError(TEXT("did not copy surface radarA"));
+			if(currentPlayers[index]->getTeamNum() == currentPlayers[0]->getTeamNum())
+			{
+				r=D3DXLoadSurfaceFromSurface(pBackSurf, NULL, &radarPlayers[index], radarA, NULL, NULL, D3DX_FILTER_TRIANGLE,0);
+				if(FAILED(r))
+					SetError(TEXT("did not copy surface radarA"));
+			}
+			else
+			{
+				r=D3DXLoadSurfaceFromSurface(pBackSurf, NULL, &radarPlayers[index], radarE, NULL, NULL, D3DX_FILTER_TRIANGLE,0);
+				if(FAILED(r))
+					SetError(TEXT("did not copy surface radarA"));
+			}
+			
 		} else {
 			positionVectors[index] = D3DXVECTOR3(0,0,0);
 		}
