@@ -2049,7 +2049,7 @@ void directXClass::inputCommands(float timeDelta)
             _msgt.CreateMsg(_netmsg, MSG_CMD, &_clientID, "Z");
             _client.SendMsg(_netmsg);
          }
-         offsentv = false;
+         offsentv = true;
       } else {
 		   player1.up(false);
 		   player1.down(false);
@@ -2083,16 +2083,36 @@ void directXClass::inputCommands(float timeDelta)
 
 	if(input.get_keystate(DIK_SPACE))
 	{
-		player1.boost(true);
+      if(_IamClient){
+         _msgt.CreateMsg(_netmsg, MSG_CMD, &_clientID, "!");
+         _client.SendMsg(_netmsg);
+         offsentb = false;
+      } else {
+		   player1.boost(true);
+      }
 	}
 	else
 	{
-		player1.boost(false);
+      if(_IamClient){
+         if(!offsentb)
+         {
+            _msgt.CreateMsg(_netmsg, MSG_CMD, &_clientID, "@");
+            _client.SendMsg(_netmsg);
+         }
+         offsentb = true;
+      } else {
+		   player1.boost(false);
+      }
 	}
 
 	if(input.get_keystate(DIK_F))
 	{
-		player1.shoot(timeDelta);
+      if(_IamClient){
+         _msgt.CreateMsg(_netmsg, MSG_CMD, &_clientID, "F");
+         _client.SendMsg(_netmsg);
+      } else {
+		   player1.shoot(timeDelta);
+      }
 	}
 }
 
