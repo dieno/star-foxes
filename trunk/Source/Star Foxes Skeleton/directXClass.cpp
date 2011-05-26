@@ -563,10 +563,15 @@ int directXClass::GameLoop(float timeDelta) {
 
 					while(it != currentPlayers[playerIndex]->GetShip()->projectileList.end())
 					{
-							
-						if(boundingBox::checkCollision(it->getPosition(), currentPlayers[playerIndex]->GetShip()->getBound()))
+						for (int shotPlayerIndex = 0; shotPlayerIndex < 8; shotPlayerIndex++)
 						{
-							
+							if (currentPlayers[shotPlayerIndex] != NULL && shotPlayerIndex != playerIndex) 
+							{
+								if(boundingBox::checkCollision((it->getPosition() + currentPlayers[playerIndex]->GetShip()->getPositionVector()), currentPlayers[shotPlayerIndex]->GetShip()->getBound()))
+								{
+									currentPlayers[shotPlayerIndex]->takeHit(5);
+								}
+							}
 						}
 						++it;
 					}
