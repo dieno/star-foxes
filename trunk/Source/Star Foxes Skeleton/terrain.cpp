@@ -230,6 +230,71 @@ void Terrain::setupBuildings()
 			scale(2,2) = buildingscales[i]->z;
 			g_pDevice->SetTransform(D3DTS_WORLD, &(translate));
 			buildingBounds[i] = boundingBox(buildingmesh[i], g_pDevice);
+			for (int i2 = 0; i2 < 12; i2++) {
+				buildinglocationsEdges[i][i2] = new D3DXVECTOR3(0,0,0);
+				buildingscalesEdges[i][i2] = new D3DXVECTOR3(0.5,0.5,0.5);
+			}
+			D3DXCreateBox(g_pDevice, 1, 1, 1, &buildingmeshEdges[i][0], NULL);
+			buildinglocationsEdges[i][0]->x = buildinglocations[i]->x+buildingscales[i]->x/2;
+			buildinglocationsEdges[i][0]->z = buildinglocations[i]->z+buildingscales[i]->z/2;
+			buildinglocationsEdges[i][0]->y = buildinglocations[i]->y;
+			buildingscalesEdges[i][0]->y = buildingscales[i]->y;
+			D3DXCreateBox(g_pDevice, 1, 1, 1, &buildingmeshEdges[i][1], NULL);
+			buildinglocationsEdges[i][1]->x = buildinglocations[i]->x-buildingscales[i]->x/2;
+			buildinglocationsEdges[i][1]->z = buildinglocations[i]->z-buildingscales[i]->z/2;
+			buildinglocationsEdges[i][1]->y = buildinglocations[i]->y;
+			buildingscalesEdges[i][1]->y = buildingscales[i]->y;
+			D3DXCreateBox(g_pDevice, 1, 1, 1, &buildingmeshEdges[i][2], NULL);
+			buildinglocationsEdges[i][2]->x = buildinglocations[i]->x-buildingscales[i]->x/2;
+			buildinglocationsEdges[i][2]->z = buildinglocations[i]->z+buildingscales[i]->z/2;
+			buildinglocationsEdges[i][2]->y = buildinglocations[i]->y;
+			buildingscalesEdges[i][2]->y = buildingscales[i]->y;
+			D3DXCreateBox(g_pDevice, 1, 1, 1, &buildingmeshEdges[i][3], NULL);
+			buildinglocationsEdges[i][3]->x = buildinglocations[i]->x+buildingscales[i]->x/2;
+			buildinglocationsEdges[i][3]->z = buildinglocations[i]->z-buildingscales[i]->z/2;
+			buildinglocationsEdges[i][3]->y = buildinglocations[i]->y;
+			buildingscalesEdges[i][3]->y = buildingscales[i]->y;
+			D3DXCreateBox(g_pDevice, 1, 1, 1, &buildingmeshEdges[i][4], NULL);
+			buildinglocationsEdges[i][4]->x = buildinglocations[i]->x+buildingscales[i]->x/2;
+			buildinglocationsEdges[i][4]->z = buildinglocations[i]->z;
+			buildinglocationsEdges[i][4]->y = buildinglocations[i]->y+buildingscales[i]->y/2;
+			buildingscalesEdges[i][4]->z = buildingscales[i]->z;
+			D3DXCreateBox(g_pDevice, 1, 1, 1, &buildingmeshEdges[i][5], NULL);
+			buildinglocationsEdges[i][5]->x = buildinglocations[i]->x-buildingscales[i]->x/2;
+			buildinglocationsEdges[i][5]->z = buildinglocations[i]->z;
+			buildinglocationsEdges[i][5]->y = buildinglocations[i]->y-buildingscales[i]->y/2;
+			buildingscalesEdges[i][5]->z = buildingscales[i]->z;
+			D3DXCreateBox(g_pDevice, 1, 1, 1, &buildingmeshEdges[i][6], NULL);
+			buildinglocationsEdges[i][6]->x = buildinglocations[i]->x+buildingscales[i]->x/2;
+			buildinglocationsEdges[i][6]->z = buildinglocations[i]->z;
+			buildinglocationsEdges[i][6]->y = buildinglocations[i]->y-buildingscales[i]->y/2;
+			buildingscalesEdges[i][6]->z = buildingscales[i]->z;
+			D3DXCreateBox(g_pDevice, 1, 1, 1, &buildingmeshEdges[i][7], NULL);
+			buildinglocationsEdges[i][7]->x = buildinglocations[i]->x-buildingscales[i]->x/2;
+			buildinglocationsEdges[i][7]->z = buildinglocations[i]->z;
+			buildinglocationsEdges[i][7]->y = buildinglocations[i]->y+buildingscales[i]->y/2;
+			buildingscalesEdges[i][7]->z = buildingscales[i]->z;
+			D3DXCreateBox(g_pDevice, 1, 1, 1, &buildingmeshEdges[i][8], NULL);
+			buildinglocationsEdges[i][8]->x = buildinglocations[i]->x;
+			buildinglocationsEdges[i][8]->z = buildinglocations[i]->z+buildingscales[i]->z/2;
+			buildinglocationsEdges[i][8]->y = buildinglocations[i]->y+buildingscales[i]->y/2;
+			buildingscalesEdges[i][8]->x = buildingscales[i]->x;
+			D3DXCreateBox(g_pDevice, 1, 1, 1, &buildingmeshEdges[i][9], NULL);
+			buildinglocationsEdges[i][9]->x = buildinglocations[i]->x;
+			buildinglocationsEdges[i][9]->z = buildinglocations[i]->z-buildingscales[i]->z/2;
+			buildinglocationsEdges[i][9]->y = buildinglocations[i]->y-buildingscales[i]->y/2;
+			buildingscalesEdges[i][9]->x = buildingscales[i]->x;
+			D3DXCreateBox(g_pDevice, 1, 1, 1, &buildingmeshEdges[i][10], NULL);
+			buildinglocationsEdges[i][10]->x = buildinglocations[i]->x;
+			buildinglocationsEdges[i][10]->z = buildinglocations[i]->z+buildingscales[i]->z/2;
+			buildinglocationsEdges[i][10]->y = buildinglocations[i]->y-buildingscales[i]->y/2;
+			buildingscalesEdges[i][10]->x = buildingscales[i]->x;
+			D3DXCreateBox(g_pDevice, 1, 1, 1, &buildingmeshEdges[i][11], NULL);
+			buildinglocationsEdges[i][11]->x = buildinglocations[i]->x;
+			buildinglocationsEdges[i][11]->z = buildinglocations[i]->z-buildingscales[i]->z/2;
+			buildinglocationsEdges[i][11]->y = buildinglocations[i]->y+buildingscales[i]->y/2;
+			buildingscalesEdges[i][11]->x = buildingscales[i]->x;
+
 		}
 	}
 	for (int index = 0; index < 19; index++) {
@@ -263,6 +328,18 @@ void Terrain::setupBuilding(D3DXVECTOR3 _translate, D3DXVECTOR3 _scale, int inde
 	buildingmesh[index]->DrawSubset(0);
 
 	buildingBounds[index].drawNodes(translate, _translate);
+	for (int index2 = 0; index2 < 12; index2++) {
+		D3DXMATRIX translate = directXClass::Translate(buildinglocationsEdges[index][index2]->x, buildinglocationsEdges[index][index2]->y, buildinglocationsEdges[index][index2]->z);
+		D3DXMATRIX scale = directXClass::Translate(0,0,0);
+		scale(0,0) = buildingscalesEdges[index][index2]->x;
+		scale(1,1) = buildingscalesEdges[index][index2]->y;
+		scale(2,2) = buildingscalesEdges[index][index2]->z;
+		g_pDevice->SetTransform(D3DTS_WORLD, &(scale * translate));
+		D3DMATERIAL9* mat = new D3DMATERIAL9();
+		mat->Ambient= D3DXCOLOR(0.0f, 1.0f, 0.0f, 255.0f);
+		g_pDevice->SetMaterial(mat);
+		buildingmeshEdges[index][index2]->DrawSubset(0);
+	}
 }
 
 void Terrain::showGrid(int y) {

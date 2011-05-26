@@ -164,6 +164,9 @@ private:
 	float translateZMesh1;
 	LPDIRECT3DDEVICE9 g_pDevice;
 	ID3DXMesh *buildingmesh[256];
+	ID3DXMesh *buildingmeshEdges[256][12];
+	D3DXVECTOR3 *buildinglocationsEdges[256][12];
+	D3DXVECTOR3 *buildingscalesEdges[256][12];
 };
 
 #endif
