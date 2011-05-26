@@ -107,7 +107,12 @@ public:
 	dirLight(),
 	dirLightEnabled(true),
 	radarE(),
-	radarA(){}
+	radarA(){
+      //Start Networking section
+      _IamServer = false;
+      _IamClient = false;
+      //End Networking section
+   }
 	int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pstrCmdLine, int iCmdShow);
 	static long CALLBACK WndProc(HWND hWnd, UINT uMessage, WPARAM wParam, LPARAM lParam);
 	static directXClass *program;
@@ -145,6 +150,11 @@ public:
    //End networking stuff
 private:
    //Start Networking stuff
+   bool _iniframe; // synchronizes frames
+   float _timeDelta;
+   char _netmsg[3]; // Temporarily saves msgs to be sent by clients
+   bool _IamClient;
+   bool _IamServer;
    Server _server;
    Client _client;
    MsgTranslator _msgt;
