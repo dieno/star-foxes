@@ -507,7 +507,7 @@ int directXClass::GameLoop(float timeDelta) {
 
 			player1.Update(timeDelta);
 
-			if(input.get_keystate(DIK_M))
+			/*if(input.get_keystate(DIK_M))
 			{
 				player1.takeHit(5);
 			}
@@ -515,16 +515,16 @@ int directXClass::GameLoop(float timeDelta) {
 			{
 				///player1.takeHit(-5);
 				player1.startBlinking();
-			}
+			}*/
 
 			/*if(input.get_keystate(DIK_M))
 			{
 				currentPlayers[1]->takeHit(5);
 			}*/
-			if(input.get_keystate(DIK_N))
+			/*if(input.get_keystate(DIK_N))
 			{
 				currentPlayers[1]->takeHit(5);
-			}
+			}*/
 
 			
 			if(input.get_keystate(DIK_Q))

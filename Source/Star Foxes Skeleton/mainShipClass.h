@@ -7,7 +7,7 @@
 #include "boundingBox.h"
 
 #define Y_AXIS_INVERTED false
-#define SHOOT_SPEED 0.1f
+#define SHOOT_SPEED 0.5f
 
 class MainShipClass {
 public:
