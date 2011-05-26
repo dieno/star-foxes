@@ -310,6 +310,24 @@ public:
 
    std::list<Projectile> projectileList;
 
+	void setSpawnLocationRotation(D3DXVECTOR3 spawnLoc, D3DXVECTOR3 spawnRot) {
+		vRespawnPosition_ = spawnLoc;
+		vRespawnRotation_ = spawnRot;
+	}
+
+	D3DXVECTOR3 getSpawnLocation() {
+		return vRespawnPosition_;
+	}
+
+	D3DXVECTOR3 getSpawnRotation() {
+		return vRespawnRotation_;
+	}
+
+	void respawnShip() {
+		vPosition_ = vRespawnPosition_;
+		vRotation_ = vRespawnRotation_;
+	}
+
 private:
 	static float afterburnerSpeed_;
 	int currentHealth;
@@ -337,14 +355,14 @@ private:
 	D3DXVECTOR3 vPosition_;
 	D3DXVECTOR3 vScale_;
 	D3DXVECTOR3 vRotation_;
-	 D3DXVECTOR3 vDirection_;
-	 D3DXVECTOR3 vUp_;
-	 D3DXVECTOR3 vRight_;
+	D3DXVECTOR3 vDirection_;
+	D3DXVECTOR3 vUp_;
+	D3DXVECTOR3 vRight_;
 	D3DXVECTOR3 vVelocity_;
 
 	D3DXMATRIX mWorld_; // world transformation matrix
 
-	// physics variables:
+	// physics variables
 
 	// speed at which the ship rotates
 	float RotationRate_;
@@ -387,6 +405,9 @@ private:
 
 	boundingBox shipBound;
 	
+	//respawn stuff
+	D3DXVECTOR3 vRespawnPosition_;
+	D3DXVECTOR3 vRespawnRotation_;
 };
 
 #endif

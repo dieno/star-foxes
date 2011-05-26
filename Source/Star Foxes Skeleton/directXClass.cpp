@@ -502,6 +502,7 @@ int directXClass::GameLoop(float timeDelta) {
 				if (currentPlayers[index] != NULL) {
 					if (currentPlayers[index]->getShipCurrentHealth() < 0 ) {
 						currentPlayers[index]->reduceLives();
+						RespawnPlayer(currentPlayers[index]);
 						if (currentPlayers[index]->getLives() <= 0) {
 							currentPlayers[index] = NULL;
 							nullCount++;
@@ -2220,6 +2221,9 @@ BOOL CALLBACK directXClass::startDialog (HWND hwnd, UINT msg, WPARAM wParam, LPA
 							player1 = shipBuilder(HEAVY, HUMAN, 1, hwnd, wszBuff, wszBuff2, wszBuff3);
 							program->currentPlayers[0] = &player1;
 						}
+						IniPlayerLocation(&player1, 0, 70, -30, 0, 0, 0);
+						player1.setShipSpawnLocationRotation(D3DXVECTOR3(0,70,-30),D3DXVECTOR3(0,0,0));
+						program->currentPlayers[0] = &player1;
 					}
 			      //Setting player 2
 					if (player2TypeAIClosedHuman == 1) {
@@ -2236,13 +2240,9 @@ BOOL CALLBACK directXClass::startDialog (HWND hwnd, UINT msg, WPARAM wParam, LPA
 						if (player2ShipClass == 2) {
 							player2 = shipBuilder2(HEAVY, AI, 2, hwnd, wszBuff, wszBuff2, wszBuff3);
 						}
-                     /*player2->GetShip()->SetPosition(0, 10, 50);
-	                  player2->GetShip()->SetRotation(D3DX_PI, 0, 0);
-	                  player2->GetShip()->Update(2);
-	                  player2->GetShip()->SetRotation(0, 0, 0);
-	                  player2->SetBounds(NULL);*/
-                     IniPlayerLocation(player2, 0, 10, 50, D3DX_PI, 0, 0);
-							program->currentPlayers[1] = player2;
+						IniPlayerLocation(player2, 0, 10, 50, D3DX_PI, 0, 0);
+						player2->setShipSpawnLocationRotation(D3DXVECTOR3(0,10,50),D3DXVECTOR3(D3DX_PI,0,0));
+						program->currentPlayers[1] = player2;
 					}
 					if (player2TypeAIClosedHuman == 2) {
 						program->currentPlayers[1] = NULL;
@@ -2262,8 +2262,9 @@ BOOL CALLBACK directXClass::startDialog (HWND hwnd, UINT msg, WPARAM wParam, LPA
 							player3 = shipBuilder2(HEAVY, AI, 3, hwnd, wszBuff, wszBuff2, wszBuff3);
 							
 						}
-                  IniPlayerLocation(player3, -10, 10, 50, D3DX_PI, 0, 0);
-                  program->currentPlayers[2] = player3;
+						IniPlayerLocation(player3, -30, 10, -40, -D3DX_PI/2, 0, 0);
+						player3->setShipSpawnLocationRotation(D3DXVECTOR3(-30,10,-40),D3DXVECTOR3(-D3DX_PI/2,0,0));
+						program->currentPlayers[2] = player3;
 					}
 					if (player3TypeAIClosedHuman == 2) {
 						program->currentPlayers[2] = NULL;
@@ -2284,8 +2285,9 @@ BOOL CALLBACK directXClass::startDialog (HWND hwnd, UINT msg, WPARAM wParam, LPA
 							player4 = shipBuilder2(HEAVY, AI, 4, hwnd, wszBuff, wszBuff2, wszBuff3);
 							
 						}
-                  IniPlayerLocation(player4, 10, 10, 50, D3DX_PI, 0, 0);
-                  program->currentPlayers[3] = player4;
+						IniPlayerLocation(player4, 0, 50, 60, D3DX_PI, 0, 0);
+						player4->setShipSpawnLocationRotation(D3DXVECTOR3(0,50,60),D3DXVECTOR3(D3DX_PI,0,0));
+						program->currentPlayers[3] = player4;
 					}
 					if (player4TypeAIClosedHuman == 2) {
 						program->currentPlayers[3] = NULL;
@@ -2305,8 +2307,9 @@ BOOL CALLBACK directXClass::startDialog (HWND hwnd, UINT msg, WPARAM wParam, LPA
 						if (player5ShipClass == 2) {
 							player5 = shipBuilder2(HEAVY, AI, 5, hwnd, wszBuff, wszBuff2, wszBuff3);							
 						}
-                  IniPlayerLocation(player5, 0, 10, 50, D3DX_PI, 0, 0);
-                  program->currentPlayers[4] = player5;
+						IniPlayerLocation(player5, 30, 10, -40, D3DX_PI/2, 0, 0);
+						player5->setShipSpawnLocationRotation(D3DXVECTOR3(30,10,-40),D3DXVECTOR3(D3DX_PI/2,0,0));
+						program->currentPlayers[4] = player5;
 					}
 					if (player5TypeAIClosedHuman == 2) {
 						program->currentPlayers[4] = NULL;
@@ -2325,8 +2328,9 @@ BOOL CALLBACK directXClass::startDialog (HWND hwnd, UINT msg, WPARAM wParam, LPA
 						if (player6ShipClass == 2) {
 							player6 = shipBuilder2(HEAVY, AI, 6, hwnd, wszBuff, wszBuff2, wszBuff3);						
 						}
-                  IniPlayerLocation(player6, 0, 10, 50, D3DX_PI, 0, 0);
-                  program->currentPlayers[5] = player6;                  
+						IniPlayerLocation(player6, 60, 10, 30, D3DX_PI/2, 0, 0);
+						player5->setShipSpawnLocationRotation(D3DXVECTOR3(60,10,30),D3DXVECTOR3(D3DX_PI/2,0,0));
+						program->currentPlayers[5] = player6;                  
 					}
 					if (player6TypeAIClosedHuman == 2) {
 						program->currentPlayers[5] = NULL;
@@ -2345,8 +2349,9 @@ BOOL CALLBACK directXClass::startDialog (HWND hwnd, UINT msg, WPARAM wParam, LPA
 						if (player7ShipClass == 2) {						
 							player7 = shipBuilder2(HEAVY, AI, 7, hwnd, wszBuff, wszBuff2, wszBuff3);
 						}
-                  IniPlayerLocation(player7, 0, 10, 50, D3DX_PI, 0, 0);
-                  program->currentPlayers[6] = player7;
+						IniPlayerLocation(player7, 0, 50, -60, 0, 0, 0);
+						player5->setShipSpawnLocationRotation(D3DXVECTOR3(0,50,-60),D3DXVECTOR3(0,0,0));
+						program->currentPlayers[6] = player7;
 					}
 					if (player7TypeAIClosedHuman == 2) {
 						program->currentPlayers[6] = NULL;
@@ -2365,8 +2370,9 @@ BOOL CALLBACK directXClass::startDialog (HWND hwnd, UINT msg, WPARAM wParam, LPA
 						if (player8ShipClass == 2) {
 							player8 = shipBuilder2(HEAVY, AI, 8, hwnd, wszBuff, wszBuff2, wszBuff3);						
 						}
-                  IniPlayerLocation(player8, 0, 10, 50, D3DX_PI, 0, 0);
-	               program->currentPlayers[7] = player8;
+						IniPlayerLocation(player8, -60, 10, 30, -D3DX_PI/2, 0, 0);
+						player5->setShipSpawnLocationRotation(D3DXVECTOR3(-60, 10, 30),D3DXVECTOR3(-D3DX_PI/2,0,0));
+						program->currentPlayers[7] = player8;
 					}
 					if (player8TypeAIClosedHuman == 2) {
 						program->currentPlayers[7] = NULL;
@@ -2597,6 +2603,17 @@ void directXClass::IniPlayerLocation(MainPlayerClass* player, float px, float py
 {
    player->GetShip()->SetPosition(px, py, pz);
 	player->GetShip()->SetRotation(rx, ry, rz);
+	player->GetShip()->Update(2);
+	player->GetShip()->SetRotation(0, 0, 0);
+	player->SetBounds(NULL);
+}
+
+// Initializes location, rotation and movement bounds for player. to a default start location
+// param px, py, pz: (x, y, z) position of player.
+// param rx, ry, rz: (x, y, z) rotation of player.
+void directXClass::RespawnPlayer(MainPlayerClass* player)
+{
+	player->respawn();
 	player->GetShip()->Update(2);
 	player->GetShip()->SetRotation(0, 0, 0);
 	player->SetBounds(NULL);
