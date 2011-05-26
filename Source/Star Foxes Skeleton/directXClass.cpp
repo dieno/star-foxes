@@ -475,6 +475,34 @@ int directXClass::GameLoop(float timeDelta) {
 
 		// In Singleplayer game
 		case 2:
+      {/* WORD vkCode = 0x36; // '6'
+      INPUT keyEvent = {0};
+      keyEvent.type = INPUT_KEYBOARD;
+      keyEvent.ki.wVk = vkCode;
+      keyEvent.ki.wScan = MapVirtualKeyEx(vkCode, 0, (HKL)0xf0010413);
+      SendInput(1, &keyEvent, sizeof(keyEvent));*/
+        /* if(_IamServer)
+         {
+            //Sleep(5);
+            _msgt.CreateMsg(_netmsg, MSG_MSC, MSC_INIFRAME, "0");
+            _server.BroadcastMsg(_netmsg, 3);
+         }
+         if(_IamClient) 
+            if(!_iniframe) { 
+            WORD vkCode = 0x36; // '6'
+            INPUT keyEvent = {0};
+            keyEvent.type = INPUT_KEYBOARD;
+            keyEvent.ki.wVk = vkCode;
+            keyEvent.ki.wScan = MapVirtualKeyEx(vkCode, 0, (HKL)0xf0010413);
+            SendInput(1, &keyEvent, sizeof(keyEvent));
+               return 0;
+            }; //sync start of frame*/
+         
+         if(!_IamServer && !_IamClient)
+         {
+            StartAIs();
+         }
+
 			inputCommands(timeDelta);
 
 			player1.Update(timeDelta);
@@ -516,7 +544,7 @@ int directXClass::GameLoop(float timeDelta) {
 					nullCount++;
 				}
 			}
-			if (nullCount >= 8) {
+			if (nullCount >= 7) {
 				menuSelect = 0;
 			}		
 
@@ -636,6 +664,17 @@ int directXClass::GameLoop(float timeDelta) {
 		PostQuitMessage(0);
 
 	return S_OK;
+}
+
+//Networking: Starts AI altogether.
+void directXClass::StartAIs()
+{
+	for (int i = 1; i < 8; i++)
+	{
+		if (program->currentPlayers[i] != NULL) {
+			program->currentPlayers[i]->Start();
+		}
+	}
 }
 
 //runs when game ends, cleans up everything used by the game
@@ -1187,7 +1226,7 @@ VOID directXClass::SetupMatrices(bool mesh1Active)
     // the aspect ratio, and the near and far clipping planes (which define at
     // what distances geometry should be no longer be rendered).
     D3DXMATRIXA16 matProj;
-    D3DXMatrixPerspectiveFovLH( &matProj, D3DX_PI/4, (FLOAT)SCREEN_WIDTH / (FLOAT)SCREEN_HEIGHT, 1.0f, 220.0f );
+    D3DXMatrixPerspectiveFovLH( &matProj, D3DX_PI/4, (FLOAT)SCREEN_WIDTH / (FLOAT)SCREEN_HEIGHT, 1.0f, 100.0f );
     g_pDevice->SetTransform( D3DTS_PROJECTION, &matProj );
 }
 
@@ -1705,6 +1744,16 @@ void directXClass::ProcessMsc(Msg *msg)
       str.append(n);
       _chat.AddMsgToHistory(str);
       break;
+   case MSC_INIFRAME:
+      _iniframe = true;
+      break;
+   case MSC_STARTGAME:
+      this->StartAIs();
+   default:
+      //std::string str; 
+      char a[2] = {msg->GetBody(), NULL};
+      //str.append(a);
+      _chat.AddMsgToHistory(a);
    }
 }
 
@@ -1769,9 +1818,67 @@ void directXClass::ProcessClientCmd(Msg* msg, HWND hWnd)
 
    }
    */
-   const char x[1] = {msg->GetBody()};
+   const char x[1] = {msg->GetCmd()};
    int num = atoi(x);
 
+   switch(msg->GetBody())
+   {
+   case 'A': { // go left
+      currentPlayers[num]->right(false);//player1.right(false);
+      currentPlayers[num]->left(true);//player1.left(true);
+      
+      //player1.Update(0.03f);
+      /*std::string a; char e[2] = {msg->GetCmd(), NULL};
+      a.append("A: ");
+      a.append(e);
+      _chat.AddMsgToHistory(a);*/
+             }
+             break;
+   case 'D': //go right
+      currentPlayers[num]->left(false);//player1.left(false);
+      currentPlayers[num]->right(true);//player1.right(true);      
+      //player1.Update(0.03f);
+      //_chat.AddMsgToHistory("D PRESSED");
+      break;
+   case 'X': //stops horizontal rotation
+      currentPlayers[num]->right(false);//player1.right(false);
+      currentPlayers[num]->left(false);//player1.left(false);
+      //player1.Update(_timeDelta);
+      //_chat.AddMsgToHistory("X PRESSED");
+      break;
+   case 'W': // go down
+      currentPlayers[num]->up(false);//player1.up(false);
+      currentPlayers[num]->down(true);//player1.down(true);
+      //player1.Update(0.03f);
+      break;
+   case 'S': // go up
+      currentPlayers[num]->down(false);//player1.down(false);
+      currentPlayers[num]->up(true);//player1.up(true);
+      //player1.Update(0.03f);
+      break;
+   case 'Z': //stops vertical rotation
+      currentPlayers[num]->up(false);//player1.up(false);
+      currentPlayers[num]->down(false);//player1.down(false);
+      //player1.Update(0.03f);
+      break;
+   case 'C': //stops all rotations
+      currentPlayers[num]->up(false);//player1.up(false);
+      currentPlayers[num]->down(false);//player1.down(false);
+      currentPlayers[num]->left(false);//player1.up(false);
+      currentPlayers[num]->right(false);//player1.down(false);      
+      //player1.Update(0.03f);
+      break;      
+   case '!': // boost on
+      currentPlayers[num]->boost(true);//player1.boost(true);
+      break;
+   case '@': // boost off
+      currentPlayers[num]->boost(false);//player1.boost(false);
+      break;
+   case 'F': // boost off
+      currentPlayers[num]->shoot(_timeDelta);//player1.shoot(_timeDelta);
+      break;
+   }
+   //player1.Update(_timeDelta);
    /*if(num >= 2)
    {
       GetMeshes()->GetWorldByIndex(num)->KeyDown(msg->GetCmd());
@@ -1894,6 +2001,22 @@ D3DXMATRIX directXClass::Translate(const float dx, const float dy, const float d
 
 void directXClass::inputCommands(float timeDelta)
 {
+   static bool offsenth = false; // Networking: not send too many horizont off msgs.
+   static bool offsentv = false; // Networking: not send too many vertical off msgs.
+   static bool offsentb = false; // Networking: not send too many boost off msgs.
+   static int count = 48;
+
+   /*if(input.get_keystate(DIK_Z))
+   {
+      char c[1] = {count++};
+      if(count % 58 == 0)
+         count = 48;
+      _msgt.CreateMsg(_netmsg, MSG_MSC, "Z", c);
+      _client.SendMsg(_netmsg);
+      return;
+   }*/
+   //TODO: REMOVE
+   _clientID = '0';
 	if(input.get_keystate(DIK_A))
 	{
 		player1.right(false);
@@ -1901,8 +2024,14 @@ void directXClass::inputCommands(float timeDelta)
 	}
 	else if(input.get_keystate(DIK_D))
 	{
-		player1.left(false);
-		player1.right(true);
+      if(_IamClient){
+         _msgt.CreateMsg(_netmsg, MSG_CMD, &_clientID, "D");
+         _client.SendMsg(_netmsg);
+         offsenth = false;
+      } else {
+		   player1.left(false);
+		   player1.right(true);
+      }
 	}
 	else
 	{
@@ -1925,6 +2054,13 @@ void directXClass::inputCommands(float timeDelta)
 	{
 		player1.up(false);
 		player1.down(false);
+	}
+
+   // If you are server, this starts all AIs at the same time   
+   if(input.get_keystate(DIK_T) && _IamServer)
+	{
+      _msgt.CreateMsg(_netmsg, MSG_MSC, MSC_STARTGAME, "T"); 
+      _server.BroadcastMsg(_netmsg, 3);
 	}
 
 	if(input.get_keystate(DIK_M) && !player1.gethasShot())
@@ -2226,7 +2362,7 @@ BOOL CALLBACK directXClass::startDialog (HWND hwnd, UINT msg, WPARAM wParam, LPA
 							player1 = shipBuilder(HEAVY, HUMAN, 1, hwnd, wszBuff, wszBuff2, wszBuff3);
 							program->currentPlayers[0] = &player1;
 						}
-						IniPlayerLocation(&player1, 0, 70, -30, 0, 0, 0);
+						IniPlayerLocation(&player1, 0, 80, -10, 0, 0, 0);
 						player1.setShipSpawnLocationRotation(D3DXVECTOR3(0,70,-30),D3DXVECTOR3(0,0,0));
 						program->currentPlayers[0] = &player1;
 					}
