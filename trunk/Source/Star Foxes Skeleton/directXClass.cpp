@@ -1182,7 +1182,7 @@ VOID directXClass::SetupMatrices(bool mesh1Active)
     // the aspect ratio, and the near and far clipping planes (which define at
     // what distances geometry should be no longer be rendered).
     D3DXMATRIXA16 matProj;
-    D3DXMatrixPerspectiveFovLH( &matProj, D3DX_PI/4, (FLOAT)SCREEN_WIDTH / (FLOAT)SCREEN_HEIGHT, 1.0f, 100.0f );
+    D3DXMatrixPerspectiveFovLH( &matProj, D3DX_PI/4, (FLOAT)SCREEN_WIDTH / (FLOAT)SCREEN_HEIGHT, 1.0f, 220.0f );
     g_pDevice->SetTransform( D3DTS_PROJECTION, &matProj );
 }
 
