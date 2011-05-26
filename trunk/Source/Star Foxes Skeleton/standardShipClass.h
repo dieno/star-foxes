@@ -7,12 +7,14 @@ class StandardShipClass : public MainShipClass {
 public:
 	StandardShipClass(LPD3DXMESH mesh, D3DMATERIAL9* meshMat, LPDIRECT3DTEXTURE9* meshTex, DWORD meshNumMat, LPDIRECT3DDEVICE9 newg_pDevice)
 		:MainShipClass(mesh, meshMat, meshTex, meshNumMat, newg_pDevice){
+			setDamagePerShot(1);
 			setMaxHealth(120);
 			setCurrentHealth(120);
 	}
 
 	StandardShipClass(PMESHSTRUCT meshStruct, LPDIRECT3DDEVICE9 newg_pDevice)
 		:MainShipClass(meshStruct, newg_pDevice){
+			setDamagePerShot(1);
 			setMaxHealth(120);
 			setCurrentHealth(120);
 	}
@@ -20,13 +22,8 @@ public:
 	static float getAfterburnerSpeed() {
 		return afterburnerSpeed_;
 	}
-
-	static float getDamagePerShot() {
-		return damagePerShot;
-	}
 	
 private:
 	static float afterburnerSpeed_;
-	static float damagePerShot;
 };
 #endif
