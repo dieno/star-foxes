@@ -3,6 +3,7 @@
 
 #include "directXHeader.h"
 #include "gamecore.h"
+#include "boundingBox.h"
 
 class Terrain {
 public:
@@ -143,6 +144,7 @@ public:
 	
 	short grid[55][20][38];
 	void setupBuildings();
+	boundingBox buildingBounds[19];
 	D3DXVECTOR3 *buildinglocations[256];
 	D3DXVECTOR3 *buildingscales[256];
 

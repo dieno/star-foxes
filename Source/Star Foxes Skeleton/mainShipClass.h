@@ -256,6 +256,11 @@ public:
 		return rotationAboutZMesh1;
 	}
 
+	std::list<Projectile> getProjectiles()
+	{
+		return projectileList;
+	}
+
 	void setMaxHealth(int newMaxHealth) {
 		maxHealth = newMaxHealth;
 	}
