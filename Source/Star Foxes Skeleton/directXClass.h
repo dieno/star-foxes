@@ -156,21 +156,22 @@ public:
 	bool _gameStarted;
 	//End networking stuff
 private:
-	//Start Networking stuff
-	bool _iniframe; // synchronizes frames
-	float _timeDelta;
-	char _netmsg[3]; // Temporarily saves msgs to be sent by clients    
-	char _clientID;
-	void OnServerSocketEvent(LPARAM lParam, WPARAM wParam, HWND hWnd);
-	void OnClientSocketEvent(LPARAM lParam, HWND hWnd);
-	bool CreateServer(HWND hWnd);
-	bool CreateClient(HWND hWnd, char *hostip);
-	void ProcessMsg(Msg* msg, HWND hWnd);
-	void ProcessMsc(Msg *msg);
-	void ProcessTxt(Msg* msg);
-	void ProcessClientCmd(Msg* msg, HWND hWnd);
-	//End networking stuff
-	static void IniPlayerLocation(MainPlayerClass* player, float px, float py, float pz, float rx, float ry, float rz);
+   //Start Networking stuff
+   void StartAIs(); // Starts all AIs at the same time
+   bool _iniframe; // synchronizes frames
+   float _timeDelta;
+   char _netmsg[3]; // Temporarily saves msgs to be sent by clients    
+   char _clientID;
+   void OnServerSocketEvent(LPARAM lParam, WPARAM wParam, HWND hWnd);
+   void OnClientSocketEvent(LPARAM lParam, HWND hWnd);
+   bool CreateServer(HWND hWnd);
+   bool CreateClient(HWND hWnd, char *hostip);
+   void ProcessMsg(Msg* msg, HWND hWnd);
+   void ProcessMsc(Msg *msg);
+   void ProcessTxt(Msg* msg);
+   void ProcessClientCmd(Msg* msg, HWND hWnd);
+   //End networking stuff
+   static void IniPlayerLocation(MainPlayerClass* player, float px, float py, float pz, float rx, float ry, float rz);
 	static void RespawnPlayer(MainPlayerClass* player);
 	void drawLine(float startX, float startY, float endX, float endY, LPDIRECT3DSURFACE9 pBackSurf);
 	void inputCommands(float timeDelta);
