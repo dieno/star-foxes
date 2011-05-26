@@ -9,7 +9,7 @@ void FSM::setCurrentState(EState _state)
    currentState = _state;   
 }
 
-int FSM::getMasterIdx() 
+int FSM::getMasterIdx()
 {
 	return masterIdx;
 }
@@ -235,7 +235,7 @@ void AIPlayer::SetBounds(D3DXVECTOR3* pos)
 {
    // Bounds of movement for ship
    float xzBound = 60;
-   _mv->top = xzBound;
+   _mv->top = 100;
    _mv->bottom = 5;
    _mv->left = -xzBound;
    _mv->right = xzBound;
@@ -249,10 +249,18 @@ void AIPlayer::SetBounds(D3DXVECTOR3* pos)
    _mv->straightUpLow = 0.2f;
 }
 
+// The AI starts moving and updating only if when you call this function first
+void AIPlayer::Start()
+{
+   _boosting = true;
+}
+
 // Heart of the AI. Updates AI behaviour.
 // TODO: Behaviour evaluator to evaluate what behaviour to activate.
 void AIPlayer::Update(float timeDelta)
 {
+   /*if(!_boosting) // Have to call Start() for the AI to start moving
+   return;*/
    D3DXVECTOR3 target = _fsm.eval();
    HWND hWnd = _fsm.getGameState()->getHWND();
    boost(true);
@@ -328,7 +336,7 @@ void AIPlayer::Wander(HWND hWnd)
          _mv->count *= 5;
    }   
 
-   Move(hWnd, _mv->dir, &thing);
+   Move(hWnd, _mv->dir, &thing, true);
    _mv->count--;
 }
 
@@ -378,7 +386,7 @@ void AIPlayer::Flee(HWND hWnd, D3DXVECTOR3 pos)
       }
       else
       {
-         Move(hWnd, _mv->dir, NULL);
+         Move(hWnd, _mv->dir, NULL, true);
          _mv->count--;
       }
    }
@@ -387,39 +395,75 @@ void AIPlayer::Flee(HWND hWnd, D3DXVECTOR3 pos)
 // Moves AI to 8 determined directions: up, down, upleft, downright, etc.
 // The movement happens within bounds set with SetBounds() function.
 // If the AI stops whenever it tries to go outside the bounds.
-EDir AIPlayer::Move(HWND hWnd, int dir, bool *outbound)
+// param move: whether to active or cancel the move
+EDir AIPlayer::Move(HWND hWnd, int dir, bool *outbound, bool move)
 {
+   if(directXClass::program->_IamClient){
+      return DIR_NONE;
+   }
+   static char _netmsg[3];
+   static char id[1];
    switch(dir)
    {
    case UP: //0
-         this->down(true);//this->up(0.04f);
+      //if(directXClass::program->_IamServer)
+      if(directXClass::program->_IamServer){
+         id[0] = 1;
+         directXClass::program->_msgt.CreateMsg(_netmsg, MSG_CMD, id, "S");
+         directXClass::program->_server.BroadcastMsg(_netmsg, 3);
+      }
+      else
+         this->down(move);//this->up(0.04f);
       return UP;
    case DWN: //1
-         this->up(true);//this->down(0.04f);
+      if(directXClass::program->_IamServer){
+         id[0] = 1;
+         directXClass::program->_msgt.CreateMsg(_netmsg, MSG_CMD, id, "W");
+         directXClass::program->_server.BroadcastMsg(_netmsg, 3);
+      }
+      else
+         this->up(move);//this->down(0.04f);
       return DWN;
    case LFT: //2
-      this->left(true);//this->left(0.05f);
+      if(directXClass::program->_IamServer){
+         id[0] = 1;
+         directXClass::program->_msgt.CreateMsg(_netmsg, MSG_CMD, id, "A");
+         directXClass::program->_server.BroadcastMsg(_netmsg, 3);
+      }
+      else
+         this->left(move);//this->left(0.05f);
       return LFT;
    case RGHT: //3
-      this->right(true);//this->right(0.05f);
+      if(directXClass::program->_IamServer){
+         id[0] = 1;
+         directXClass::program->_msgt.CreateMsg(_netmsg, MSG_CMD, id, "D");
+         directXClass::program->_server.BroadcastMsg(_netmsg, 3);
+      }
+      else
+         this->right(move);//this->right(0.05f);
       return RGHT;
    case UPRGHT:
-      Move(hWnd, UP, NULL);
-      Move(hWnd, RGHT, NULL);
+      Move(hWnd, UP, NULL, move);
+      Move(hWnd, RGHT, NULL, move);
       return UPRGHT;
    case UPLEFT:
-      Move(hWnd, UP, NULL);
-      Move(hWnd, LFT, NULL);
+      Move(hWnd, UP, NULL, move);
+      Move(hWnd, LFT, NULL, move);
       return UPLEFT;
    case DWNRGHT:
-      Move(hWnd, DWN, NULL);
-      Move(hWnd, RGHT, NULL);
+      Move(hWnd, DWN, NULL, move);
+      Move(hWnd, RGHT, NULL, move);
       return DWNRGHT;
    case DWNLFT:
-      Move(hWnd, DWN, NULL);
-      Move(hWnd, LFT, NULL);
+      Move(hWnd, DWN, NULL, move);
+      Move(hWnd, LFT, NULL, move);
       return DWNLFT;
    default:
+      if(directXClass::program->_IamServer){
+         id[0] = 1;
+         directXClass::program->_msgt.CreateMsg(_netmsg, MSG_CMD, id, "C");
+         directXClass::program->_server.BroadcastMsg(_netmsg, 3);
+      }
       left(false);
       right(false);
       up(false);
@@ -443,36 +487,40 @@ void AIPlayer::Seek(D3DXVECTOR3 enemyPos) {
    angle2 = atan2(d.z, d.x) - atan2(0, 1.0f);
    if(angle2 > off)
       if(getUpVector().y > 0) // Check up vector to see if ship is upside down
-         left(true);
+         Move(NULL, LFT, NULL, true);//left(true);
       else
-         right(true);
+         Move(NULL, RGHT, NULL, true);//right(true);
    else if(angle2 < -off)
       if(getUpVector().y > 0) // Check up vector to see if ship is upside down
-         right(true);
+         Move(NULL, RGHT, NULL, true);//right(true);
       else 
-         left(true);
+         Move(NULL, LFT, NULL, true); //left(true);
    else
    {
-      left(false);
-      right(false);
+      Move(NULL, LFT, NULL, false);
+      Move(NULL, RGHT, NULL, false);
+      //left(false);
+      //right(false);
    }
    
    float offy = 0.1f;
    float yy = d.y - getDirectionVector().y;
    if(yy > offy)
       if(getUpVector().y > 0)
-         down(true);
+         Move(NULL, UP, NULL, true);//down(true);
       else
-         up(true);
+         Move(NULL, DWN, NULL, true);
    else if(yy < -offy)
       if(getUpVector().y > 0)
-         up(true);
+         Move(NULL, DWN, NULL, true);//up(true);
       else
-         down(true);
+         Move(NULL, UP, NULL, true);//down(true);
    else
    {
-      up(false);
-      down(false);
+      Move(NULL, DWN, NULL, false);
+      Move(NULL, UP, NULL, false);
+      //up(false);
+      //down(false);
    }
    //calculating vertical rotation
    //d2.z = -d2.z;
@@ -552,13 +600,13 @@ void AIPlayer::Rotate2DvectorYZ(D3DXVECTOR3* pV2, float angle)
 bool AIPlayer::StraightenUp()
 {
    float off = 0.2f;
-   Move(NULL, DIR_NONE, NULL);
+   Move(NULL, DIR_NONE, NULL, true);
    if(getDirectionVector().y > 0.4f || getDirectionVector().y < off)
    {
       if(getUpVector().y > 0)
-         Move(NULL, UP, NULL);
+         Move(NULL, UP, NULL, true);
       else
-         Move(NULL, DWN, NULL);
+         Move(NULL, DWN, NULL, true);
       return false;
    }
    else
@@ -567,7 +615,7 @@ bool AIPlayer::StraightenUp()
       down(false);
       left(false);
       right(false);*/
-      Move(NULL, DIR_NONE, NULL);
+      Move(NULL, DIR_NONE, NULL, false);
       return true;
    }
 }
@@ -576,18 +624,18 @@ bool AIPlayer::StraightenUp()
 bool AIPlayer::StraightenDown()
 {
    float off = 0.2f;
-   Move(NULL, DIR_NONE, NULL);
+   Move(NULL, DIR_NONE, NULL, false);
    if(getDirectionVector().y > 0)// || getDirectionVector().y < -0.4f)
    {
       if(getUpVector().y > 0)
-         Move(NULL, DWN, NULL);
+         Move(NULL, DWN, NULL, true);
       else
-         Move(NULL, UP, NULL);
+         Move(NULL, UP, NULL, true);
       return false;
    }
    else
    {
-      Move(NULL, DIR_NONE, NULL);
+      Move(NULL, DIR_NONE, NULL, false);
       /*up(false);
       down(false);
       left(false);
@@ -636,6 +684,7 @@ void AIPlayer::GetMeToPosVector(D3DXVECTOR3* loc, D3DXVECTOR3* res, float* dist)
 void AIPlayer::IniAI()
 {
    //_mv = (PMovement) malloc (sizeof(PMovement));
+   _boosting = false;
    float shootarea = 0.2f;
    srand(timeGetTime());
    _mv = (Movement*) malloc (sizeof(Movement));
