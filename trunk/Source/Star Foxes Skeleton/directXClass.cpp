@@ -1922,7 +1922,7 @@ bool directXClass::CreateServer(HWND hWnd)
 			MB_ICONINFORMATION|MB_OK);
       return false;
    }
-
+   _IamServer = true;
    return true;
 }
 
@@ -1946,6 +1946,7 @@ bool directXClass::CreateClient(HWND hWnd, char *hostip)
 	   SendMessage(hWnd,WM_DESTROY,NULL,NULL);*/
       return false;
    }
+   _IamClient = true;
    return true;
 }
 
