@@ -308,6 +308,8 @@ public:
 	   return shipBound;
    }
 
+   std::list<Projectile> projectileList;
+
 private:
 	static float afterburnerSpeed_;
 	int currentHealth;
@@ -328,7 +330,7 @@ private:
 	float translateZMesh1;
 	LPDIRECT3DDEVICE9 g_pDevice;
 	static float damagePerShot;
-	std::list<Projectile> projectileList;
+	
 	float timeToShoot;
 
 	// ship's location & orientation

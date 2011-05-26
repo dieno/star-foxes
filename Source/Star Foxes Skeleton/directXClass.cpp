@@ -539,15 +539,46 @@ int directXClass::GameLoop(float timeDelta) {
 				} 
 			}
 
-			//Check to see if any of the lasers are colliding with players
+			//Check to see if any of the projectiles are colliding with players
 			for (int playerIndex = 0; playerIndex < 8; playerIndex++)
 			{
 				if (currentPlayers[playerIndex] != NULL) 
 				{	
-					
+					std::list<Projectile>::iterator it = currentPlayers[playerIndex]->GetShip()->projectileList.begin();
+
+					while(it != currentPlayers[playerIndex]->GetShip()->projectileList.end())
+					{
+							
+						if(boundingBox::checkCollision(it->getPosition(), currentPlayers[playerIndex]->GetShip()->getBound()))
+						{
+							currentPlayers[playerIndex]->takeHit(1);
+						}
+						++it;
+					}
 				} 
 			}
 
+			//Check to see if any of the projectiles are colliding with buildings
+			for (int playerIndex = 0; playerIndex < 8; playerIndex++)
+			{
+				if (currentPlayers[playerIndex] != NULL) 
+				{	
+						std::list<Projectile>::iterator it = currentPlayers[playerIndex]->GetShip()->projectileList.begin();
+
+						while(it != currentPlayers[playerIndex]->GetShip()->projectileList.end())
+						{
+							for(int buildingIndex = 0; buildingIndex < 19; buildingIndex++)
+							{
+								if(boundingBox::checkCollision(it->getPosition(), mainTerrain.buildingBounds[buildingIndex]))
+								{
+									directXClass::SetError(TEXT("you shot a building"));
+								}
+							}
+							++it;
+						}
+					
+				} 
+			}
 			updateCameraTarget();
 			camera.Update(timeDelta);//reset();
 			UpdateHUD();
