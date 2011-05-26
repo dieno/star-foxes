@@ -522,25 +522,30 @@ int directXClass::GameLoop(float timeDelta) {
 			updateCameraTarget();
 			camera.Update(timeDelta);
 
-			// if player1 is within the collision box
-			if(player1.getPosition().x < (mainTerrain.buildinglocations[0]->x + mainTerrain.buildingscales[0]->x)
-				&& player1.getPosition().x > (mainTerrain.buildinglocations[0]->x - mainTerrain.buildingscales[0]->x)
-				&& player1.getPosition().y < (mainTerrain.buildinglocations[0]->y + mainTerrain.buildingscales[0]->y)
-				&& player1.getPosition().y > (mainTerrain.buildinglocations[0]->y - mainTerrain.buildingscales[0]->y)
-				&& player1.getPosition().z < (mainTerrain.buildinglocations[0]->z + mainTerrain.buildingscales[0]->z)
-				&& player1.getPosition().z > (mainTerrain.buildinglocations[0]->z - mainTerrain.buildingscales[0]->z))
+			
+
+			//Check to see if any of the players are colliding with buildings
+			for (int playerIndex = 0; playerIndex < 8; playerIndex++)
 			{
-				// if they have not already taken damage from the collision, take damage
-				if(player1.gethadCollision() == false)
+				if (currentPlayers[playerIndex] != NULL) 
 				{
-					player1.sethadCollision(true);
-					player1.takeHit(10);
-				}
+					for(int buildingIndex = 0; buildingIndex < 19; buildingIndex++)
+					{
+						if(boundingBox::checkCollision(currentPlayers[playerIndex]->GetShip()->getPositionVector(), mainTerrain.buildingBounds[buildingIndex]))
+						{
+							currentPlayers[playerIndex]->takeHit(1);
+						}
+					}
+				} 
 			}
-			else
+
+			//Check to see if any of the lasers are colliding with players
+			for (int playerIndex = 0; playerIndex < 8; playerIndex++)
 			{
-				// when the player leaves the collision box, enable them to take collision damage
-				player1.sethadCollision(false);
+				if (currentPlayers[playerIndex] != NULL) 
+				{	
+					
+				} 
 			}
 
 			updateCameraTarget();

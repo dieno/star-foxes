@@ -206,7 +206,7 @@ void MainShipClass::setupWorld()
 	updateWorldMatrix();
 
 	g_pDevice->SetTransform(D3DTS_WORLD, &mWorld_);
-	this->getBound().drawNodes(mWorld_);
+	this->getBound().drawNodes(mWorld_, this->vPosition_);
 
 	D3DXMatrixIdentity(&mWorld_);
 }

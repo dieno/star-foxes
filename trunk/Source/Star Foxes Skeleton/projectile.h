@@ -36,6 +36,8 @@ public:
 
 	float getTimeToLive() { return timeToLive_; }
 
+	D3DXVECTOR3 getPosition() { return vPosition_; }
+
 private:
 	LPDIRECT3DDEVICE9 pDevice;
 

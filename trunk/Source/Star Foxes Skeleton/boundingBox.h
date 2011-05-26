@@ -35,19 +35,32 @@ public:
 		mat = new D3DMATERIAL9();
 		mat->Ambient= D3DXCOLOR(0.0f, 0.0f, 0.5f, 255.0f);
 
+		axisMat = new D3DMATERIAL9();
+		axisMat->Ambient= D3DXCOLOR(1.0f, 1.0f, 1.0f, 255.0f);
+
 		setupNodes();
 
 	}
-	void drawNodes(D3DXMATRIX world);
+
+	D3DXVECTOR3 axis_objectBounds [8];
+	D3DXVECTOR3 axisMinBounds,axisMaxBounds;
+	
+
+	void drawNodes(D3DXMATRIX world, D3DXVECTOR3 shipPosition);
+	static bool checkCollision(D3DXVECTOR3 position, boundingBox object2);
 private:
-	D3DXVECTOR3 minBounds,maxBounds;
+	
+	
 	HRESULT hr;
 	BYTE* pVertices;
 	D3DXVECTOR3 m_objectBounds [8];
+	D3DXVECTOR3 minBounds,maxBounds;
+	
 
 	void setupNodes();
 	LPDIRECT3DDEVICE9 g_pDevice;
 	D3DMATERIAL9* mat;
+	D3DMATERIAL9* axisMat;
 	ID3DXMesh *boundingmesh[256];
 	D3DXVECTOR3 *boundinglocations[256];
 };
