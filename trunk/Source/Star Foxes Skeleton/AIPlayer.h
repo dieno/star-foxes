@@ -101,7 +101,7 @@ public:
    void Wander(HWND hWnd);
    void Flee(HWND hWnd, D3DXVECTOR3 pos);
    virtual void Update(float timeDelta);
-   EDir Move(HWND hWnd, int dir, bool* outbound);
+   EDir Move(HWND hWnd, int dir, bool* outbound, bool move);
    void SetBehaviour(EState beh);
    virtual void SetBounds(D3DXVECTOR3* pos);
    void IniAI();
