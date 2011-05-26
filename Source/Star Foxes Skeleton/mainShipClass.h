@@ -102,6 +102,7 @@ public:
 		projectileList(),
 		blinkStartTime(0),
 		isBlinkedOut(false){
+		 damagePerShot = 1;
          IniVectors();
       }
 
@@ -139,6 +140,8 @@ public:
 	D3DXVECTOR3 getDirectionVector() { return vDirection_; }
 
 	D3DXVECTOR3 getUpVector() { return vUp_; }
+
+	float getDmgPerShot() { return damagePerShot; }
 
 	D3DXVECTOR3 getRightVector() 
 	{
@@ -273,8 +276,12 @@ public:
 		return afterburnerSpeed_;
 	}
 
-	static float getDamagePerShot() {
+	float getDamagePerShot() {
 		return damagePerShot;
+	}
+
+	void setDamagePerShot(float _damagePerShot) {
+		damagePerShot = _damagePerShot;
 	}
 
 	void loadProjectile(LPD3DXMESH mesh, D3DMATERIAL9* meshMat, LPDIRECT3DTEXTURE9* meshTex, DWORD meshNumMat);
@@ -347,7 +354,7 @@ private:
 	float translateXMesh1;
 	float translateZMesh1;
 	LPDIRECT3DDEVICE9 g_pDevice;
-	static float damagePerShot;
+	float damagePerShot;
 	
 	float timeToShoot;
 

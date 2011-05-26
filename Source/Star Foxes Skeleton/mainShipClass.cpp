@@ -2,7 +2,6 @@
 #include "directXClass.h"
 
 float MainShipClass::afterburnerSpeed_ =  5.0f;
-float MainShipClass::damagePerShot =  1.0f;
 /*
 D3DXVECTOR3 MainShipClass::vRight_	   = D3DXVECTOR3(1.0f,0.0f,0.0f);
 D3DXVECTOR3 MainShipClass::vUp_		   = D3DXVECTOR3(0.0f,1.0f,0.0f);

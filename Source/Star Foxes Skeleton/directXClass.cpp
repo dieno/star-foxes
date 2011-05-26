@@ -569,7 +569,7 @@ int directXClass::GameLoop(float timeDelta) {
 							{
 								if(boundingBox::checkCollision((it->getPosition() + currentPlayers[playerIndex]->GetShip()->getPositionVector()), currentPlayers[shotPlayerIndex]->GetShip()->getBound()))
 								{
-									currentPlayers[shotPlayerIndex]->takeHit(5);
+									currentPlayers[shotPlayerIndex]->takeHit(currentPlayers[shotPlayerIndex]->GetShip()->getDamagePerShot());
 								}
 							}
 						}
