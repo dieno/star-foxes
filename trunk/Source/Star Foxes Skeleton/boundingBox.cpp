@@ -11,14 +11,6 @@ void boundingBox::setupNodes()
 
 void boundingBox::drawNodes(D3DXMATRIX world, D3DXVECTOR3 position)
 {
-	
-	for(int i = 0; i < 8; i++)
-	{
-		D3DXMATRIX translate = directXClass::Translate(m_objectBounds[i].x, m_objectBounds[i].y, m_objectBounds[i].z);
-		g_pDevice->SetTransform(D3DTS_WORLD, &(translate * world));
-		g_pDevice->SetMaterial(mat);
-		boundingmesh[i]->DrawSubset(0);
-	}
 
 	axisMinBounds.x = m_objectBounds[0].x + position.x;
 	axisMaxBounds.x = m_objectBounds[0].x + position.x;

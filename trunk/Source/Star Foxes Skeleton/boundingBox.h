@@ -46,7 +46,7 @@ public:
 	D3DXVECTOR3 axisMinBounds,axisMaxBounds;
 	
 
-	void drawNodes(D3DXMATRIX world, D3DXVECTOR3 shipPosition);
+	void drawNodes(D3DXMATRIX world, D3DXVECTOR3 position);
 	static bool checkCollision(D3DXVECTOR3 position, boundingBox object2);
 private:
 	
