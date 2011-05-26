@@ -61,7 +61,7 @@ D3DXVECTOR3 FSM::eval()
 {
 	D3DXVECTOR3 target;
 	
-	directXClass::SetError(TEXT("FSM // Evaluating game state..."));
+	directXClass::SetError(TEXT("FSM // Evaluating game state...\n"));
 
 	switch(currentState){
 		case FLEE:
