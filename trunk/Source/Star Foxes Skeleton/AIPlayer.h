@@ -16,7 +16,8 @@ enum EDir
    UPLEFT = 5,
    DWNRGHT = 6,
    DWNLFT = 7,
-   DIR_NONE
+   FWRD = 20, 
+   DIR_NONE // this doesn't apply to forward boost move
 };
 
 enum EState
@@ -87,8 +88,12 @@ private:
    bool KeepInBounds(HWND hWnd);
    D3DXVECTOR3 _shootArea;
    bool _boosting;
+   void CancelVertMove();
+   void CancelHorzMove();
+   bool _horzOff;
+   bool _vertOff;
 public:
-   void Start();
+   virtual void Start();
    PMovement _mv;   
    bool StraightenUp();
    bool StraightenDown();
