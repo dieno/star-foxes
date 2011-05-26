@@ -259,13 +259,18 @@ void AIPlayer::Start()
 // TODO: Behaviour evaluator to evaluate what behaviour to activate.
 void AIPlayer::Update(float timeDelta)
 {
-   /*if(!_boosting) // Have to call Start() for the AI to start moving
-   return;*/
-   D3DXVECTOR3 target = _fsm.eval();
-   HWND hWnd = _fsm.getGameState()->getHWND();
-   boost(true);
+   if(!_boosting) // Have to call Start() for the AI to start moving
+      return;   
+   if(directXClass::program->_IamClient && !directXClass::program->_IamServer)
+   {
+      MainPlayerClass::Update(timeDelta);
+      return;
+   }
 
-   if(KeepInBounds(hWnd))
+  // D3DXVECTOR3 target = _fsm.eval();
+  // HWND hWnd = _fsm.getGameState()->getHWND();   
+   Move(NULL, FWRD, NULL, true);
+ /*  if(KeepInBounds(hWnd))
    { 
 	  switch(_fsm.getCurrentState())
 	   {
@@ -282,8 +287,13 @@ void AIPlayer::Update(float timeDelta)
 			Seek(target);
 			break;
 	  }
-   }
-
+   }*/
+   //----->TODO: Change this back to normal.
+   D3DXVECTOR3 target = _fsm.eval();
+   _fsm.setCurrentState(SEEK);
+   Seek(target);
+   Shoot(target, timeDelta);
+   // ---->
    MainPlayerClass::Update(timeDelta);
 }
 
@@ -324,7 +334,7 @@ bool AIPlayer::KeepInBounds(HWND hWnd)
 // AI Behaviour: makes AI wander around randomly.
 void AIPlayer::Wander(HWND hWnd)
 {   
-   bool thing = false;
+   //bool thing = false;
 
    if(_mv->count <= 0 )
    {  
@@ -336,7 +346,7 @@ void AIPlayer::Wander(HWND hWnd)
          _mv->count *= 5;
    }   
 
-   Move(hWnd, _mv->dir, &thing, true);
+   Move(NULL, _mv->dir, NULL, true);
    _mv->count--;
 }
 
@@ -366,14 +376,14 @@ void AIPlayer::Flee(HWND hWnd, D3DXVECTOR3 pos)
    if(abs(angle2) < halfPi)
    {
       if(angle2 > 0)
-         left(true);
+         Move(NULL, LFT, NULL, true);//left(true);
       else
-         right(true);
+         Move(NULL, RGHT, NULL, true);//right(true);
    }
    else
    {
-      right(false);
-      left(false);
+      CancelHorzMove();//Move(NULL, RGHT, NULL, false);//right(false);
+      //Move(NULL, LFT, NULL, false);//left(false);
       if(_mv->count <= 0)
       {
          _mv->dir = std::rand() % 6;
@@ -392,24 +402,58 @@ void AIPlayer::Flee(HWND hWnd, D3DXVECTOR3 pos)
    }
 }
 
+void AIPlayer::CancelHorzMove()
+{
+   static char _netmsg[3];
+   static char id[1];
+   id[0] = '1';
+   if(directXClass::program->_IamServer)
+   {
+      directXClass::program->_msgt.CreateMsg(_netmsg, MSG_CMD, id, "X");
+      directXClass::program->_server.BroadcastMsg(_netmsg, 3);
+   }
+   else
+   {
+      left(false);
+      right(false);
+   }
+}
+
+void AIPlayer::CancelVertMove()
+{
+   static char _netmsg[3];
+   static char id[1];
+   id[0] = '1';
+   if(directXClass::program->_IamServer)
+   {
+      directXClass::program->_msgt.CreateMsg(_netmsg, MSG_CMD, id, "Z");
+      directXClass::program->_server.BroadcastMsg(_netmsg, 3);
+   }
+   else
+   {
+      up(false);
+      down(false);
+   }
+}
 // Moves AI to 8 determined directions: up, down, upleft, downright, etc.
 // The movement happens within bounds set with SetBounds() function.
 // If the AI stops whenever it tries to go outside the bounds.
 // param move: whether to active or cancel the move
 EDir AIPlayer::Move(HWND hWnd, int dir, bool *outbound, bool move)
 {
-   if(directXClass::program->_IamClient){
+   /*if(directXClass::program->_IamClient){
       return DIR_NONE;
-   }
+   }*/
    static char _netmsg[3];
    static char id[1];
+   id[0] = '1';
+
    switch(dir)
    {
    case UP: //0
       //if(directXClass::program->_IamServer)
       if(directXClass::program->_IamServer){
-         id[0] = 1;
-         directXClass::program->_msgt.CreateMsg(_netmsg, MSG_CMD, id, "S");
+         directXClass::program->_msgt.CreateMsg(_netmsg, MSG_CMD, id, "W");
          directXClass::program->_server.BroadcastMsg(_netmsg, 3);
       }
       else
@@ -417,8 +461,7 @@ EDir AIPlayer::Move(HWND hWnd, int dir, bool *outbound, bool move)
       return UP;
    case DWN: //1
       if(directXClass::program->_IamServer){
-         id[0] = 1;
-         directXClass::program->_msgt.CreateMsg(_netmsg, MSG_CMD, id, "W");
+         directXClass::program->_msgt.CreateMsg(_netmsg, MSG_CMD, id, "S");
          directXClass::program->_server.BroadcastMsg(_netmsg, 3);
       }
       else
@@ -426,7 +469,6 @@ EDir AIPlayer::Move(HWND hWnd, int dir, bool *outbound, bool move)
       return DWN;
    case LFT: //2
       if(directXClass::program->_IamServer){
-         id[0] = 1;
          directXClass::program->_msgt.CreateMsg(_netmsg, MSG_CMD, id, "A");
          directXClass::program->_server.BroadcastMsg(_netmsg, 3);
       }
@@ -435,7 +477,6 @@ EDir AIPlayer::Move(HWND hWnd, int dir, bool *outbound, bool move)
       return LFT;
    case RGHT: //3
       if(directXClass::program->_IamServer){
-         id[0] = 1;
          directXClass::program->_msgt.CreateMsg(_netmsg, MSG_CMD, id, "D");
          directXClass::program->_server.BroadcastMsg(_netmsg, 3);
       }
@@ -458,9 +499,16 @@ EDir AIPlayer::Move(HWND hWnd, int dir, bool *outbound, bool move)
       Move(hWnd, DWN, NULL, move);
       Move(hWnd, LFT, NULL, move);
       return DWNLFT;
+   case FWRD:
+      if(directXClass::program->_IamServer){
+         directXClass::program->_msgt.CreateMsg(_netmsg, MSG_CMD, id, "!");
+         directXClass::program->_server.BroadcastMsg(_netmsg, 3);
+      }
+      else
+         boost(move);
+      break;
    default:
       if(directXClass::program->_IamServer){
-         id[0] = 1;
          directXClass::program->_msgt.CreateMsg(_netmsg, MSG_CMD, id, "C");
          directXClass::program->_server.BroadcastMsg(_netmsg, 3);
       }
@@ -468,7 +516,7 @@ EDir AIPlayer::Move(HWND hWnd, int dir, bool *outbound, bool move)
       right(false);
       up(false);
       down(false);
-      return DIR_NONE;
+      return DIR_NONE; //Doesn't apply for forward boost move.
    }
 }
 
@@ -497,8 +545,9 @@ void AIPlayer::Seek(D3DXVECTOR3 enemyPos) {
          Move(NULL, LFT, NULL, true); //left(true);
    else
    {
-      Move(NULL, LFT, NULL, false);
-      Move(NULL, RGHT, NULL, false);
+      CancelHorzMove();
+      //Move(NULL, LFT, NULL, false);
+      //Move(NULL, RGHT, NULL, false);
       //left(false);
       //right(false);
    }
@@ -517,8 +566,9 @@ void AIPlayer::Seek(D3DXVECTOR3 enemyPos) {
          Move(NULL, UP, NULL, true);//down(true);
    else
    {
-      Move(NULL, DWN, NULL, false);
-      Move(NULL, UP, NULL, false);
+      CancelVertMove();
+      //Move(NULL, DWN, NULL, false);
+      //Move(NULL, UP, NULL, false);
       //up(false);
       //down(false);
    }
@@ -655,15 +705,23 @@ void AIPlayer::Attack(D3DXVECTOR3 target, float timeDelta)
 
 void AIPlayer::Shoot(D3DXVECTOR3 target, float timeDelta)
 {
+   static char _netmsg[3];
+   static char id[1] = {'1'};
 	D3DXVECTOR3 dist;
 	float fDist;
 	GetMeToPosVector(&target, &dist, &fDist);
 
-	D3DXVECTOR3	comp = getPositionVector();
+	D3DXVECTOR3	comp = getDirectionVector();
     D3DXVECTOR3 diff = comp - dist;
 
     if(abs(diff.x) < _shootArea.x && abs(diff.y) < _shootArea.y) {
-       MainPlayerClass::shoot(timeDelta);
+       if(directXClass::program->_IamServer)
+       {
+         directXClass::program->_msgt.CreateMsg(_netmsg, MSG_CMD, id, "F");
+         directXClass::program->_server.BroadcastMsg(_netmsg, 3);
+       }
+       else
+         MainPlayerClass::shoot(timeDelta);
 	}
 }
 
@@ -685,6 +743,8 @@ void AIPlayer::IniAI()
 {
    //_mv = (PMovement) malloc (sizeof(PMovement));
    _boosting = false;
+   _horzOff = false;
+   _vertOff = false;
    float shootarea = 0.2f;
    srand(timeGetTime());
    _mv = (Movement*) malloc (sizeof(Movement));
