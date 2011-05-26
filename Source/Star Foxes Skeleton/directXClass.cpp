@@ -487,37 +487,38 @@ int directXClass::GameLoop(float timeDelta) {
 
 		// In Singleplayer game
 		case 2:
-      {/* WORD vkCode = 0x36; // '6'
-      INPUT keyEvent = {0};
-      keyEvent.type = INPUT_KEYBOARD;
-      keyEvent.ki.wVk = vkCode;
-      keyEvent.ki.wScan = MapVirtualKeyEx(vkCode, 0, (HKL)0xf0010413);
-      SendInput(1, &keyEvent, sizeof(keyEvent));*/
-        /* if(_IamServer)
-         {
-            //Sleep(5);
-            _msgt.CreateMsg(_netmsg, MSG_MSC, MSC_INIFRAME, "0");
-            _server.BroadcastMsg(_netmsg, 3);
-         }
-         if(_IamClient) 
-            if(!_iniframe) { 
-            WORD vkCode = 0x36; // '6'
-            INPUT keyEvent = {0};
-            keyEvent.type = INPUT_KEYBOARD;
-            keyEvent.ki.wVk = vkCode;
-            keyEvent.ki.wScan = MapVirtualKeyEx(vkCode, 0, (HKL)0xf0010413);
-            SendInput(1, &keyEvent, sizeof(keyEvent));
-               return 0;
-            }; //sync start of frame*/
+			{
+			/* WORD vkCode = 0x36; // '6'
+			INPUT keyEvent = {0};
+			keyEvent.type = INPUT_KEYBOARD;
+			keyEvent.ki.wVk = vkCode;
+			keyEvent.ki.wScan = MapVirtualKeyEx(vkCode, 0, (HKL)0xf0010413);
+			SendInput(1, &keyEvent, sizeof(keyEvent));*/
+			/* if(_IamServer)
+			{
+				//Sleep(5);
+				_msgt.CreateMsg(_netmsg, MSG_MSC, MSC_INIFRAME, "0");
+				_server.BroadcastMsg(_netmsg, 3);
+			}
+			if(_IamClient) 
+				if(!_iniframe) { 
+					WORD vkCode = 0x36; // '6'
+					INPUT keyEvent = {0};
+					keyEvent.type = INPUT_KEYBOARD;
+					keyEvent.ki.wVk = vkCode;
+					keyEvent.ki.wScan = MapVirtualKeyEx(vkCode, 0, (HKL)0xf0010413);
+					SendInput(1, &keyEvent, sizeof(keyEvent));
+					return 0;
+				}; //sync start of frame*/
          
 
 			inputCommands(timeDelta);
 
-         if(!_IamServer && !_IamClient)
-         {
-         }
-         //if(!_IamClient)
-			   player1.Update(timeDelta);
+			if(!_IamServer && !_IamClient)
+			{
+			}
+			//if(!_IamClient)
+			player1.Update(timeDelta);
 
 			/*if(input.get_keystate(DIK_M))
 			{
@@ -538,6 +539,12 @@ int directXClass::GameLoop(float timeDelta) {
 				currentPlayers[1]->takeHit(5);
 			}*/
 
+			if(input.get_keystate(DIK_Q))
+			{
+				menuSelect = 0;
+				return 0;
+			}
+
 			for (int index = 0; index < 8; index++) {
 				if (currentPlayers[index] != NULL) {
 					if (currentPlayers[index]->getShipCurrentHealth() < 0 ) {
@@ -551,7 +558,7 @@ int directXClass::GameLoop(float timeDelta) {
 							}
 						}
 					}
-				} else {
+				} if (currentPlayers[index] ==  NULL || currentPlayers[index]->getTeamNum() == player1.getTeamNum()) {
 					nullCount++;
 				}
 			}
@@ -632,7 +639,7 @@ int directXClass::GameLoop(float timeDelta) {
             Render();
             _iniframe = false;
             }
-		break;
+			break;
 
 		// In Multiplayer game, currently the same as single player as there
 		// is currently no difference
@@ -1218,7 +1225,7 @@ VOID directXClass::SetupMatrices(bool mesh1Active)
     // the aspect ratio, and the near and far clipping planes (which define at
     // what distances geometry should be no longer be rendered).
     D3DXMATRIXA16 matProj;
-    D3DXMatrixPerspectiveFovLH( &matProj, D3DX_PI/4, (FLOAT)SCREEN_WIDTH / (FLOAT)SCREEN_HEIGHT, 1.0f, 100.0f );
+    D3DXMatrixPerspectiveFovLH( &matProj, D3DX_PI/4, (FLOAT)SCREEN_WIDTH / (FLOAT)SCREEN_HEIGHT, 1.0f, 220.0f );
     g_pDevice->SetTransform( D3DTS_PROJECTION, &matProj );
 }
 
@@ -2414,7 +2421,7 @@ BOOL CALLBACK directXClass::startDialog (HWND hwnd, UINT msg, WPARAM wParam, LPA
 						if (player1ShipClass == 2) {
 							player1 = shipBuilder(HEAVY, HUMAN, 1, hwnd, wszBuff, wszBuff2, wszBuff3);
 						}
-						IniPlayerLocation(&player1, 0, 80, -10, 0, 0, 0);
+						IniPlayerLocation(&player1, 0, 70, -30, 0, 0, 0);
 						program->currentPlayers[0] = &player1;
 					}
 					//Setting player 2
