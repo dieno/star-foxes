@@ -2204,9 +2204,9 @@ BOOL CALLBACK directXClass::startDialog (HWND hwnd, UINT msg, WPARAM wParam, LPA
 		case WM_COMMAND:
 			switch(LOWORD(wParam)) {
 				case IDOK:
-               //Setting player 1
+					//Setting player 1
 					if (player1TypeAIClosedHuman == 0) {
-                  SendMessage(GetDlgItem(hwnd,IDC_COMBO3), WM_GETTEXT, 256, (LPARAM)wszBuff);
+						SendMessage(GetDlgItem(hwnd,IDC_COMBO3), WM_GETTEXT, 256, (LPARAM)wszBuff);
 						SendMessage(GetDlgItem(hwnd,IDC_COMBO2), WM_GETTEXT, 256, (LPARAM)wszBuff3);
 						SendMessage(GetDlgItem(hwnd,IDC_COMBO1), WM_GETTEXT, 256, (LPARAM)wszBuff2);
 						if (player1ShipClass == 0) {
@@ -2225,13 +2225,12 @@ BOOL CALLBACK directXClass::startDialog (HWND hwnd, UINT msg, WPARAM wParam, LPA
 						player1.setShipSpawnLocationRotation(D3DXVECTOR3(0,70,-30),D3DXVECTOR3(0,0,0));
 						program->currentPlayers[0] = &player1;
 					}
-			      //Setting player 2
+					//Setting player 2
 					if (player2TypeAIClosedHuman == 1) {
 					   SendMessage(GetDlgItem(hwnd,IDC_COMBO6), WM_GETTEXT, 256, (LPARAM)wszBuff);
 					   SendMessage(GetDlgItem(hwnd,IDC_COMBO5), WM_GETTEXT, 256, (LPARAM)wszBuff3);
 					   SendMessage(GetDlgItem(hwnd,IDC_COMBO4), WM_GETTEXT, 256, (LPARAM)wszBuff2);
-                  if (player2ShipClass == 0) {
-                     //player2 = (MainPlayerClass*)malloc(sizeof(AIPlayer));
+						if (player2ShipClass == 0) {
 							player2 = shipBuilder2(STANDARD, AI, 2, hwnd, wszBuff, wszBuff2, wszBuff3);
 						}
 						if (player2ShipClass == 1) {
@@ -2247,12 +2246,12 @@ BOOL CALLBACK directXClass::startDialog (HWND hwnd, UINT msg, WPARAM wParam, LPA
 					if (player2TypeAIClosedHuman == 2) {
 						program->currentPlayers[1] = NULL;
 					}
-               //Setting player 3.
+					//Setting player 3.
 					if (player3TypeAIClosedHuman == 1) {
 						SendMessage(GetDlgItem(hwnd,IDC_COMBO9), WM_GETTEXT, 256, (LPARAM)wszBuff);
 						SendMessage(GetDlgItem(hwnd,IDC_COMBO8), WM_GETTEXT, 256, (LPARAM)wszBuff3);
 						SendMessage(GetDlgItem(hwnd,IDC_COMBO7), WM_GETTEXT, 256, (LPARAM)wszBuff2);
-                  if (player3ShipClass == 0) {		
+						if (player3ShipClass == 0) {		
 							player3 = shipBuilder2(STANDARD, AI, 3, hwnd, wszBuff, wszBuff2, wszBuff3);
 						}
 						if (player3ShipClass == 1) {
@@ -2270,12 +2269,12 @@ BOOL CALLBACK directXClass::startDialog (HWND hwnd, UINT msg, WPARAM wParam, LPA
 						program->currentPlayers[2] = NULL;
 					}
 
-               //Setting player 4
+					//Setting player 4
 					if (player4TypeAIClosedHuman == 1) {
 						SendMessage(GetDlgItem(hwnd,IDC_COMBO12), WM_GETTEXT, 256, (LPARAM)wszBuff);
 						SendMessage(GetDlgItem(hwnd,IDC_COMBO11), WM_GETTEXT, 256, (LPARAM)wszBuff3);
 						SendMessage(GetDlgItem(hwnd,IDC_COMBO10), WM_GETTEXT, 256, (LPARAM)wszBuff2);
-                  if (player4ShipClass == 0) {
+						if (player4ShipClass == 0) {
 							player4 = shipBuilder2(STANDARD, AI, 4, hwnd, wszBuff, wszBuff2, wszBuff3);
 						}
 						if (player3ShipClass == 1) {							
@@ -2292,7 +2291,7 @@ BOOL CALLBACK directXClass::startDialog (HWND hwnd, UINT msg, WPARAM wParam, LPA
 					if (player4TypeAIClosedHuman == 2) {
 						program->currentPlayers[3] = NULL;
 					}
-               //Setting player 5
+					//Setting player 5
 					if (player5TypeAIClosedHuman == 1) {
 						SendMessage(GetDlgItem(hwnd,IDC_COMBO15), WM_GETTEXT, 256, (LPARAM)wszBuff);
 						SendMessage(GetDlgItem(hwnd,IDC_COMBO14), WM_GETTEXT, 256, (LPARAM)wszBuff3);
@@ -2314,12 +2313,12 @@ BOOL CALLBACK directXClass::startDialog (HWND hwnd, UINT msg, WPARAM wParam, LPA
 					if (player5TypeAIClosedHuman == 2) {
 						program->currentPlayers[4] = NULL;
 					}
-               //Setting player 6
+					//Setting player 6
 					if (player6TypeAIClosedHuman == 1) {
 						SendMessage(GetDlgItem(hwnd,IDC_COMBO18), WM_GETTEXT, 256, (LPARAM)wszBuff);
 						SendMessage(GetDlgItem(hwnd,IDC_COMBO17), WM_GETTEXT, 256, (LPARAM)wszBuff3);
 						SendMessage(GetDlgItem(hwnd,IDC_COMBO16), WM_GETTEXT, 256, (LPARAM)wszBuff2);
-                  if (player6ShipClass == 0) {
+						if (player6ShipClass == 0) {
 							player6 = shipBuilder2(STANDARD, AI, 6, hwnd, wszBuff, wszBuff2, wszBuff3);
 						}
 						if (player6ShipClass == 1) {
@@ -2335,12 +2334,12 @@ BOOL CALLBACK directXClass::startDialog (HWND hwnd, UINT msg, WPARAM wParam, LPA
 					if (player6TypeAIClosedHuman == 2) {
 						program->currentPlayers[5] = NULL;
 					}
-               //Setting player 7
+					//Setting player 7
 					if (player7TypeAIClosedHuman == 1) {
-                  SendMessage(GetDlgItem(hwnd,IDC_COMBO21), WM_GETTEXT, 256, (LPARAM)wszBuff);
+						SendMessage(GetDlgItem(hwnd,IDC_COMBO21), WM_GETTEXT, 256, (LPARAM)wszBuff);
 						SendMessage(GetDlgItem(hwnd,IDC_COMBO20), WM_GETTEXT, 256, (LPARAM)wszBuff3);
 						SendMessage(GetDlgItem(hwnd,IDC_COMBO19), WM_GETTEXT, 256, (LPARAM)wszBuff2);						
-                  if (player7ShipClass == 0) {							
+						if (player7ShipClass == 0) {							
 							player7 = shipBuilder2(STANDARD, AI, 7, hwnd, wszBuff, wszBuff2, wszBuff3);
 						}
 						if (player7ShipClass == 1) {
@@ -2356,12 +2355,12 @@ BOOL CALLBACK directXClass::startDialog (HWND hwnd, UINT msg, WPARAM wParam, LPA
 					if (player7TypeAIClosedHuman == 2) {
 						program->currentPlayers[6] = NULL;
 					}
-               //Setting player 8.
+					//Setting player 8.
 					if (player8TypeAIClosedHuman == 1) {
-                  SendMessage(GetDlgItem(hwnd,IDC_COMBO24), WM_GETTEXT, 256, (LPARAM)wszBuff);
+						SendMessage(GetDlgItem(hwnd,IDC_COMBO24), WM_GETTEXT, 256, (LPARAM)wszBuff);
 						SendMessage(GetDlgItem(hwnd,IDC_COMBO23), WM_GETTEXT, 256, (LPARAM)wszBuff3);
 						SendMessage(GetDlgItem(hwnd,IDC_COMBO22), WM_GETTEXT, 256, (LPARAM)wszBuff2);						
-                  if (player8ShipClass == 0) {
+					if (player8ShipClass == 0) {
 							player8 = shipBuilder2(STANDARD, AI, 8, hwnd, wszBuff, wszBuff2, wszBuff3);
 						}
 						if (player8ShipClass == 1) {
@@ -2378,7 +2377,7 @@ BOOL CALLBACK directXClass::startDialog (HWND hwnd, UINT msg, WPARAM wParam, LPA
 						program->currentPlayers[7] = NULL;
 					}
 
-               //Setting projectiles.
+					//Setting projectiles.
 					for (int i = 0; i < 8; i++)
 					{
 						if (program->currentPlayers[i] != NULL) {
