@@ -111,6 +111,7 @@ public:
       //Start Networking section
       _IamServer = false;
       _IamClient = false;
+      _gameStarted = false;
       //End Networking section
    }
 	int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pstrCmdLine, int iCmdShow);
@@ -151,7 +152,8 @@ public:
    MsgTranslator _msgt;
    bool _IamClient;
    bool _IamServer;
-   Server _server; 
+   Server _server;
+   bool _gameStarted;
    //End networking stuff
 private:
    //Start Networking stuff
