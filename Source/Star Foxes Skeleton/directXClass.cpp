@@ -513,6 +513,9 @@ int directXClass::GameLoop(float timeDelta) {
 
 			inputCommands(timeDelta);
 
+         if(!_IamServer && !_IamClient)
+         {
+         }
          //if(!_IamClient)
 			   player1.Update(timeDelta);
 
@@ -659,6 +662,12 @@ int directXClass::GameLoop(float timeDelta) {
 
 	return S_OK;
 }
+
+//Networking: Starts AI altogether.
+/*int directXClass::StartAIs()
+{
+   for()
+}*/
 
 //runs when game ends, cleans up everything used by the game
 int directXClass::GameShutdown(){
