@@ -311,53 +311,6 @@ int directXClass::GameInit(){
 	
 
 	static D3DMATERIAL9* mat1 = new D3DMATERIAL9;
-	/*dummyAI2 = StandardShipClass(g_pMesh, mat1, g_pMeshTextures, 1, g_pDevice);
-	static AIPlayer ai1 = AIPlayer(dummyAI2, name, 0, 1, &program->_gamestate, 8);
-	//ai1.GetShip()->setTranslation(10, 10, 10);   
-	ai1.GetShip()->SetPosition(0, 10, 50);
-	ai1.GetShip()->SetRotation(D3DX_PI, 0, 0);
-	ai1.GetShip()->Update(2);
-	ai1.GetShip()->SetRotation(0, 0, 0);
-	//ai1.SetRotation(0, D3DX_PI, 0);
-	//ai1.SetBehaviour(SEEK);
-	ai1.SetBounds(ai1.getPosition());   
-   ai1.initProjectiles(program->g_pMeshLaser, program->g_pMeshMaterialsLaser, program->g_pMeshTexturesLaser, program->g_dwNumMaterialsLaser);
-	//ai1.GetShip()->SetMtrlColor(D3DXCOLOR(0, 255.0f, 0, 255.0f), D3DXCOLOR(0, 255.0f, 0, 255.0f), D3DXCOLOR(0, 255.0f, 0, 255.0f));
-  
-	//ai1.updatePosition(1);
-
-	//static D3DMATERIAL9* mat2 = new D3DMATERIAL9;
-	//static AIPlayer ai2 = AIPlayer(g_pMesh, mat2, g_pMeshTextures, 1, g_pDevice, "AI",0, 1);
-	//ai2.GetShip()->setTranslation(100, 100, -5);
-	////ai2.GetShip()->setRotation(0, 3.1f, 0);
-	//ai2.SetBounds(ai2.getPosition());
-	////ai2.GetShip()->SetMtrlColor(D3DXCOLOR(0, 255.0f, 0, 255.0f), D3DXCOLOR(0, 255.0f, 0, 255.0f), D3DXCOLOR(0, 255.0f, 0, 255.0f));
-
-	//static D3DMATERIAL9* mat3 = new D3DMATERIAL9;
-	//static AIPlayer ai3 = AIPlayer(g_pMesh, mat3, g_pMeshTextures, 1, g_pDevice, "AI",0, 1);
-	////ai3.GetShip()->setTranslation(100, 100, -5);
-	////ai3.GetShip()->setRotation(0, 3.1f, 0);
-	//ai3.SetBounds(ai3.getPosition());
-	//ai3.SetBehaviour(FLEE);
-	////ai3.GetShip()->SetMtrlColor(D3DXCOLOR(0, 0, 255.0f, 255.0f), D3DXCOLOR(0, 0, 255.0f, 255.0f), D3DXCOLOR(0, 0, 255.0f, 255.0f));
-
-	//static D3DMATERIAL9* mat4 = new D3DMATERIAL9;
-	//static AIPlayer ai4 = AIPlayer(g_pMesh, mat4, g_pMeshTextures, 1, g_pDevice, "AI",0, 1);
-	////ai4.GetShip()->setTranslation(10, 10, 10);
-	////ai4.GetShip()->SetRotation(0, 1.0f, 0);
-	//ai4.SetBounds(ai4.getPosition());
-	//ai4.SetBehaviour(SEEK);
-	//ai4.GetShip()->SetMtrlColor(D3DXCOLOR(255.0f, 0, 0, 255.0f), D3DXCOLOR(255.0f, 0, 0, 255.0f), D3DXCOLOR(255.0f, 0, 0, 255.0f));   
-   
-
-	//static AIPlayer aiplayer = AIPlayer(g_pMesh, g_pMeshMaterials, g_pMeshTextures, g_dwNumMaterials, g_pDevice, "Human",0, 1);
-   
-	_aiPlayer.push_back(&ai1);
-	/*_aiPlayer.push_back(&ai2);
-	_aiPlayer.push_back(&ai3);
-	_aiPlayer.push_back(&ai4);*/
-   
-	//player2 = MainPlayerClass("Dummy",0, 1, dummyAI); */
    
 	if(FAILED(r)){//FAILED is a macro that returns false if return value is a failure - safer than using value itself
 		SetError(TEXT("Initialization of the device failed"));
@@ -2030,8 +1983,14 @@ void directXClass::inputCommands(float timeDelta)
    _clientID = '0';
 	if(input.get_keystate(DIK_A))
 	{
-		player1.right(false);
-		player1.left(true);
+      if(_IamClient){
+         _msgt.CreateMsg(_netmsg, MSG_CMD, &_clientID, "A");
+         _client.SendMsg(_netmsg);
+         offsenth = false;
+      } else {
+		   player1.right(false);
+		   player1.left(true);
+      }
 	}
 	else if(input.get_keystate(DIK_D))
 	{
@@ -2046,25 +2005,55 @@ void directXClass::inputCommands(float timeDelta)
 	}
 	else
 	{
-		player1.right(false);
-		player1.left(false);
+      if(_IamClient){
+         if(!offsenth)
+         {
+            _msgt.CreateMsg(_netmsg, MSG_CMD, &_clientID, "X");
+            _client.SendMsg(_netmsg);
+         }
+         offsenth = true;
+      } else {
+		   player1.right(false);
+		   player1.left(false);
+      }
 	}
 
 	
 	if(input.get_keystate(DIK_W))
 	{
-		player1.up(false);
-		player1.down(true);
+      if(_IamClient){
+         _msgt.CreateMsg(_netmsg, MSG_CMD, &_clientID, "W");
+         _client.SendMsg(_netmsg);
+         offsentv = false;
+      } else {
+		   player1.up(false);
+		   player1.down(true);
+      }
 	}
 	else if(input.get_keystate(DIK_S))
 	{
-		player1.down(false);
-		player1.up(true);
+      if(_IamClient){
+         _msgt.CreateMsg(_netmsg, MSG_CMD, &_clientID, "S");
+         _client.SendMsg(_netmsg);
+         offsentv = false;
+      } else {
+		   player1.down(false);
+		   player1.up(true);
+      }
 	}
 	else
 	{
-		player1.up(false);
-		player1.down(false);
+      if(_IamClient){
+         if(!offsentv)
+         {
+            _msgt.CreateMsg(_netmsg, MSG_CMD, &_clientID, "Z");
+            _client.SendMsg(_netmsg);
+         }
+         offsentv = false;
+      } else {
+		   player1.up(false);
+		   player1.down(false);
+      }
 	}
 
    // If you are server, this starts all AIs at the same time   
