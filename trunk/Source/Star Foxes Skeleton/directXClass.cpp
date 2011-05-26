@@ -562,7 +562,7 @@ int directXClass::GameLoop(float timeDelta) {
 					nullCount++;
 				}
 			}
-			if (nullCount >= 7) {
+			if (nullCount >= 8) {
 				menuSelect = 0;
 			}		
 
