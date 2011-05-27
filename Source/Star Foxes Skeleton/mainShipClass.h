@@ -7,7 +7,7 @@
 #include "boundingBox.h"
 
 #define Y_AXIS_INVERTED false
-#define SHOOT_SPEED 0.5f
+#define SHOOT_SPEED 0.3f
 
 // Flexible Vertex Format setup + definition
 #define CUSTOMFVF (D3DFVF_XYZ | D3DFVF_TEX1)
