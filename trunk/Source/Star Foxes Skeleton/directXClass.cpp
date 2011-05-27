@@ -508,6 +508,7 @@ int directXClass::GameLoop(float timeDelta) {
 						if (currentPlayers[index]->getLives() <= 0) {
 							currentPlayers[index] = NULL;
 							if (index == 0) {
+                        _gameStarted = 1;
 								menuSelect = 0;
 								return 0;
 							}
@@ -741,20 +742,9 @@ int directXClass::Render(){
 		//player2.drawSelf();
 		//SetupMatrices(true);
      
-		//drawCubes();
-		
-		
+		drawCubes();	
 
       _chat.RenderChat();
-      /*
-      for (std::list<AIPlayer*>::const_iterator ci = _aiPlayer.begin(); ci != _aiPlayer.end(); ++ci)
-      {
-         (*ci)->drawSelf();
-      }	*/
-		
-		// End the scene
-        
-        
 		g_pDevice->EndScene();
 	}
 	
@@ -2213,8 +2203,8 @@ void directXClass::inputCommands(float timeDelta)
    // If you are server, this starts all AIs at the same time   
    if(input.get_keystate(DIK_T) && _IamServer)
 	{
-      _msgt.CreateMsg(_netmsg, MSG_MSC, MSC_STARTGAME, "T"); 
-      _server.BroadcastMsg(_netmsg, 3);
+      //_msgt.CreateMsg(_netmsg, MSG_MSC, MSC_STARTGAME, "T"); 
+      //_server.BroadcastMsg(_netmsg, 3);
 	}
 
 	if(input.get_keystate(DIK_M) && !player1.gethasShot())
@@ -2277,13 +2267,85 @@ void directXClass::EnableLights()
 
 void directXClass::setupCubes()
 {
-   static float x = 2.0f;
-   float w = 0.05f;
-   D3DXCreateBox(g_pDevice, w, 10, w, &cubemesh[0], NULL);
-   D3DXCreateBox(g_pDevice, w, 10, w, &cubemesh[1], NULL);
-   D3DXCreateBox(g_pDevice, 10, w, w, &cubemesh[2], NULL);
-   D3DXCreateBox(g_pDevice, 10, w, w, &cubemesh[3], NULL);
-   D3DXCreateBox(g_pDevice, w, w, w, &cubemesh[4], NULL);
+   static float x = 4.0f;
+   float w = 0.2f;
+  // int i = 0;
+   //water
+   D3DXCreateBox(g_pDevice, 80, 1, 60, &cubemesh[_cbi++], NULL); //0
+   D3DXCreateBox(g_pDevice, w, 20, w, &cubemesh[_cbi++], NULL);
+   D3DXCreateBox(g_pDevice, w, 15, w, &cubemesh[_cbi++], NULL);
+   D3DXCreateBox(g_pDevice, w, 20, w, &cubemesh[_cbi++], NULL);
+   D3DXCreateBox(g_pDevice, w, 25, w, &cubemesh[_cbi++], NULL);
+   D3DXCreateBox(g_pDevice, w, 20, w, &cubemesh[_cbi++], NULL);// 5
+   D3DXCreateBox(g_pDevice, w, 15, w, &cubemesh[_cbi++], NULL);
+   D3DXCreateBox(g_pDevice, w, 20, w, &cubemesh[_cbi++], NULL);
+   D3DXCreateBox(g_pDevice, w, 30, w, &cubemesh[_cbi++], NULL);
+   D3DXCreateBox(g_pDevice, w, 10, w, &cubemesh[_cbi++], NULL);// 0
+      D3DXCreateBox(g_pDevice, w, 20, w, &cubemesh[_cbi++], NULL);
+   D3DXCreateBox(g_pDevice, w, 15, w, &cubemesh[_cbi++], NULL);
+   D3DXCreateBox(g_pDevice, w, 20, w, &cubemesh[_cbi++], NULL);
+   D3DXCreateBox(g_pDevice, w, 25, w, &cubemesh[_cbi++], NULL);
+   D3DXCreateBox(g_pDevice, w, 20, w, &cubemesh[_cbi++], NULL);// 5
+   D3DXCreateBox(g_pDevice, w, 15, w, &cubemesh[_cbi++], NULL);
+   D3DXCreateBox(g_pDevice, w, 20, w, &cubemesh[_cbi++], NULL);
+   D3DXCreateBox(g_pDevice, w, 30, w, &cubemesh[_cbi++], NULL);
+   D3DXCreateBox(g_pDevice, w, 10, w, &cubemesh[_cbi++], NULL);// 0
+   D3DXCreateBox(g_pDevice, w, 20, w, &cubemesh[_cbi++], NULL);
+   D3DXCreateBox(g_pDevice, w, 15, w, &cubemesh[_cbi++], NULL);
+   D3DXCreateBox(g_pDevice, w, 20, w, &cubemesh[_cbi++], NULL);
+   D3DXCreateBox(g_pDevice, w, 25, w, &cubemesh[_cbi++], NULL);
+   D3DXCreateBox(g_pDevice, w, 20, w, &cubemesh[_cbi++], NULL);// 5
+   D3DXCreateBox(g_pDevice, w, 15, w, &cubemesh[_cbi++], NULL);
+   D3DXCreateBox(g_pDevice, w, 20, w, &cubemesh[_cbi++], NULL);
+   D3DXCreateBox(g_pDevice, w, 30, w, &cubemesh[_cbi++], NULL);
+   D3DXCreateBox(g_pDevice, w, 10, w, &cubemesh[_cbi++], NULL);// 0
+   D3DXCreateBox(g_pDevice, w, 20, w, &cubemesh[_cbi++], NULL);
+   D3DXCreateBox(g_pDevice, w, 15, w, &cubemesh[_cbi++], NULL);
+   D3DXCreateBox(g_pDevice, w, 20, w, &cubemesh[_cbi++], NULL);
+   D3DXCreateBox(g_pDevice, w, 25, w, &cubemesh[_cbi++], NULL);
+   D3DXCreateBox(g_pDevice, w, 20, w, &cubemesh[_cbi++], NULL);// 5
+   D3DXCreateBox(g_pDevice, w, 15, w, &cubemesh[_cbi++], NULL);
+   D3DXCreateBox(g_pDevice, w, 20, w, &cubemesh[_cbi++], NULL);
+   D3DXCreateBox(g_pDevice, w, 30, w, &cubemesh[_cbi++], NULL);
+   D3DXCreateBox(g_pDevice, w, 10, w, &cubemesh[_cbi++], NULL);// 0
+   D3DXCreateBox(g_pDevice, w, 20, w, &cubemesh[_cbi++], NULL);
+   D3DXCreateBox(g_pDevice, w, 15, w, &cubemesh[_cbi++], NULL);
+   D3DXCreateBox(g_pDevice, w, 20, w, &cubemesh[_cbi++], NULL);
+   D3DXCreateBox(g_pDevice, w, 25, w, &cubemesh[_cbi++], NULL);
+   D3DXCreateBox(g_pDevice, w, 20, w, &cubemesh[_cbi++], NULL);// 5
+   D3DXCreateBox(g_pDevice, w, 15, w, &cubemesh[_cbi++], NULL);
+   D3DXCreateBox(g_pDevice, w, 20, w, &cubemesh[_cbi++], NULL);
+   D3DXCreateBox(g_pDevice, w, 30, w, &cubemesh[_cbi++], NULL);
+   D3DXCreateBox(g_pDevice, w, 10, w, &cubemesh[_cbi++], NULL);// 0
+   D3DXCreateBox(g_pDevice, w, 20, w, &cubemesh[_cbi++], NULL);
+   D3DXCreateBox(g_pDevice, w, 15, w, &cubemesh[_cbi++], NULL);
+   D3DXCreateBox(g_pDevice, w, 20, w, &cubemesh[_cbi++], NULL);
+   D3DXCreateBox(g_pDevice, w, 25, w, &cubemesh[_cbi++], NULL);
+   D3DXCreateBox(g_pDevice, w, 20, w, &cubemesh[_cbi++], NULL);// 5
+   D3DXCreateBox(g_pDevice, w, 15, w, &cubemesh[_cbi++], NULL);
+   D3DXCreateBox(g_pDevice, w, 20, w, &cubemesh[_cbi++], NULL);
+   D3DXCreateBox(g_pDevice, w, 30, w, &cubemesh[_cbi++], NULL);
+   D3DXCreateBox(g_pDevice, w, 10, w, &cubemesh[_cbi++], NULL);// 0
+   D3DXCreateBox(g_pDevice, w, 20, w, &cubemesh[_cbi++], NULL);
+   D3DXCreateBox(g_pDevice, w, 15, w, &cubemesh[_cbi++], NULL);
+   D3DXCreateBox(g_pDevice, w, 20, w, &cubemesh[_cbi++], NULL);
+   D3DXCreateBox(g_pDevice, w, 25, w, &cubemesh[_cbi++], NULL);
+   D3DXCreateBox(g_pDevice, w, 20, w, &cubemesh[_cbi++], NULL);// 5
+
+   D3DXCreateBox(g_pDevice, 15, 1, 25, &cubemesh[_cbi++], NULL);// 
+   D3DXCreateBox(g_pDevice, 20, 1, 25, &cubemesh[_cbi++], NULL);// 
+   D3DXCreateBox(g_pDevice, 15, 1, 19, &cubemesh[_cbi++], NULL);// 
+   D3DXCreateBox(g_pDevice, 15, 1, 20, &cubemesh[_cbi++], NULL);// 
+   D3DXCreateBox(g_pDevice, 20, 1, 13, &cubemesh[_cbi++], NULL);// 0
+
+   D3DXCreateBox(g_pDevice, 10, 25, 10, &cubemesh[_cbi++], NULL);// 
+   D3DXCreateBox(g_pDevice, 20, 30, 15, &cubemesh[_cbi++], NULL);// 
+   D3DXCreateBox(g_pDevice, 10, 23, 20, &cubemesh[_cbi++], NULL);// 
+   D3DXCreateBox(g_pDevice, 15, 15, 15, &cubemesh[_cbi++], NULL);// 
+   D3DXCreateBox(g_pDevice, 11, 25, 13, &cubemesh[_cbi++], NULL);// 0
+
+   D3DXCreateBox(g_pDevice, 13, 10, 13, &cubemesh[_cbi++], NULL);// 
+   D3DXCreateBox(g_pDevice, 12, 12, 11, &cubemesh[_cbi++], NULL);// 0
    //D3DXCreateLine(g_pDevice, w, 12, w, &cubemesh[4], NULL);
 
 	/*for(int i = 5; i < 100; ++i)
@@ -2303,21 +2365,272 @@ void directXClass::cleanupCubes()
 void directXClass::drawCubes()
 {
 	D3DXMATRIX translate, translate2;
-	D3DXMatrixTranslation(&translate, 0.0f, -1.0f, 0.0f);
-	g_pDevice->SetTransform( D3DTS_WORLD, &translate);
+	//D3DXMatrixTranslation(&translate, 0.0f, 0.0f, 0.0f);
+	//g_pDevice->SetTransform( D3DTS_WORLD, &translate);
    D3DMATERIAL9* mat = new D3DMATERIAL9();
-   mat->Ambient= D3DXCOLOR(255.0f, 0, 255.0f, 255.0f);
-   g_pDevice->SetMaterial( mat);
-	      
-   for(int i = 0; i < 5; ++i)
+   int i = 0;
+   //draw lake
+   D3DXMatrixTranslation(&translate, 0.0f, 0.0f, 0.0f);
+   mat->Ambient= D3DXCOLOR(0.2f, 0.2, 0.8f, 0.1f);
+   g_pDevice->SetMaterial( mat);	
+   g_pDevice->SetTransform( D3DTS_WORLD, &translate);
+   cubemesh[i++]->DrawSubset(0);
+   //draw grass
+   mat->Ambient= D3DXCOLOR(0.4f, 0.9f, 0.4f, 0.8f);
+   g_pDevice->SetMaterial( mat);	
+   D3DXMatrixTranslation(&translate, 0.0f, 7.0f, 0.7f);
+   g_pDevice->SetTransform( D3DTS_WORLD, &translate);
+   cubemesh[i++]->DrawSubset(0); //1
+   D3DXMatrixTranslation(&translate, 0.5f, 7.0f, 0.0f);
+   g_pDevice->SetTransform( D3DTS_WORLD, &translate);
+   cubemesh[i++]->DrawSubset(0);
+   D3DXMatrixTranslation(&translate, 0.2f, 7.0f, 0.3f);
+   g_pDevice->SetTransform( D3DTS_WORLD, &translate);
+   cubemesh[i++]->DrawSubset(0);
+   D3DXMatrixTranslation(&translate, 5.f, 0.7f, 0.2f);
+   g_pDevice->SetTransform( D3DTS_WORLD, &translate);
+   cubemesh[i++]->DrawSubset(0);//4
+      D3DXMatrixTranslation(&translate, 1.f, 0.7f, 0.2f);
+   g_pDevice->SetTransform( D3DTS_WORLD, &translate);
+   cubemesh[i++]->DrawSubset(0);
+      D3DXMatrixTranslation(&translate, -1.f, 0.7f, 0.5f);
+   g_pDevice->SetTransform( D3DTS_WORLD, &translate);
+   cubemesh[i++]->DrawSubset(0);
+      D3DXMatrixTranslation(&translate, 0.f, 0.7f, 0.5f);
+   g_pDevice->SetTransform( D3DTS_WORLD, &translate);
+   cubemesh[i++]->DrawSubset(0);//7
+
+      D3DXMatrixTranslation(&translate, 10.f, 0.7f, 11.0f);
+   g_pDevice->SetTransform( D3DTS_WORLD, &translate);
+   cubemesh[i++]->DrawSubset(0);//7
+         D3DXMatrixTranslation(&translate, 8.f, 0.7f, 10.0f);
+   g_pDevice->SetTransform( D3DTS_WORLD, &translate);
+   cubemesh[i++]->DrawSubset(0);//7
+         D3DXMatrixTranslation(&translate, 5.0f, 0.7f, 4.5f);
+   g_pDevice->SetTransform( D3DTS_WORLD, &translate);
+   cubemesh[i++]->DrawSubset(0);//7
+         D3DXMatrixTranslation(&translate, -3.0f, 0.7f, -0.5f);
+   g_pDevice->SetTransform( D3DTS_WORLD, &translate);
+   cubemesh[i++]->DrawSubset(0);//7
+         D3DXMatrixTranslation(&translate, -6.0f, 0.7f, 1.5f);
+   g_pDevice->SetTransform( D3DTS_WORLD, &translate);
+   cubemesh[i++]->DrawSubset(0);//7
+         D3DXMatrixTranslation(&translate, -4.5f, 0.7f, -3.5f);
+   g_pDevice->SetTransform( D3DTS_WORLD, &translate);
+   cubemesh[i++]->DrawSubset(0);//7
+         D3DXMatrixTranslation(&translate, -2.4f, 0.7f, -6.5f);
+   g_pDevice->SetTransform( D3DTS_WORLD, &translate);
+   cubemesh[i++]->DrawSubset(0);//7
+         D3DXMatrixTranslation(&translate, -7.0f, 0.7f, 4.5f);
+   g_pDevice->SetTransform( D3DTS_WORLD, &translate);
+   cubemesh[i++]->DrawSubset(0);//7
+         D3DXMatrixTranslation(&translate, 2.3f, 0.7f, -1.5f);
+   g_pDevice->SetTransform( D3DTS_WORLD, &translate);
+   cubemesh[i++]->DrawSubset(0);//7
+      D3DXMatrixTranslation(&translate, 0.f, 0.7f, 0.5f);
+   g_pDevice->SetTransform( D3DTS_WORLD, &translate);
+   cubemesh[i++]->DrawSubset(0);//7
+
+         D3DXMatrixTranslation(&translate, -15.f, 0.7f, -15.5f);
+   g_pDevice->SetTransform( D3DTS_WORLD, &translate);
+   cubemesh[i++]->DrawSubset(0);//7
+         D3DXMatrixTranslation(&translate, -14.f, 0.7f, -14.5f);
+   g_pDevice->SetTransform( D3DTS_WORLD, &translate);
+   cubemesh[i++]->DrawSubset(0);//7
+         D3DXMatrixTranslation(&translate, -16.f, 0.7f, -10.5f);
+   g_pDevice->SetTransform( D3DTS_WORLD, &translate);
+   cubemesh[i++]->DrawSubset(0);//7
+         D3DXMatrixTranslation(&translate, -17.f, 0.7f, 17.5f);
+   g_pDevice->SetTransform( D3DTS_WORLD, &translate);
+   cubemesh[i++]->DrawSubset(0);//7
+         D3DXMatrixTranslation(&translate, -14.f, 0.7f, 15.5f);
+   g_pDevice->SetTransform( D3DTS_WORLD, &translate);
+   cubemesh[i++]->DrawSubset(0);//7
+         D3DXMatrixTranslation(&translate, -13.f, 0.7f, 15.5f);
+   g_pDevice->SetTransform( D3DTS_WORLD, &translate);
+   cubemesh[i++]->DrawSubset(0);//7
+
+         D3DXMatrixTranslation(&translate, -1.f, 0.7f, -15.5f);
+   g_pDevice->SetTransform( D3DTS_WORLD, &translate);
+   cubemesh[i++]->DrawSubset(0);//7
+         D3DXMatrixTranslation(&translate, 1.f, 0.7f, -14.5f);
+   g_pDevice->SetTransform( D3DTS_WORLD, &translate);
+   cubemesh[i++]->DrawSubset(0);//7
+         D3DXMatrixTranslation(&translate, 2.f, 0.7f, -10.5f);
+   g_pDevice->SetTransform( D3DTS_WORLD, &translate);
+   cubemesh[i++]->DrawSubset(0);//7
+         D3DXMatrixTranslation(&translate, -3.f, 0.7f, 17.5f);
+   g_pDevice->SetTransform( D3DTS_WORLD, &translate);
+   cubemesh[i++]->DrawSubset(0);//7
+         D3DXMatrixTranslation(&translate, -1.f, 0.7f, 15.5f);
+   g_pDevice->SetTransform( D3DTS_WORLD, &translate);
+   cubemesh[i++]->DrawSubset(0);//7
+         D3DXMatrixTranslation(&translate, 0.f, 0.7f, 15.0f);
+   g_pDevice->SetTransform( D3DTS_WORLD, &translate);
+   cubemesh[i++]->DrawSubset(0);//7
+
+         D3DXMatrixTranslation(&translate, -1.f, 0.7f, 15.5f);
+   g_pDevice->SetTransform( D3DTS_WORLD, &translate);
+   cubemesh[i++]->DrawSubset(0);//7
+         D3DXMatrixTranslation(&translate, 1.f, 0.7f, 14.5f);
+   g_pDevice->SetTransform( D3DTS_WORLD, &translate);
+   cubemesh[i++]->DrawSubset(0);//7
+         D3DXMatrixTranslation(&translate, 2.f, 0.7f, 10.5f);
+   g_pDevice->SetTransform( D3DTS_WORLD, &translate);
+   cubemesh[i++]->DrawSubset(0);//7
+         D3DXMatrixTranslation(&translate, -3.f, 0.7f, -17.5f);
+   g_pDevice->SetTransform( D3DTS_WORLD, &translate);
+   cubemesh[i++]->DrawSubset(0);//7
+         D3DXMatrixTranslation(&translate, -1.f, 0.7f, -15.5f);
+   g_pDevice->SetTransform( D3DTS_WORLD, &translate);
+   cubemesh[i++]->DrawSubset(0);//7
+         D3DXMatrixTranslation(&translate, 0.f, 0.7f, -15.0f);
+   g_pDevice->SetTransform( D3DTS_WORLD, &translate);
+   cubemesh[i++]->DrawSubset(0);//7
+
+         D3DXMatrixTranslation(&translate, -15.f, 0.7f, -20.5f);
+   g_pDevice->SetTransform( D3DTS_WORLD, &translate);
+   cubemesh[i++]->DrawSubset(0);//7
+         D3DXMatrixTranslation(&translate, -14.f, 0.7f, -25.5f);
+   g_pDevice->SetTransform( D3DTS_WORLD, &translate);
+   cubemesh[i++]->DrawSubset(0);//7
+         D3DXMatrixTranslation(&translate, -16.f, 0.7f, -23.5f);
+   g_pDevice->SetTransform( D3DTS_WORLD, &translate);
+   cubemesh[i++]->DrawSubset(0);//7
+         D3DXMatrixTranslation(&translate, -17.f, 0.7f, 25.5f);
+   g_pDevice->SetTransform( D3DTS_WORLD, &translate);
+   cubemesh[i++]->DrawSubset(0);//7
+         D3DXMatrixTranslation(&translate, -14.f, 0.7f, 26.5f);
+   g_pDevice->SetTransform( D3DTS_WORLD, &translate);
+   cubemesh[i++]->DrawSubset(0);//7
+         D3DXMatrixTranslation(&translate, -13.f, 0.7f, 27.5f);
+   g_pDevice->SetTransform( D3DTS_WORLD, &translate);
+   cubemesh[i++]->DrawSubset(0);//7
+
+         D3DXMatrixTranslation(&translate, -25.f, 0.7f, -20.5f);
+   g_pDevice->SetTransform( D3DTS_WORLD, &translate);
+   cubemesh[i++]->DrawSubset(0);//7
+         D3DXMatrixTranslation(&translate, -24.f, 0.7f, -25.5f);
+   g_pDevice->SetTransform( D3DTS_WORLD, &translate);
+   cubemesh[i++]->DrawSubset(0);//7
+         D3DXMatrixTranslation(&translate, -26.f, 0.7f, -23.5f);
+   g_pDevice->SetTransform( D3DTS_WORLD, &translate);
+   cubemesh[i++]->DrawSubset(0);//7
+         D3DXMatrixTranslation(&translate, -27.f, 0.7f, 25.5f);
+   g_pDevice->SetTransform( D3DTS_WORLD, &translate);
+   cubemesh[i++]->DrawSubset(0);//7
+         D3DXMatrixTranslation(&translate, -24.f, 0.7f, 26.5f);
+   g_pDevice->SetTransform( D3DTS_WORLD, &translate);
+   cubemesh[i++]->DrawSubset(0);//7
+         D3DXMatrixTranslation(&translate, -23.f, 0.7f, 27.5f);
+   g_pDevice->SetTransform( D3DTS_WORLD, &translate);
+   cubemesh[i++]->DrawSubset(0);//7
+
+         D3DXMatrixTranslation(&translate, -25.f, 0.7f, 20.5f);
+   g_pDevice->SetTransform( D3DTS_WORLD, &translate);
+   cubemesh[i++]->DrawSubset(0);//7
+         D3DXMatrixTranslation(&translate, -24.f, 0.7f, 25.5f);
+   g_pDevice->SetTransform( D3DTS_WORLD, &translate);
+   cubemesh[i++]->DrawSubset(0);//7
+         D3DXMatrixTranslation(&translate, -26.f, 0.7f, 23.5f);
+   g_pDevice->SetTransform( D3DTS_WORLD, &translate);
+   cubemesh[i++]->DrawSubset(0);//7
+         D3DXMatrixTranslation(&translate, -27.f, 0.7f, 27.5f);
+   g_pDevice->SetTransform( D3DTS_WORLD, &translate);
+   cubemesh[i++]->DrawSubset(0);//7
+         D3DXMatrixTranslation(&translate, -24.f, 0.7f, 29.5f);
+   g_pDevice->SetTransform( D3DTS_WORLD, &translate);
+   cubemesh[i++]->DrawSubset(0);//7
+         D3DXMatrixTranslation(&translate, -23.f, 0.7f, 28.5f);
+   g_pDevice->SetTransform( D3DTS_WORLD, &translate);
+   cubemesh[i++]->DrawSubset(0);//7
+       D3DXMatrixTranslation(&translate, -25.f, 0.7f, 20.5f);
+   g_pDevice->SetTransform( D3DTS_WORLD, &translate);
+   cubemesh[i++]->DrawSubset(0);//7
+         D3DXMatrixTranslation(&translate, -24.f, 0.7f, 25.5f);
+   g_pDevice->SetTransform( D3DTS_WORLD, &translate);
+   cubemesh[i++]->DrawSubset(0);//7
+         D3DXMatrixTranslation(&translate, -26.f, 0.7f, 23.5f);
+   g_pDevice->SetTransform( D3DTS_WORLD, &translate);
+   cubemesh[i++]->DrawSubset(0);//7
+
+         D3DXMatrixTranslation(&translate, 29.f, 0.7f, -27.5f);
+   g_pDevice->SetTransform( D3DTS_WORLD, &translate);
+   cubemesh[i++]->DrawSubset(0);//7
+         D3DXMatrixTranslation(&translate, 28.f, 0.7f, -29.5f);
+   g_pDevice->SetTransform( D3DTS_WORLD, &translate);
+   cubemesh[i++]->DrawSubset(0);//7
+         D3DXMatrixTranslation(&translate, 29.f, 0.7f, -28.5f);
+   g_pDevice->SetTransform( D3DTS_WORLD, &translate);
+   cubemesh[i++]->DrawSubset(0);//7
+
+     mat->Ambient= D3DXCOLOR(0.5f, 0.5, 0.1f, 0.9f);
+   g_pDevice->SetMaterial( mat);	
+
+         D3DXMatrixTranslation(&translate, -40.f, 0.7f, -55.5f);
+   g_pDevice->SetTransform( D3DTS_WORLD, &translate);
+   cubemesh[i++]->DrawSubset(0);//7
+         D3DXMatrixTranslation(&translate, -52.f, 0.7f, 45.5f);
+   g_pDevice->SetTransform( D3DTS_WORLD, &translate);
+   cubemesh[i++]->DrawSubset(0);//7
+         D3DXMatrixTranslation(&translate, 45.f, 0.7f, -45.5f);
+   g_pDevice->SetTransform( D3DTS_WORLD, &translate);
+   cubemesh[i++]->DrawSubset(0);//7
+         D3DXMatrixTranslation(&translate, 44.f, 0.7f, -50.5f);
+   g_pDevice->SetTransform( D3DTS_WORLD, &translate);
+   cubemesh[i++]->DrawSubset(0);//7
+         D3DXMatrixTranslation(&translate, 50.f, 0.7f, -55.5f);
+   g_pDevice->SetTransform( D3DTS_WORLD, &translate);
+   cubemesh[i++]->DrawSubset(0);//7
+
+   //boxes
+     mat->Ambient= D3DXCOLOR(0.4f, 0.15, 0.15f, 1.0f);
+   g_pDevice->SetMaterial( mat);	
+         D3DXMatrixTranslation(&translate, 45.f, 0.7f, 55.5f);
+   g_pDevice->SetTransform( D3DTS_WORLD, &translate);
+   cubemesh[i++]->DrawSubset(0);//7
+
+        mat->Ambient= D3DXCOLOR(0.4f, 0.2, 0.25f, 1.0f);
+   g_pDevice->SetMaterial( mat);	
+         D3DXMatrixTranslation(&translate, 52.f, 0.7f, -45.5f);
+   g_pDevice->SetTransform( D3DTS_WORLD, &translate);
+   cubemesh[i++]->DrawSubset(0);//7
+
+   mat->Ambient= D3DXCOLOR(0.4f, 0.2, 0.3f, 1.0f);
+   g_pDevice->SetMaterial( mat);	
+   D3DXMatrixTranslation(&translate, -45.f, 0.7f, 45.5f);
+   g_pDevice->SetTransform( D3DTS_WORLD, &translate);
+   cubemesh[i++]->DrawSubset(0);//7
+
+   mat->Ambient= D3DXCOLOR(0.4f, 0.2, 0.28f, 1.0f);
+   g_pDevice->SetMaterial( mat);	
+         D3DXMatrixTranslation(&translate, 45.f, 0.7f, 40.5f);
+   g_pDevice->SetTransform( D3DTS_WORLD, &translate);
+   cubemesh[i++]->DrawSubset(0);//7
+   
+           mat->Ambient= D3DXCOLOR(0.4f, 0.2, 0.23f, 1.0f);
+   g_pDevice->SetMaterial( mat);	
+   D3DXMatrixTranslation(&translate, -50.f, 0.7f, -55.5f);
+   g_pDevice->SetTransform( D3DTS_WORLD, &translate);
+   cubemesh[i++]->DrawSubset(0);//7
+
+   //WATERBOX
+           mat->Ambient= D3DXCOLOR(0.4f, 0.2, 0.23f, 1.0f);
+   g_pDevice->SetMaterial( mat);	
+   D3DXMatrixTranslation(&translate, 18.f, 0.7f, -19.1f);
+   g_pDevice->SetTransform( D3DTS_WORLD, &translate);
+   cubemesh[i++]->DrawSubset(0);//7
+
+           mat->Ambient= D3DXCOLOR(0.4f, 0.2, 0.23f, 1.0f);
+   g_pDevice->SetMaterial( mat);	
+   D3DXMatrixTranslation(&translate, -5.f, 0.7f, 10.5f);
+   g_pDevice->SetTransform( D3DTS_WORLD, &translate);
+   cubemesh[i++]->DrawSubset(0);//7
+   /*for(int i = 1; i < 5; ++i)
 	{
-      if(i % 2 != 0)
-		   D3DXMatrixTranslation(&translate, -4, 0.0f, ((float) (i+1) * 20.0f) / 2.0f);
-      else
-         D3DXMatrixTranslation(&translate, 4, 0.0f, ((float) (i+1) * 20.0f) / 2.0f);
 		g_pDevice->SetTransform( D3DTS_WORLD, &translate);
 		cubemesh[i]->DrawSubset(0);
-	}
+	}*/
 }
 
 point directXClass::getMouseCoordinates() {
