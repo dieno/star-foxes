@@ -460,11 +460,11 @@ int directXClass::GameLoop(float timeDelta) {
             return 0;
          }
           
-                  
+         /*         
          if(!_IamServer && !_IamClient)
          {
             StartAIs();
-         }
+         }*/
 
          for (int i = 0; i < 8; i++)
 			{
@@ -1641,10 +1641,16 @@ bool directXClass::KeyDownChat(WPARAM wParam, HWND hWnd)
    {
       if(_gameStarted >= 0 && wParam == VK_RETURN)
       {
-         SetGameStarted();
+         if(_IamServer)
+         {
+            _msgt.CreateMsg(_netmsg, MSG_MSC, MSC_STARTGAME, "T"); 
+            _server.BroadcastMsg(_netmsg, 3);
+         }
+         if(!_IamClient)
+            SetGameStarted();         
       }
 
-      if(wParam == 'Y')   
+      if(wParam == 'Y')
       {
          _chat.StartWrite();
          return true;
@@ -1732,7 +1738,7 @@ void directXClass::OnServerSocketEvent(LPARAM lParam, WPARAM wParam, HWND hWnd)
       msg = _server.PopFrontMsg(&len);
       //game->GetChat()->AddMsgToHistory(msg);
       
-      _chat.AddMsgToHistory(msg);
+      //_chat.AddMsgToHistory(msg);
       _server.BroadcastMsg(msg, len);
       break;
    }
@@ -1805,6 +1811,8 @@ void directXClass::ProcessMsc(Msg *msg)
       break;
    case MSC_STARTGAME:
       this->StartAIs();
+      _gameStarted = -1;
+      _chat.ClearHistory();
    case MSC_MULTI:
       if(msg->GetBody() == '0') // if it's 0, the starting location is the normal one
       {
@@ -1817,7 +1825,7 @@ void directXClass::ProcessMsc(Msg *msg)
 			   //IniPlayerLocation(&player1, 0, 80, -10, 0, 0, 0);
 			   //player1.setShipSpawnLocationRotation(D3DXVECTOR3(0,70,-30),D3DXVECTOR3(0,0,0));
             // Create second player
-            player2 = shipBuilder(STANDARD, HUMAN, 2, this->_gamestate.getHWND(), TEXT("player2"), TEXT("9"), TEXT("3"));
+            player2 = shipBuilder(STANDARD, HUMAN, 2, this->_gamestate.getHWND(), TEXT("player2"), TEXT("3"), TEXT("4"));
             IniPlayerLocation(&player2, -60, 10, 30, -D3DX_PI/2, 0, 0);
 			   player2.setShipSpawnLocationRotation(D3DXVECTOR3(-60, 10, 30),D3DXVECTOR3(-D3DX_PI/2,0,0));
             player2.initProjectiles(program->g_pMeshLaser, program->g_pMeshMaterialsLaser, program->g_pMeshTexturesLaser, program->g_dwNumMaterialsLaser);
@@ -1826,12 +1834,13 @@ void directXClass::ProcessMsc(Msg *msg)
          else // the second client
          {
             //translate player
+            player1 = shipBuilder(STANDARD, HUMAN, 2, this->_gamestate.getHWND(), TEXT("player2"), TEXT("3"), TEXT("4"));
 			   IniPlayerLocation(&player1, -60, 10, 30, -D3DX_PI/2, 0, 0);
 			   player1.setShipSpawnLocationRotation(D3DXVECTOR3(-60, 10, 30),D3DXVECTOR3(-D3DX_PI/2,0,0));
-
+            player1.initProjectiles(program->g_pMeshLaser, program->g_pMeshMaterialsLaser, program->g_pMeshTexturesLaser, program->g_dwNumMaterialsLaser);
             
             //Create second player
-            player2 = shipBuilder(STANDARD, HUMAN, 2, this->_gamestate.getHWND(), TEXT("player2"), TEXT("9"), TEXT("3"));
+            player2 = shipBuilder(STANDARD, HUMAN, 2, this->_gamestate.getHWND(), TEXT("player2"), TEXT("0"), TEXT("4"));
             IniPlayerLocation(&player2, 0, 80, -10, 0, 0, 0);
 			   player2.setShipSpawnLocationRotation(D3DXVECTOR3(0,80,-10),D3DXVECTOR3(0,0,0));
             player2.initProjectiles(program->g_pMeshLaser, program->g_pMeshMaterialsLaser, program->g_pMeshTexturesLaser, program->g_dwNumMaterialsLaser);
