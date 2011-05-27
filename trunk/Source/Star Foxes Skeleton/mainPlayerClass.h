@@ -98,8 +98,8 @@ public:
 		return lives_;
 	}
 
-	virtual void drawSelf() {
-		playerShip_.Draw();
+	virtual void drawSelf(D3DXMATRIX mView, bool displayHealth) {
+		playerShip_.Draw(mView, displayHealth);
 	}
 
 	void bankLeft(float value);

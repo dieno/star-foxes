@@ -7,10 +7,13 @@ D3DXVECTOR3 MainShipClass::vRight_	   = D3DXVECTOR3(1.0f,0.0f,0.0f);
 D3DXVECTOR3 MainShipClass::vUp_		   = D3DXVECTOR3(0.0f,1.0f,0.0f);
 D3DXVECTOR3 MainShipClass::vDirection_ = D3DXVECTOR3(0.0f,0.0f,1.0f);
 */
-void MainShipClass::Draw()
+void MainShipClass::Draw(D3DXMATRIX mView, bool displayHealth)
 {
 	renderSelf();
 	drawProjectiles();
+
+	if(displayHealth)
+		drawHealthbar(mView);
 }
 
 void MainShipClass::renderSelf() {
@@ -76,6 +79,7 @@ void MainShipClass::Update(float timeDelta)
 	vPosition_ += vVelocity_ * timeDelta;
 
 	updateProjectiles(timeDelta);
+	updateHealthbar();
 }
 
 void MainShipClass::updateRotation(D3DXVECTOR3 *vRotation)
@@ -350,6 +354,87 @@ void MainShipClass::startBlinking() {
 		blinkState = 8;
 		//directXClass::SetError(TEXT("start blink!"));
 	}
+}
+
+void MainShipClass::initHealthbar()
+{
+	D3DXCreateTextureFromFile(g_pDevice, TEXT("EnemyHealth.bmp"), &healthbarTex);
+
+	g_pDevice->SetFVF(CUSTOMFVF);
+
+	CUSTOMVERTEX vertices[] = 
+    {
+        { -1.7f, 1.7f, 0.0f, 0.0f, 0.0f, },
+        { 1.7f, 1.7f, 0.0f, 1.0f, 0.0f,  },
+        { -1.7f, 1.2f, 0.0f, 0.0f, 1.0f,  },
+        { 1.7f, 1.2f, 0.0f, 1.0f, 1.0f,  },
+    };
+
+	// create a vertex buffer interface called i_buffer
+    g_pDevice->CreateVertexBuffer( 4*sizeof(CUSTOMVERTEX),
+								   0,
+								   CUSTOMFVF,
+								   D3DPOOL_MANAGED,
+								   &v_buffer,
+								   NULL);
+
+	VOID* pVoid;    // a void pointer
+
+    // lock v_buffer and load the vertices into it
+    v_buffer->Lock(0, 0, (void**)&pVoid, 0);
+    memcpy(pVoid, vertices, sizeof(vertices));
+    v_buffer->Unlock();
+}
+
+void MainShipClass::drawHealthbar(D3DXMATRIX mView)
+{
+	D3DXMATRIX mTranslate;
+	D3DXMatrixTranslation(&mTranslate, vPosition_.x, vPosition_.y, vPosition_.z);
+
+	D3DXMATRIX orientation;
+	D3DXMatrixInverse(&orientation, NULL, &mView); //view is your camera view matrix.
+
+	orientation._41=0;
+	orientation._42=0;
+	orientation._43=0;
+	orientation._14=0;orientation._24=0;orientation._34=0;orientation._44=1;
+
+	//now orientation is the rotation matrix for the cube to keep it facing the camera.
+	//it basicly just "unrotates"
+
+	g_pDevice->SetMaterial( &g_pMeshMaterials[0] );
+
+	g_pDevice->SetTransform(D3DTS_WORLD, &(orientation * mTranslate));//&(mWorld * mTranslate));	
+	g_pDevice->SetStreamSource(0, v_buffer, 0, sizeof(CUSTOMVERTEX));
+	g_pDevice->DrawPrimitive(D3DPT_TRIANGLESTRIP, 0, 2);
+}
+
+void MainShipClass::updateHealthbar()
+{
+	currentHealthPos = (((float) currentHealth / (float) maxHealth) * 3.4f) - 1.7f;
+
+	CUSTOMVERTEX vertices[] = 
+    {
+        { -1.7f, 1.7f, 0.0f, 0.0f, 0.0f, },
+        { currentHealthPos, 1.7f, 0.0f, 1.0f, 0.0f,  },
+        { -1.7f, 1.2f, 0.0f, 0.0f, 1.0f, },
+        { currentHealthPos, 1.2f, 0.0f, 1.0f, 1.0f,  },
+    };
+
+	// create a vertex buffer interface called i_buffer
+    g_pDevice->CreateVertexBuffer( 4*sizeof(CUSTOMVERTEX),
+								   0,
+								   CUSTOMFVF,
+								   D3DPOOL_MANAGED,
+								   &v_buffer,
+								   NULL);
+
+	VOID* pVoid;    // a void pointer
+
+    // lock v_buffer and load the vertices into it
+    v_buffer->Lock(0, 0, (void**)&pVoid, 0);
+    memcpy(pVoid, vertices, sizeof(vertices));
+    v_buffer->Unlock();
 }
 
 /*void MainShipClass::setupWorld() {

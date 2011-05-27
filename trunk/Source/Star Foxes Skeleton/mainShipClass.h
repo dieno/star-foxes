@@ -9,6 +9,17 @@
 #define Y_AXIS_INVERTED false
 #define SHOOT_SPEED 0.5f
 
+// Flexible Vertex Format setup + definition
+#define CUSTOMFVF (D3DFVF_XYZ | D3DFVF_TEX1)
+
+struct CUSTOMVERTEX
+{
+    FLOAT x, y, z,    // from the D3DFVF_XYZ flag
+				u, v;	// from the D3DFVF_TEX1 flag
+
+	static const DWORD FVF;
+};
+
 class MainShipClass {
 public:
 	MainShipClass(LPD3DXMESH mesh, D3DMATERIAL9* meshMat, LPDIRECT3DTEXTURE9* meshTex, DWORD meshNumMat, LPDIRECT3DDEVICE9 newg_pDevice):
@@ -38,9 +49,13 @@ public:
 		projectileList(),
 		blinkStartTime(0),
 		isBlinkedOut(false),
-		blinkState(0){
+		blinkState(0),
+		v_buffer(NULL),
+		i_buffer(NULL),
+		currentHealthPos(1.7){
          IniVectors();
 		 shipBound = boundingBox(this->g_pMesh, g_pDevice);
+		 initHealthbar();
       }
 
 	MainShipClass(PMESHSTRUCT meshStruct, LPDIRECT3DDEVICE9 newg_pDevice):
@@ -70,9 +85,12 @@ public:
 		projectileList(),
 		blinkStartTime(0),
 		isBlinkedOut(false),
-		blinkState(0){
+		blinkState(0),
+		v_buffer(NULL),
+		i_buffer(NULL){
          IniVectors();
 		 shipBound = boundingBox(this->g_pMesh, g_pDevice);
+		 initHealthbar();
       }
 
 	MainShipClass():
@@ -101,7 +119,10 @@ public:
 		thrustAmount_(0.0f),
 		projectileList(),
 		blinkStartTime(0),
-		isBlinkedOut(false){
+		isBlinkedOut(false),
+		blinkState(0),
+		v_buffer(NULL),
+		i_buffer(NULL){
 		 damagePerShot = 1;
          IniVectors();
       }
@@ -285,7 +306,7 @@ public:
 	}
 
 	void loadProjectile(LPD3DXMESH mesh, D3DMATERIAL9* meshMat, LPDIRECT3DTEXTURE9* meshTex, DWORD meshNumMat);
-	void Draw();
+	void Draw(D3DXMATRIX mView, bool displayHealth);
    void SetPosition(float x, float y, float z)
    {
       vPosition_.x = x;
@@ -405,7 +426,6 @@ private:
 	void updateProjectiles(float timeDelta);
 	void drawProjectiles();
 
-	
 	float blinkStartTime;
 	bool isBlinkedOut;
 	int blinkState;
@@ -415,6 +435,19 @@ private:
 	//respawn stuff
 	D3DXVECTOR3 vRespawnPosition_;
 	D3DXVECTOR3 vRespawnRotation_;
+
+	LPDIRECT3DVERTEXBUFFER9 v_buffer;    // the pointer to the vertex buffer
+	LPDIRECT3DINDEXBUFFER9 i_buffer;    // the pointer to the index buffer
+
+	LPDIRECT3DTEXTURE9 healthbarTex;
+
+	float currentHealthPos;
+
+	void initHealthbar();
+	void drawHealthbar();
+	void drawHealthbar(D3DXMATRIX mView);
+	void updateHealthbar();
+
 };
 
 #endif
