@@ -94,6 +94,11 @@ public:
 		return teamNum_;
 	}
 
+   void setTeamNum(int num)
+   {
+      teamNum_ = num;
+   }
+
 	int getLives() {
 		return lives_;
 	}
