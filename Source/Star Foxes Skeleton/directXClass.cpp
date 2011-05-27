@@ -722,10 +722,10 @@ int directXClass::Render(){
         line->Release();
         ////
 		mainTerrain.renderSelf();	
-		player1.drawSelf();
+		player1.drawSelf(mView, false);
 		for (int i = 1; i < 8; i++) {
 			if (currentPlayers[i] != NULL) {
-				currentPlayers[i]->drawSelf();
+				currentPlayers[i]->drawSelf(mView, true);
 			}
 		}
 
