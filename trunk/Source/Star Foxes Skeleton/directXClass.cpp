@@ -466,7 +466,7 @@ int directXClass::GameLoop(float timeDelta) {
             StartAIs();
          }*/
 
-         for (int i = 0; i < 8; i++)
+			for (int i = 0; i < 8; i++)
 			{
 				if (program->currentPlayers[i] != NULL) {
 					program->currentPlayers[i]->Update(timeDelta);
@@ -496,6 +496,7 @@ int directXClass::GameLoop(float timeDelta) {
 			
 			if(input.get_keystate(DIK_Q))
 			{
+				_gameStarted = 1;
 				menuSelect = 0;
 				return 0;
 			}
@@ -508,7 +509,7 @@ int directXClass::GameLoop(float timeDelta) {
 						if (currentPlayers[index]->getLives() <= 0) {
 							currentPlayers[index] = NULL;
 							if (index == 0) {
-                        _gameStarted = 1;
+								_gameStarted = 1;
 								menuSelect = 0;
 								return 0;
 							}
@@ -519,6 +520,7 @@ int directXClass::GameLoop(float timeDelta) {
 				}
 			}
 			if (nullCount >= 8) {
+				_gameStarted = 1;
 				menuSelect = 0;
 			}		
 
