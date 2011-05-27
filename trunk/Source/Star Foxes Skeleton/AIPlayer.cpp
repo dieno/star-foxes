@@ -105,11 +105,14 @@ D3DXVECTOR3 FSM::evalWander()
 	int targetIdx;
 	D3DXVECTOR3 target;
     MainPlayerClass* ePlayer;
+	MainPlayerClass* cPlayer = gamestate->getPlayer(getMasterIdx());
 	int i = 0;
 
  	for (i = 0; i < 8; i++) {
-		if( ((ePlayer = gamestate->getPlayer(i)) != NULL) && (ePlayer->getID() != getMasterIdx())) {
-			currDist = evalDistToTarget(ePlayer->getPosition(), gamestate->getPlayer(getMasterIdx())->getPosition());
+		if(((ePlayer = gamestate->getPlayer(i)) != NULL) && 
+			(ePlayer->getID() != getMasterIdx()) && 
+			ePlayer->getTeamNum() != cPlayer->getTeamNum()) {
+			currDist = evalDistToTarget(ePlayer->getPosition(), cPlayer->getPosition());
 			if(currDist < shortestDist) {
 				shortestDist = currDist;
 				targetIdx = ePlayer->getID();
@@ -144,35 +147,45 @@ D3DXVECTOR3 FSM::evalWander()
 		-Attacks player closest and with the lowest HP of all targets in shooting range.
 */
 D3DXVECTOR3 FSM::evalAttack()
-{/*
+{
 	directXClass::SetError(TEXT("FSM // Evaluating ATCK state..."));
    
 	std::list<MainPlayerClass*> players;
 	float shortestDist = RADAR_RADIUS; //the radar / 'sight' distance the AI can detect
 	bool isShootingRange = false;
+	bool multTargets = false;
 	float currDist;
 	int targetIdx;
 	int lastTargetIdx;
 	D3DXVECTOR3 target;
 	MainPlayerClass* ePlayer;
+	MainPlayerClass* cPlayer = gamestate->getPlayer(getMasterIdx());
 	int i = 0;
 
 	for (int i = 0; i < 8; i++) {
-		if( ((ePlayer = gamestate->getPlayer(i)) != NULL) && (ePlayer->getID() != getMasterIdx())) {
-			shortestDist = evalDistToTarget(ePlayer->getPosition(), gamestate->getPlayer(getMasterIdx())->getPosition());
+		if( ((ePlayer = gamestate->getPlayer(i)) != NULL) && 
+			(ePlayer->getID() != getMasterIdx()) && 
+			ePlayer->getTeamNum() != cPlayer->getTeamNum()) {
+			shortestDist = evalDistToTarget(ePlayer->getPosition(), cPlayer->getPosition());
 			if(shortestDist < RADAR_RADIUS) {
 				targetIdx = ePlayer->getID();
-				if((shortestDist <= SHOOT_RANGE) && 
-					(gamestate->getPlayer(targetIdx)->getShipCurrentHealth() 
-					< gamestate->getPlayer(lastTargetIdx)->getShipCurrentHealth())) {
+				if((shortestDist <= SHOOT_RANGE)) {
+					if(!multTargets) {						
+						multTargets = true;
+					} else if((gamestate->getPlayer(targetIdx)->getShipCurrentHealth() 
+					> gamestate->getPlayer(lastTargetIdx)->getShipCurrentHealth())) {
+						targetIdx = lastTargetIdx;
+					}
+					lastTargetIdx = targetIdx;
+
 					isShootingRange = true;
 				}
+					
 			}
-			lastTargetIdx = ePlayer->getID();
 		} 		
 	}
 
-	if(shortestDist == RADAR_RADIUS) {
+	if(shortestDist >= RADAR_RADIUS) {
 		setCurrentState(WAND);
 	}else if(isShootingRange) {
 		target = gamestate->getPlayer(targetIdx)->getPosition();
@@ -182,8 +195,7 @@ D3DXVECTOR3 FSM::evalAttack()
 		target = gamestate->getPlayer(targetIdx)->getPosition();
 	}
 
-	return target;*/
-   return D3DXVECTOR3(0, 0, 0);
+	return target;
 }
 
 /*
@@ -199,12 +211,15 @@ D3DXVECTOR3 FSM::evalSeek()
 	int targetIdx;
 	D3DXVECTOR3 target;
 	MainPlayerClass* ePlayer;
+	MainPlayerClass* cPlayer = gamestate->getPlayer(getMasterIdx());
 	int i = 0;
 
 	//Search through enemies until one is found within range. Begin seeking target.
 	for (int i = 0; i < 8; i++) {
-		if( ((ePlayer = gamestate->getPlayer(i)) != NULL) && (ePlayer->getID() != getMasterIdx())) {
-			currDist = evalDistToTarget(ePlayer->getPosition(), gamestate->getPlayer(getMasterIdx())->getPosition());
+		if( ((ePlayer = gamestate->getPlayer(i)) != NULL) && 
+			(ePlayer->getID() != getMasterIdx()) && 
+			ePlayer->getTeamNum() != cPlayer->getTeamNum()) {
+			currDist = evalDistToTarget(ePlayer->getPosition(), cPlayer->getPosition());
 			if(currDist < shortestDist) {
 				shortestDist = currDist;
 				targetIdx = ePlayer->getID();
@@ -267,10 +282,10 @@ void AIPlayer::Update(float timeDelta)
       return;
    }
 
-  // D3DXVECTOR3 target = _fsm.eval();
-  // HWND hWnd = _fsm.getGameState()->getHWND();   
+   D3DXVECTOR3 target = _fsm.eval();
+   HWND hWnd = _fsm.getGameState()->getHWND();   
    Move(NULL, FWRD, NULL, true);
- /*  if(KeepInBounds(hWnd))
+   if(KeepInBounds(hWnd))
    { 
 	  switch(_fsm.getCurrentState())
 	   {
@@ -287,13 +302,14 @@ void AIPlayer::Update(float timeDelta)
 			Seek(target);
 			break;
 	  }
-   }*/
+   }
+   /*
    //----->TODO: Change this back to normal.
    D3DXVECTOR3 target = _fsm.eval();
    _fsm.setCurrentState(SEEK);
    Seek(target);
    Shoot(target, timeDelta);
-   // ---->
+   // ---->*/
    MainPlayerClass::Update(timeDelta);
 }
 
@@ -699,8 +715,8 @@ bool AIPlayer::StraightenDown()
 */
 void AIPlayer::Attack(D3DXVECTOR3 target, float timeDelta)
 {
-	Seek(target);
 	Shoot(target, timeDelta);
+	Seek(target);	
 }
 
 void AIPlayer::Shoot(D3DXVECTOR3 target, float timeDelta)
