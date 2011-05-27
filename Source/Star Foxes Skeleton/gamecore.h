@@ -5,7 +5,7 @@
 #include "point.h"
 #include "meshStruct.h"
 
-#define RADAR_RADIUS 100
-#define SHOOT_RANGE (RADAR_RADIUS/4)
+#define RADAR_RADIUS 56
+#define SHOOT_RANGE (RADAR_RADIUS/2)
 
 #endif
