@@ -3726,7 +3726,7 @@ void directXClass::IniPlayerLocation(MainPlayerClass* player, float px, float py
 {
    player->GetShip()->SetPosition(px, py, pz);
 	player->GetShip()->SetRotation(rx, ry, rz);
-	player->GetShip()->Update(2);
+	player->GetShip()->Update(0);
 	player->GetShip()->SetRotation(0, 0, 0);
 	player->SetBounds(NULL);
 }
@@ -3737,7 +3737,7 @@ void directXClass::IniPlayerLocation(MainPlayerClass* player, float px, float py
 void directXClass::RespawnPlayer(MainPlayerClass* player)
 {
 	player->respawn();
-	player->GetShip()->Update(2);
+	player->GetShip()->Update(0);
 	player->GetShip()->SetRotation(0, 0, 0);
 	player->SetBounds(NULL);
 }
