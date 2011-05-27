@@ -1646,8 +1646,12 @@ bool directXClass::KeyDownChat(WPARAM wParam, HWND hWnd)
             _msgt.CreateMsg(_netmsg, MSG_MSC, MSC_STARTGAME, "T"); 
             _server.BroadcastMsg(_netmsg, 3);
          }
-         if(!_IamClient)
-            SetGameStarted();         
+         else if(!_IamClient)
+         {
+            if(_gameStarted == 0)
+               StartAIs();
+            SetGameStarted();
+         }
       }
 
       if(wParam == 'Y')
