@@ -257,8 +257,8 @@ void AIPlayer::SetBounds(D3DXVECTOR3* pos)
 {
    // Bounds of movement for ship
    float xzBound = 60;
-   _mv->top = 100;
-   _mv->bottom = 5;
+   _mv->top = 120;
+   _mv->bottom = 15;
    _mv->left = -xzBound;
    _mv->right = xzBound;
    _mv->back = _mv->left;
