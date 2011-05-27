@@ -460,7 +460,13 @@ int directXClass::GameLoop(float timeDelta) {
 
 			inputCommands(timeDelta);
 
-			player1.Update(timeDelta);
+         for (int i = 0; i < 8; i++)
+			{
+				if (program->currentPlayers[i] != NULL) {
+					program->currentPlayers[i]->Update(timeDelta);
+				}
+			}
+			//player1.Update(timeDelta);
 
 			/*if(input.get_keystate(DIK_M))
 			{
@@ -572,12 +578,7 @@ int directXClass::GameLoop(float timeDelta) {
 			camera.Update(timeDelta);//reset();
 			UpdateHUD();
 
-         for (int i = 1; i < 8; i++)
-			{
-				if (program->currentPlayers[i] != NULL) {
-					program->currentPlayers[i]->Update(timeDelta);
-				}
-			}
+
 
 			//directXClass::SetError(TEXT("p1: %f"), player1.getPositionZ());
 /*			for (std::list<AIPlayer*>::const_iterator ci = _aiPlayer.begin(); ci != _aiPlayer.end(); ++ci)
