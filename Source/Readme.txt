@@ -23,3 +23,20 @@ lives is defaulted to 0 as well, and it is the current number of lives, it inclu
 name, does not matter truthfully, atleast not when this readme was writen you can leave blank or type something will have no real effect, the player will just store that name
 
 by default only player2 is active, and all shiptypes are set to standard, these can be changed by using the radio buttons on this screen.
+
+
+***********LAN Multiplayer**************
+
+Currently there is only 2 client player support.
+
+CREATE SERVER
+To create the localhost server, after selecting the Number of players in the menu and clicking OK.
+- Press P to create the localhost server.
+- Wait for players to join, and press ENTER to start the game.
+
+
+JOIN SERVER
+After select the number of players in the menu and clicking OK
+- Wait for someone to create a server in the game.
+- Press L to join the localhost server.
+- Wait for the Server to press ENTER to start the game
