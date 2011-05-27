@@ -1686,6 +1686,7 @@ bool directXClass::KeyDownChat(WPARAM wParam, HWND hWnd)
       }
       if(wParam == 'L')
       {
+         //CreateClient(hWnd, "142.232.237.154");
          CreateClient(hWnd, "localhost");
          //CreateClient(hWnd, "192.168.0.198");
          _chat.AddMsgToHistory("Client connected to server .198!");
