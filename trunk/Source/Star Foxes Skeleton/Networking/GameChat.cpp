@@ -35,8 +35,8 @@ void GameChat::RenderChat()
    for (list<string>::iterator ci = hist->begin(); ci != hist->end(); ++ci)
    {
       GetTextFormat()->draw(ci->c_str(), rct);
-      rct->top += 12;
-      rct->bottom += 12;
+      rct->top += 20;
+      rct->bottom += 20;
    }
 }
 
@@ -98,7 +98,7 @@ void GameChat::EndWrite()
 GameChat::GameChat(void)
 {
    _writingOn = false;
-   _histlimit = 30;
+   _histlimit = 14;
    list<string> _history;
 }
 
