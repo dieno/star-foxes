@@ -2257,7 +2257,7 @@ void directXClass::inputCommands(float timeDelta)
          _client.SendMsg(_netmsg);
          offsentb = false;
       } else {
-		   player1.boost(true);
+		   //player1.boost(true);
       }
 	}
 	else
@@ -2270,18 +2270,26 @@ void directXClass::inputCommands(float timeDelta)
          }
          offsentb = true;
       } else {
-		   player1.boost(false);
+		   //player1.boost(false);
       }
 	}
 
-	if(input.get_keystate(DIK_F))
+	if(input.get_keystate(DIK_LSHIFT))
 	{
-      if(_IamClient){
-         _msgt.CreateMsg(_netmsg, MSG_CMD, &_clientID, "F");
-         _client.SendMsg(_netmsg);
-      } else {
-		   player1.shoot(timeDelta);
-      }
+		player1.boost(true);
+	}
+	else
+	{
+		player1.boost(false);
+		if(input.get_keystate(DIK_F) || input.get_keystate(DIK_SPACE))
+		{
+		  if(_IamClient){
+			 _msgt.CreateMsg(_netmsg, MSG_CMD, &_clientID, "F");
+			 _client.SendMsg(_netmsg);
+		  } else {
+			   player1.shoot(timeDelta);
+		  }
+		}
 	}
 }
 

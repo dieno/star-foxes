@@ -290,12 +290,12 @@ void MainShipClass::boost(bool active)
 {
 	if(active)
 	{
-		thrustAmount_ = 0.001f;
+		thrustAmount_ = 0.00425f;
       //directXClass::SetError(TEXT("up: X: %f, Y: %f, Z: %f dir: X: %f, Y: %f, Z: %f right: X: %f, Y: %f, Z: %f"), vUp_.x, vUp_.y, vUp_.z, vDirection_.x, vDirection_.y, vDirection_.z, vRight_.x, vRight_.y, vRight_.z);
 	}
 	else
 	{
-		thrustAmount_ = 0.0f;
+		thrustAmount_ = 0.001f;
 	}   
 }
 

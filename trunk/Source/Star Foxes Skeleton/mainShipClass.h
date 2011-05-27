@@ -7,7 +7,7 @@
 #include "boundingBox.h"
 
 #define Y_AXIS_INVERTED false
-#define SHOOT_SPEED 0.3f
+#define SHOOT_SPEED (D3DX_PI/16.0f)
 
 // Flexible Vertex Format setup + definition
 #define CUSTOMFVF (D3DFVF_XYZ | D3DFVF_TEX1)
@@ -45,7 +45,7 @@ public:
 		Mass_(1.0f),
 		MaxForce_(24000.0f),
 		Drag_(0.97f),
-		thrustAmount_(0.0f),
+		thrustAmount_(0.001f),
 		projectileList(),
 		blinkStartTime(0),
 		isBlinkedOut(false),
@@ -81,7 +81,7 @@ public:
 		Mass_(1.0f),
 		MaxForce_(24000.0f),
 		Drag_(0.97f),
-		thrustAmount_(0.0f),
+		thrustAmount_(0.001f),
 		projectileList(),
 		blinkStartTime(0),
 		isBlinkedOut(false),
@@ -116,7 +116,7 @@ public:
 		Mass_(1.0f),
 		MaxForce_(24000.0f),
 		Drag_(0.97f),
-		thrustAmount_(0.0f),
+		thrustAmount_(0.001f),
 		projectileList(),
 		blinkStartTime(0),
 		isBlinkedOut(false),
