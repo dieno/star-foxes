@@ -744,7 +744,7 @@ int directXClass::Render(){
 		//player2.drawSelf();
 		//SetupMatrices(true);
      
-		drawCubes();	
+		//drawCubes();	
 
       _chat.RenderChat();
 		g_pDevice->EndScene();
