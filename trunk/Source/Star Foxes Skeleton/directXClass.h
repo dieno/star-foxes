@@ -115,6 +115,7 @@ public:
       _clientID = '0';
       _clientIdx = 0;
       this->currentPlayers[9] = NULL;
+      _cbi = 0;
       //End Networking section
    }
 	int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pstrCmdLine, int iCmdShow);
@@ -159,6 +160,7 @@ public:
 	int _gameStarted;
 	//End networking stuff
 private:
+   int _cbi;  //index for cubes
    void SetGameStarted();
    void EnableLights();
    //Start Networking stuff
