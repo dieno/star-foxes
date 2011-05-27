@@ -493,7 +493,6 @@ int directXClass::GameLoop(float timeDelta) {
 						RespawnPlayer(currentPlayers[index]);
 						if (currentPlayers[index]->getLives() <= 0) {
 							currentPlayers[index] = NULL;
-							nullCount++;
 							if (index == 0) {
 								menuSelect = 0;
 								return 0;
