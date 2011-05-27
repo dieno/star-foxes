@@ -206,8 +206,10 @@ int WINAPI directXClass::WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, P
 		else{
 			float currTime = (float) timeGetTime();
 			float timeDelta = (currTime - lastTime) * 0.001f; // get elapsed time since last update in seconds
-			GameLoop(timeDelta);
+			if(timeDelta > 0.02f) // Added temp FPS control for multiplayer
+         {GameLoop(timeDelta);
 			lastTime = currTime;
+         }
 		}
 	}
 	GameShutdown();// clean up the game
