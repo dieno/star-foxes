@@ -13,6 +13,7 @@ class Server
 private:
    int nPort;
    int nClient;
+   int _clientids[8];
    int nMaxClients;
    std::list<SOCKET> ClientSocket;
    SOCKET ServerSocket;

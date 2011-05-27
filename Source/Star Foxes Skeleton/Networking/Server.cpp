@@ -14,7 +14,7 @@ bool Server::IsBinded()
 
 int Server::GenID()
 {
-   return nClient;
+   return _clientids[nClient-1];
 }
 // Destroys/Shutdowns the server.
 void Server::Destroy()
@@ -96,7 +96,7 @@ ESocketEvent Server::OnSocketEvent(LPARAM lParam, WPARAM wParam, int* msgsize, H
             int size=sizeof(sockaddr);
             ClientSocket.push_back(accept(wParam,&sockAddrClient,&size));
             
-				//ClientSocket[nClient]=accept(wParam,&sockAddrClient,&size);
+				//ClientSocket[nClient]=accept(wParam,&spockAddrClient,&size);
 				//if (ClientSocket[nClient]==INVALID_SOCKET)
             if (ClientSocket.back() == INVALID_SOCKET)
 				{
@@ -215,6 +215,8 @@ void Server::SendMsg(SOCKET* s, const char msg[], int size)
 // Initializes server with default values and the given max number of clients.
 void Server::Initialize(int maxclients)
 {
+   _clientids[0] = 0;
+   _clientids[1] = 7;
    _nullmsg[0] = NULL;
    nPort=5556;
    nClient = 0;
