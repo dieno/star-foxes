@@ -111,7 +111,10 @@ public:
       //Start Networking section
       _IamServer = false;
       _IamClient = false;
-      _gameStarted = false;
+      _gameStarted = 1;
+      _clientID = '0';
+      _clientIdx = 0;
+      this->currentPlayers[9] = NULL;
       //End Networking section
    }
 	int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, PSTR pstrCmdLine, int iCmdShow);
@@ -153,10 +156,13 @@ public:
 	bool _IamClient;
 	bool _IamServer;
 	Server _server; 
-	bool _gameStarted;
+	int _gameStarted;
 	//End networking stuff
 private:
+   void SetGameStarted();
+   void EnableLights();
    //Start Networking stuff
+   int _clientIdx;
    void StartAIs(); // Starts all AIs at the same time
    bool _iniframe; // synchronizes frames
    float _timeDelta;
@@ -234,6 +240,7 @@ private:
 	float translateYMesh2;
 	float translateXMesh2;
 	MainPlayerClass player1;
+   MainPlayerClass player2;
     //std::list<AIPlayer*> _aiPlayer;
     //AIPlayer _aiplayer1;
 	Input input;
@@ -261,7 +268,7 @@ private:
 	MainShipClass dummyAI2;
 	HWND hwndDialog;
 	static bool waiting;
-	MainPlayerClass *currentPlayers[8];
+	MainPlayerClass *currentPlayers[10];
 	LPDIRECT3DSURFACE9 radarE;
 	LPDIRECT3DSURFACE9 radarA;
 	RECT radarPlayers[8];
