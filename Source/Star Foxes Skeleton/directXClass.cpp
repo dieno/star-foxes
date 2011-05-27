@@ -836,7 +836,45 @@ int directXClass::RenderRadar()
 		if (currentPlayers[index] != NULL) {
 			positionVectors[index] = currentPlayers[index]->getPositionVector();
 			positionVectors[index] -= player1Pos;
+
+			D3DXMATRIX rotateRadar = D3DXMATRIX(1,0,0,0
+											   ,0,1,0,0
+											   ,0,0,1,0
+											   ,0,0,0,1);
+
+			float angleToRotate;
+			float hypot = std::sqrt((currentPlayers[0]->GetShip()->getDirectionVector().z * currentPlayers[0]->GetShip()->getDirectionVector().z)
+								 +(currentPlayers[0]->GetShip()->getDirectionVector().x * currentPlayers[0]->GetShip()->getDirectionVector().x));			
+			
+			if(currentPlayers[0]->GetShip()->getDirectionVector().x >= 0 &&
+				currentPlayers[0]->GetShip()->getDirectionVector().z >= 0)
+			{
+				angleToRotate = std::atan(currentPlayers[0]->GetShip()->getDirectionVector().z /
+											currentPlayers[0]->GetShip()->getDirectionVector().x);
+			}
+			else if(currentPlayers[0]->GetShip()->getDirectionVector().x >= 0 &&
+				currentPlayers[0]->GetShip()->getDirectionVector().z <= 0)
+			{
+				angleToRotate = std::asin(currentPlayers[0]->GetShip()->getDirectionVector().z / hypot);
+			}
+			else if(currentPlayers[0]->GetShip()->getDirectionVector().x <= 0 &&
+				currentPlayers[0]->GetShip()->getDirectionVector().z >= 0)
+			{
+				angleToRotate = std::acos(currentPlayers[0]->GetShip()->getDirectionVector().x / hypot);
+			}
+			else if(currentPlayers[0]->GetShip()->getDirectionVector().x <= 0 &&
+				currentPlayers[0]->GetShip()->getDirectionVector().z <= 0)
+			{
+				angleToRotate = std::atan(currentPlayers[0]->GetShip()->getDirectionVector().z /
+											currentPlayers[0]->GetShip()->getDirectionVector().x);
+				angleToRotate -= D3DX_PI;
+			}
+
+			D3DXMatrixRotationY( &rotateRadar, (angleToRotate - (D3DX_PI / 2)));
+			D3DXVec3TransformCoord(&positionVectors[index], &positionVectors[index], &rotateRadar);
+			
 			positionVectors[index].z *= -1;
+
 			positionVectors[index] += D3DXVECTOR3(540,0,400);
 
 			if(positionVectors[index].x > 591)
