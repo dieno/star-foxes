@@ -838,6 +838,9 @@ int directXClass::RenderRadar()
 			positionVectors[index] = currentPlayers[index]->getPositionVector();
 			positionVectors[index] -= player1Pos;
 
+			positionVectors[index].x *= 0.5;
+			positionVectors[index].z *= 0.5;
+
 			D3DXMATRIX rotateRadar = D3DXMATRIX(1,0,0,0
 											   ,0,1,0,0
 											   ,0,0,1,0
