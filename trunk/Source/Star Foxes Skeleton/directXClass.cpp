@@ -452,13 +452,19 @@ int directXClass::GameLoop(float timeDelta) {
             SendInput(1, &keyEvent, sizeof(keyEvent));
                return 0;
             }; //sync start of frame*/
-         
+
+			inputCommands(timeDelta);
+         if(!_gameStarted)
+         {
+            Render();
+            return 0;
+         }
+          
+                  
          if(!_IamServer && !_IamClient)
          {
             StartAIs();
          }
-
-			inputCommands(timeDelta);
 
          for (int i = 0; i < 8; i++)
 			{
@@ -610,14 +616,14 @@ int directXClass::GameLoop(float timeDelta) {
 			updateCameraTarget();
 			camera.reset();//Update(timeDelta);
 
-			if(input.get_keystate(DIK_M))
+			/*if(input.get_keystate(DIK_M))
 			{
 				player1.takeHit(5);
 			}
 			if(input.get_keystate(DIK_N))
 			{
 				player1.takeHit(-5);
-			}
+			}*/
 			UpdateHUD();
 			Render();
 		break;
@@ -1582,7 +1588,7 @@ HRESULT directXClass::InitGeometry()
 void directXClass::IniChat()
 {
    SIZE charsz;
-   charsz.cx = 10; charsz.cy = 15;
+   charsz.cx = 10; charsz.cy = 22;
    Text *text = new Text(g_pDevice, false, charsz);
    text->setRect(0, 50, 500, 50);
    text->setColor(250, 250, 250, 255);
@@ -1633,6 +1639,11 @@ bool directXClass::KeyDownChat(WPARAM wParam, HWND hWnd)
    }
    else
    {
+      if(_gameStarted >= 0 && wParam == VK_RETURN)
+      {
+         SetGameStarted();
+      }
+
       if(wParam == 'Y')   
       {
          _chat.StartWrite();
@@ -1641,7 +1652,8 @@ bool directXClass::KeyDownChat(WPARAM wParam, HWND hWnd)
       if(wParam == 'P')
       {
          CreateServer(hWnd);
-         _chat.AddMsgToHistory("Server Created!");
+         _chat.AddMsgToHistory("Localhost Server Created!");
+         _chat.AddMsgToHistory("Wait for incoming players to press L and join you.");
          return true;
       }
       if(wParam == 'L')
@@ -1649,6 +1661,7 @@ bool directXClass::KeyDownChat(WPARAM wParam, HWND hWnd)
          CreateClient(hWnd, "localhost");
          //CreateClient(hWnd, "192.168.0.198");
          _chat.AddMsgToHistory("Client connected to server .198!");
+         _chat.AddMsgToHistory("Wait for the Server to START the game!");
          return true;
       }
       if(wParam == 'O')
@@ -1656,6 +1669,7 @@ bool directXClass::KeyDownChat(WPARAM wParam, HWND hWnd)
          //CreateClient(hWnd, "192.168.0.190");
          CreateClient(hWnd, "localhost");
          _chat.AddMsgToHistory("Client connected to server Localhost!");
+         _chat.AddMsgToHistory("Wait for the Server to START the game!");
          return true;
       }
       if(wParam == 'M')
@@ -1669,6 +1683,13 @@ bool directXClass::KeyDownChat(WPARAM wParam, HWND hWnd)
    }
    
    return false;
+}
+
+void directXClass::SetGameStarted()
+{
+   _gameStarted--;
+   EnableLights();
+   _chat.ClearHistory();
 }
 
 //Networking: processing server socket message
@@ -1685,13 +1706,16 @@ void directXClass::OnServerSocketEvent(LPARAM lParam, WPARAM wParam, HWND hWnd)
    {
    case EV_ACCEPT:
       {
-         _chat.AddMsgToHistory("Client connected!");       
+         _chat.AddMsgToHistory("Client connected!");
          char msg[10];
          char id[10];
          itoa(_server.GenID(), id, 10);
          int size = _msgt.CreateMsg(msg, MSG_MSC, MSC_SETID, id);
          //server->SendMsg(server->GetBackList(), msg, strlen(msg));
          _server.SendMsg(_server.GetBacklist(), msg, size);
+         // Send clients that they are in multiplayer mode
+         size = _msgt.CreateMsg(msg, MSG_MSC, MSC_MULTI, id);
+         _server.BroadcastMsg(msg, size);
          break;
       }
    case EV_CLOSE:
@@ -1781,6 +1805,41 @@ void directXClass::ProcessMsc(Msg *msg)
       break;
    case MSC_STARTGAME:
       this->StartAIs();
+   case MSC_MULTI:
+      if(msg->GetBody() == '0') // if it's 0, the starting location is the normal one
+      {
+         
+      }
+      else // 8: the starting location is the other one
+      {
+         if(_clientID == '0') // the first client
+         {
+			   //IniPlayerLocation(&player1, 0, 80, -10, 0, 0, 0);
+			   //player1.setShipSpawnLocationRotation(D3DXVECTOR3(0,70,-30),D3DXVECTOR3(0,0,0));
+            // Create second player
+            player2 = shipBuilder(STANDARD, HUMAN, 2, this->_gamestate.getHWND(), TEXT("player2"), TEXT("9"), TEXT("3"));
+            IniPlayerLocation(&player2, -60, 10, 30, -D3DX_PI/2, 0, 0);
+			   player2.setShipSpawnLocationRotation(D3DXVECTOR3(-60, 10, 30),D3DXVECTOR3(-D3DX_PI/2,0,0));
+            player2.initProjectiles(program->g_pMeshLaser, program->g_pMeshMaterialsLaser, program->g_pMeshTexturesLaser, program->g_dwNumMaterialsLaser);
+            program->currentPlayers[7] = &player2;
+         }
+         else // the second client
+         {
+            //translate player
+			   IniPlayerLocation(&player1, -60, 10, 30, -D3DX_PI/2, 0, 0);
+			   player1.setShipSpawnLocationRotation(D3DXVECTOR3(-60, 10, 30),D3DXVECTOR3(-D3DX_PI/2,0,0));
+
+            
+            //Create second player
+            player2 = shipBuilder(STANDARD, HUMAN, 2, this->_gamestate.getHWND(), TEXT("player2"), TEXT("9"), TEXT("3"));
+            IniPlayerLocation(&player2, 0, 80, -10, 0, 0, 0);
+			   player2.setShipSpawnLocationRotation(D3DXVECTOR3(0,80,-10),D3DXVECTOR3(0,0,0));
+            player2.initProjectiles(program->g_pMeshLaser, program->g_pMeshMaterialsLaser, program->g_pMeshTexturesLaser, program->g_dwNumMaterialsLaser);
+            //player2.initProjectiles(
+            program->currentPlayers[7] = &player2;
+         }
+      }
+      break;
    default:
       //std::string str; 
       char a[2] = {msg->GetBody(), NULL};
@@ -1852,6 +1911,17 @@ void directXClass::ProcessClientCmd(Msg* msg, HWND hWnd)
    */
    const char x[1] = {msg->GetCmd()};
    int num = atoi(x);
+   char cid[1] = {_clientID};
+   int id = atoi(cid);
+   
+   if(num == id) // msg sender is myself
+   {
+      num = 0; // move main player
+   }
+   else if(num == 0 && id == 7) // sender is human1 and I'm human2
+   {
+      num = 7;
+   }
 
    switch(msg->GetBody())
    {
@@ -2049,7 +2119,9 @@ void directXClass::inputCommands(float timeDelta)
       return;
    }*/
    //TODO: REMOVE
-   _clientID = '0';
+   //_clientID = '0';
+   //if(_clientID)
+
 	if(input.get_keystate(DIK_A))
 	{
       if(_IamClient){
@@ -2142,12 +2214,9 @@ void directXClass::inputCommands(float timeDelta)
 		/*player1.sethasShot(false);*/
 	}
 
-	if(input.get_keystate(DIK_L))
+	if(input.get_keystate(DIK_K))
 	{
-		if(dirLightEnabled)
-			dirLightEnabled = false;
-		else
-			dirLightEnabled = true;
+      EnableLights();
 	}
 
 	if(input.get_keystate(DIK_SPACE))
@@ -2183,6 +2252,14 @@ void directXClass::inputCommands(float timeDelta)
 		   player1.shoot(timeDelta);
       }
 	}
+}
+
+void directXClass::EnableLights()
+{
+	if(dirLightEnabled)
+		dirLightEnabled = false;
+	else
+		dirLightEnabled = true;
 }
 
 void directXClass::setupCubes()
@@ -2452,7 +2529,7 @@ BOOL CALLBACK directXClass::startDialog (HWND hwnd, UINT msg, WPARAM wParam, LPA
 							program->currentPlayers[0] = &player1;
 						}
 						IniPlayerLocation(&player1, 0, 80, -10, 0, 0, 0);
-						player1.setShipSpawnLocationRotation(D3DXVECTOR3(0,70,-30),D3DXVECTOR3(0,0,0));
+						player1.setShipSpawnLocationRotation(D3DXVECTOR3(0,80,-10),D3DXVECTOR3(0,0,0));
 						program->currentPlayers[0] = &player1;
 					}
 					//Setting player 2
@@ -2620,6 +2697,20 @@ BOOL CALLBACK directXClass::startDialog (HWND hwnd, UINT msg, WPARAM wParam, LPA
 					program->menuSelect = 2;
 					program->updateCameraTarget();
 					program->camera.reset();
+               program->_chat.AddMsgToHistory("Welcome to Star Foxes: The Game");
+               program->_chat.AddMsgToHistory("----------------------------------------------");
+               program->_chat.AddMsgToHistory("Press ENTER to start the game");
+               program->_chat.AddMsgToHistory("------------------- OR --------------------");
+               program->_chat.AddMsgToHistory("Press P to start the localhost server");
+               program->_chat.AddMsgToHistory("Press L to join localhost server");
+               program->_chat.AddMsgToHistory("Use W, S, A, D to rotate ship");
+               program->_chat.AddMsgToHistory("Use Spacebar to accelerate");
+               program->_chat.AddMsgToHistory("Use F to fire at your enemies!");
+               program->_chat.AddMsgToHistory("Press Y to chat");
+               program->_chat.AddMsgToHistory("");
+               program->_chat.AddMsgToHistory("Thanks and Enjoy the Game!");
+               program->_chat.AddMsgToHistory("__The Star Foxes Team__");              
+               
 					ShowWindow(hwnd,SW_HIDE);
 					return TRUE;
 				case IDCANCEL:
