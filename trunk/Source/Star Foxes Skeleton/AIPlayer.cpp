@@ -60,6 +60,7 @@ float FSM::evalDistToTarget(D3DXVECTOR3 target, D3DXVECTOR3 origin)
 D3DXVECTOR3 FSM::eval()
 {
 	D3DXVECTOR3 target;
+   static int count = 400;
 	
 	directXClass::SetError(TEXT("FSM // Evaluating game state...\n"));
 
@@ -71,7 +72,13 @@ D3DXVECTOR3 FSM::eval()
 			target = evalWander();
 			break;
 		case ATCK:
+         count--;
 			target = evalAttack();
+         if(count <= 0)
+         {
+            count = 400;
+            currentState = FLEE;
+         }
 			break;
 		case SEEK:
 			target = evalSeek();
@@ -274,6 +281,7 @@ void AIPlayer::Start()
 // TODO: Behaviour evaluator to evaluate what behaviour to activate.
 void AIPlayer::Update(float timeDelta)
 {
+   static int flee = 100;
    if(!_boosting) // Have to call Start() for the AI to start moving
       return;   
    if(directXClass::program->_IamClient && !directXClass::program->_IamServer)
@@ -290,7 +298,13 @@ void AIPlayer::Update(float timeDelta)
 	  switch(_fsm.getCurrentState())
 	   {
 		case FLEE:
+         flee--;
 			Flee(hWnd, target);
+         if(flee <=0)
+         {
+            flee = 100;
+            _fsm.setCurrentState(WAND);
+         }
 			break;
 		case WAND:
 			Wander(hWnd);
