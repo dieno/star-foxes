@@ -149,6 +149,7 @@ public:
     static Terrain getMainTerrain() {
 	 	return mainTerrain;
     }
+    
 	//Start networking stuff
 	Client* GetClient();
 	Server* GetServer();
@@ -158,9 +159,11 @@ public:
 	bool _IamServer;
 	Server _server; 
 	int _gameStarted;
+   static BOOL CALLBACK directXClass::startDialog2 (HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 	//End networking stuff
 private:
    int _cbi;  //index for cubes
+   int directXClass::StartGame(float timeDelta, int nullcount);
    void SetGameStarted();
    void EnableLights();
    //Start Networking stuff
@@ -269,6 +272,7 @@ private:
 	MainShipClass dummyAI;
 	MainShipClass dummyAI2;
 	HWND hwndDialog;
+   HWND hwndDialog2;
 	static bool waiting;
 	MainPlayerClass *currentPlayers[10];
 	LPDIRECT3DSURFACE9 radarE;
