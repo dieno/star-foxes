@@ -24,7 +24,8 @@ enum ECOMMAND
    //MISC
    MSC_SETID  ='i', // set client id
    MSC_INIFRAME = 's', // sync frames
-   MSC_STARTGAME = 't' // sync frames
+   MSC_STARTGAME = 't', // sync frames7
+   MSC_MULTI = 'm'
    //TEXT
 };
 /*

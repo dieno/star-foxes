@@ -90,7 +90,7 @@ ESocketEvent Server::OnSocketEvent(LPARAM lParam, WPARAM wParam, int* msgsize, H
          nClient--;
 		   return EV_CLOSE; //break;
 
-		case FD_ACCEPT:		
+      case FD_ACCEPT:
 			if(nClient<nMaxClients)
 			{
             int size=sizeof(sockaddr);
